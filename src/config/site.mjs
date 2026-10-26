@@ -9,7 +9,7 @@
  *   Pages 上传    → https://<项目名>.pages.dev
  * 拿到地址后填回这里，重新 node build.mjs 再上传一次。
  */
-export const SITE = 'https://openref.pages.dev';
+export const SITE = 'https://docs.openref.workers.dev';
 
 export const SITE_NAME = 'OpenRef';
 export const SITE_FULLNAME = 'OpenRef 技术参考';
