@@ -1,0 +1,12 @@
+{
+  "name": "openref-tech-blog",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "零依赖静态技术站：node build.mjs 生成 dist，网页端直接上传",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve",
+    "new": "node scripts/new-post.mjs"
+  }
+}

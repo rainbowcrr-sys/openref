@@ -1,0 +1,48 @@
+{
+  "categories": [
+    {
+      "id": "programming",
+      "name": "编程",
+      "desc": "语言特性、标准库、常见写法与陷阱。",
+      "children": [
+        { "id": "javascript", "name": "JavaScript / TypeScript", "desc": "异步、类型系统、运行时行为。" },
+        { "id": "python", "name": "Python", "desc": "语法、包管理、数据处理。" },
+        { "id": "rust", "name": "Rust", "desc": "所有权、并发、生态工具。" },
+        { "id": "go", "name": "Go", "desc": "并发模型、标准库、工程实践。" },
+        { "id": "sql", "name": "SQL / 数据库", "desc": "查询优化、索引、建模。" }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "云原生与基础设施",
+      "desc": "边缘计算、Serverless、部署与运维。",
+      "children": [
+        { "id": "cloudflare", "name": "Cloudflare", "desc": "Workers、Pages、D1、KV、R2。" },
+        { "id": "serverless", "name": "Serverless", "desc": "函数计算、冷启动、成本模型。" },
+        { "id": "docker", "name": "Docker / 容器", "desc": "镜像、构建、编排基础。" },
+        { "id": "network", "name": "网络与 CDN", "desc": "DNS、缓存、TLS、HTTP 协议。" }
+      ]
+    },
+    {
+      "id": "frontend",
+      "name": "前端工程",
+      "desc": "浏览器行为、渲染性能、可访问性与 SEO。",
+      "children": [
+        { "id": "performance", "name": "性能优化", "desc": "加载、渲染、核心指标。" },
+        { "id": "seo", "name": "SEO", "desc": "抓取、索引、结构化数据。" },
+        { "id": "css", "name": "CSS 与布局", "desc": "排版、响应式、设计系统。" },
+        { "id": "tooling", "name": "构建工具", "desc": "打包器、编译器、工作流。" }
+      ]
+    },
+    {
+      "id": "systems",
+      "name": "系统与底层",
+      "desc": "操作系统、编译、存储与并发基础。",
+      "children": [
+        { "id": "linux", "name": "Linux", "desc": "命令、权限、进程、文件系统。" },
+        { "id": "concurrency", "name": "并发与并行", "desc": "锁、同步、调度。" },
+        { "id": "storage", "name": "存储", "desc": "文件系统、对象存储、缓存层。" }
+      ]
+    }
+  ]
+}
