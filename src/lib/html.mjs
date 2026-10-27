@@ -3,7 +3,7 @@ import { escapeHtml } from './md.mjs';
 
 export const NAV = [
   { label: '分类', href: '/topics/' },
-  { label: '全部文章', href: '/latest/' },
+  { label: '文章', href: '/latest/' },
   { label: '标签', href: '/tags/' },
   { label: '搜索', href: '/search/' },
 ];
@@ -18,9 +18,11 @@ export function layout({
   bodyHtml = '',
   extraHead = '',
   activePath = '/',
+  ogImage = null,
 }) {
   const pageTitle = fullTitle(title);
   const url = new URL(canonical, SITE).href;
+  const image = ogImage ? new URL(ogImage, SITE).href : new URL('/og-default.png', SITE).href;
 
   const websiteLd = {
     '@context': 'https://schema.org',
@@ -45,27 +47,31 @@ export function layout({
 <meta name="description" content="${escapeHtml(description)}" />
 <link rel="canonical" href="${url}" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 ${noindex ? '<meta name="robots" content="noindex,nofollow" />' : ''}
 <link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="/rss.xml" />
-<link rel="sitemap" href="/sitemap.xml" />
 <meta property="og:site_name" content="${escapeHtml(SITE_FULLNAME)}" />
 <meta property="og:type" content="${ogType}" />
 <meta property="og:title" content="${escapeHtml(title ?? SITE_FULLNAME)}" />
 <meta property="og:description" content="${escapeHtml(description)}" />
 <meta property="og:url" content="${url}" />
+<meta property="og:image" content="${image}" />
 <meta property="og:locale" content="zh_CN" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${escapeHtml(title ?? SITE_FULLNAME)}" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
+<meta name="twitter:image" content="${image}" />
 <link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
 ${ldList.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n')}
 ${extraHead}
 </head>
 <body>
+<div class="progress" id="progress" aria-hidden="true"></div>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/">${SITE_NAME}</a>
+    <a class="brand" href="/">${escapeHtml(SITE_NAME)}</a>
     <nav class="nav" aria-label="主导航">
       ${NAV.map(
         (l) =>
@@ -73,6 +79,7 @@ ${extraHead}
             activePath === l.href || activePath.startsWith(l.href) ? ' aria-current="page"' : ''
           }>${l.label}</a>`
       ).join('')}
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色"></button>
     </nav>
   </div>
 </header>
@@ -86,11 +93,12 @@ ${bodyHtml}
       <div class="mt">条目式技术参考 · 内容可自由引用</div>
     </div>
     <div class="right">
-      <a href="/rss.xml">RSS</a> · <a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">llms.txt</a>
-      <div class="mt">© ${new Date().getFullYear()} ${ORG_NAME}</div>
+      <a href="/rss.xml">RSS</a> · <a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a>
+      <div class="mt">© ${new Date().getFullYear()} ${escapeHtml(ORG_NAME)}</div>
     </div>
   </div>
 </footer>
+<script defer src="/assets/app.js"></script>
 </body>
 </html>
 `;
@@ -141,4 +149,20 @@ export function postRowHtml(post, tax) {
   </div>
   <time datetime="${post.iso}">${post.date}</time>
 </a></li>`;
+}
+
+/** 上一篇 / 下一篇 */
+export function prevNextHtml(prev, next) {
+  if (!prev && !next) return '';
+  const item = (p, label) =>
+    p
+      ? `<a class="pn-item" href="${p.url}">
+    <span class="pn-label">${label}</span>
+    <span class="pn-title">${escapeHtml(p.title)}</span>
+  </a>`
+      : '<span class="pn-item empty"></span>';
+  return `<nav class="prev-next" aria-label="上下篇">
+  ${item(next, '下一篇')}
+  ${item(prev, '上一篇')}
+</nav>`;
 }

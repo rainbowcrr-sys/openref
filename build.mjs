@@ -12,8 +12,8 @@ import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatter, renderMarkdown, colorize, escapeHtml } from './src/lib/md.mjs';
-import { layout, crumbsHtml, cardHtml, postRowHtml } from './src/lib/html.mjs';
-import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME } from './src/config/site.mjs';
+import { layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml } from './src/lib/html.mjs';
+import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME, LANG } from './src/config/site.mjs';
 import { taxonomy, getCategory, getSub } from './src/data/taxonomy.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -102,6 +102,8 @@ const posts = walk(DOCS)
       html: colorize(html),
       headings: headings.filter((h) => h.depth === 2 || h.depth === 3),
       text,
+      words: countWords(text),
+      minutes: readingTime(countWords(text)),
       categoryId,
       subId,
       category,
@@ -154,6 +156,32 @@ function relatedOf(post, limit = 4) {
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s || b.p.pubDate.valueOf() - a.p.pubDate.valueOf());
   return scored.slice(0, limit).map((x) => x.p);
+}
+
+/** 中文按字计、英文按词计 */
+function countWords(text) {
+  const cjk = (String(text).match(/[\u4e00-\u9fa5\u3040-\u30ff]/g) || []).length;
+  const en = (String(text).replace(/[\u4e00-\u9fa5\u3040-\u30ff]/g, ' ').match(/[A-Za-z][\w'-]*/g) || [])
+    .length;
+  return cjk + en;
+}
+
+/** 阅读时长：中文按 350 字/分钟 */
+function readingTime(words) {
+  return Math.max(1, Math.round(words / 350));
+}
+
+/** 同一子类内按时间排序，取相邻两篇 */
+function neighborsOf(post, list) {
+  const siblings = list
+    .filter((p) => p.categoryId === post.categoryId && p.subId === post.subId)
+    .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  const idx = siblings.findIndex((p) => p.id === post.id);
+  if (idx < 0) return { prev: null, next: null };
+  return {
+    next: idx > 0 ? siblings[idx - 1] : null, // 更新的一篇
+    prev: idx < siblings.length - 1 ? siblings[idx + 1] : null, // 更早的一篇
+  };
 }
 
 function allTags() {
@@ -321,7 +349,11 @@ for (const cat of taxonomy) {
 for (const p of posts) {
   const crumbs = crumbsOf(p);
   const related = relatedOf(p);
+  const { prev, next } = neighborsOf(p, posts);
   const url = new URL(p.url, SITE).href;
+  const ogPath = fs.existsSync(path.join(ROOT, 'public/og', `${p.slug}.png`))
+    ? `/og/${p.slug}.png`
+    : `/og/${p.slug}.svg`;
 
   const jsonLd = [
     {
@@ -366,6 +398,7 @@ for (const p of posts) {
         ${p.subcategory ? `<a class="pill" href="/topics/${p.category.id}/${p.subId}/">${escapeHtml(p.subcategory.name)}</a>` : ''}
         <time datetime="${p.iso}">发布于 ${p.date}</time>
         ${p.updatedIso ? `<time datetime="${p.updatedIso}">更新于 ${p.updatedIso}</time>` : ''}
+        <span class="read-time">约 ${p.words} 字 · ${p.minutes} 分钟</span>
         ${p.tags.map((t) => `<span class="pill">#${escapeHtml(t)}</span>`).join('')}
       </div>
     </header>
@@ -380,6 +413,7 @@ for (const p of posts) {
             .join('')}</ul></section>`
         : ''
     }
+    ${prevNextHtml(prev, next)}
   </div>
 </article>`;
 
@@ -390,6 +424,7 @@ for (const p of posts) {
       description: p.description,
       canonical: p.url,
       ogType: 'article',
+      ogImage: ogPath,
       jsonLd,
       bodyHtml: body,
       activePath: '/docs/',
@@ -481,43 +516,149 @@ const index = posts.map((p) => ({
 }));
 write('search-index.json', JSON.stringify(index));
 
-/* sitemap */
-const urls = [
-  '/',
-  '/latest/',
-  '/topics/',
-  '/tags/',
+/* ============================================================
+ * 2.5 辅助：OG 图与最新日期
+ * ========================================================== */
+const latestIso = posts.length ? fmtDate(posts[0].pubDate) : today();
+
+/** 把长文本按字数折行（SVG 不自动换行） */
+function wrapText(text, perLine) {
+  const out = [];
+  let cur = '';
+  for (const ch of String(text)) {
+    cur += ch;
+    if (cur.length >= perLine) {
+      out.push(cur);
+      cur = '';
+    }
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+/** 苹果风 OG 图（1200×630）。用 SVG 生成，中文不会乱码；
+ *  若 public/og/<slug>.png 已存在则优先用 PNG（社交平台兼容性更好）。 */
+function ogSvg(post) {
+  const titleLines = wrapText(post.title, 18).slice(0, 3);
+  const descLines = wrapText(post.description, 30).slice(0, 2);
+  const section = [post.category?.name, post.subcategory?.name].filter(Boolean).join(' / ');
+  const titleY = 250;
+  const lineH = 74;
+  const titleSvg = titleLines
+    .map(
+      (l, i) =>
+        `<text x="80" y="${titleY + i * lineH}" font-family="'PingFang SC','Helvetica Neue',Arial,sans-serif" font-size="60" font-weight="600" fill="#1d1d1f">${escapeHtml(l)}</text>`
+    )
+    .join('\n  ');
+  const descSvg = descLines
+    .map(
+      (l, i) =>
+        `<text x="80" y="${titleY + titleLines.length * lineH + 30 + i * 44}" font-family="'PingFang SC','Helvetica Neue',Arial,sans-serif" font-size="30" fill="#86868b">${escapeHtml(l)}</text>`
+    )
+    .join('\n  ');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#0071e3"/>
+  <text x="80" y="120" font-family="'PingFang SC','Helvetica Neue',Arial,sans-serif" font-size="34" font-weight="600" fill="#1d1d1f">${escapeHtml(SITE_NAME)}</text>
+  <text x="80" y="170" font-family="'PingFang SC','Helvetica Neue',Arial,sans-serif" font-size="24" fill="#86868b">${escapeHtml(section || 'Technical Reference')}</text>
+  ${titleSvg}
+  ${descSvg}
+  <text x="80" y="580" font-family="'PingFang SC','Helvetica Neue',Arial,sans-serif" font-size="24" fill="#86868b">${escapeHtml(SITE)}</text>
+</svg>`;
+}
+
+/* sitemap —— 带 lastmod，搜索引擎据此判断哪些页面更新过 */
+const sitemapEntries = [
+  { loc: '/', last: latestIso },
+  { loc: '/latest/', last: latestIso },
+  { loc: '/topics/', last: latestIso },
+  { loc: '/tags/', last: latestIso },
   ...groups
     .filter((g) => g.total > 0)
     .flatMap((g) => [
-      `/topics/${g.category.id}/`,
-      ...g.subs.map((s) => `/topics/${g.category.id}/${s.sub.id}/`),
+      {
+        loc: `/topics/${g.category.id}/`,
+        last: fmtDate(new Date(Math.max(...g.subs.flatMap((s) => s.posts.map((p) => p.pubDate.valueOf()))))),
+      },
+      ...g.subs.map((s) => ({
+        loc: `/topics/${g.category.id}/${s.sub.id}/`,
+        last: fmtDate(new Date(Math.max(...s.posts.map((p) => p.pubDate.valueOf())))),
+      })),
     ]),
-  ...posts.map((p) => p.url),
+  ...posts.map((p) => ({ loc: p.url, last: p.updatedIso ?? p.iso })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${new URL(u, SITE).href}</loc></url>`).join('\n')}
+${sitemapEntries
+  .map((e) => `  <url><loc>${new URL(e.loc, SITE).href}</loc><lastmod>${e.last}</lastmod></url>`)
+  .join('\n')}
 </urlset>`;
 write('sitemap.xml', sitemap);
 
-/* robots.txt */
+/* robots.txt —— 纯 ASCII，避免任何编码问题 */
 write(
   'robots.txt',
-  `# OpenRef —— 允许全部主流爬虫抓取
+  `# OpenRef technical reference
+# All crawlers are welcome.
+
 User-agent: *
 Allow: /
-
 Disallow: /search/
+
+# Search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+User-agent: Sogou web spider
+Allow: /
+
+# AI crawlers explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
 
 Sitemap: ${new URL('/sitemap.xml', SITE).href}
 `
 );
 
-/* RSS */
-const rssItems = posts
-  .map(
-    (p) => `    <item>
+/* RSS —— 全站 */
+function feedXml(list, feedTitle, feedDesc, selfPath) {
+  const items = list
+    .map(
+      (p) => `    <item>
       <title>${escapeHtml(p.title)}</title>
       <link>${new URL(p.url, SITE).href}</link>
       <guid isPermaLink="true">${new URL(p.url, SITE).href}</guid>
@@ -526,42 +667,91 @@ const rssItems = posts
       ${p.category ? `<category>${escapeHtml(p.category.name)}</category>` : ''}
       ${p.tags.map((t) => `<category>${escapeHtml(t)}</category>`).join('\n      ')}
     </item>`
-  )
-  .join('\n');
-write(
-  'rss.xml',
-  `<?xml version="1.0" encoding="UTF-8"?>
+    )
+    .join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${escapeHtml(SITE_FULLNAME)}</title>
+    <title>${escapeHtml(feedTitle)}</title>
     <link>${SITE}</link>
-    <description>${escapeHtml(SITE_DESC)}</description>
+    <description>${escapeHtml(feedDesc)}</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${new URL('/rss.xml', SITE).href}" rel="self" type="application/rss+xml" />
-${rssItems}
+    <atom:link href="${new URL(selfPath, SITE).href}" rel="self" type="application/rss+xml" />
+${items}
   </channel>
-</rss>`
-);
+</rss>`;
+}
 
-/* llms.txt */
+write('rss.xml', feedXml(posts, SITE_FULLNAME, SITE_DESC, '/rss.xml'));
+
+/* RSS —— 每个分类单独一个订阅源 */
+for (const g of groups.filter((x) => x.total > 0)) {
+  const list = posts.filter((p) => p.categoryId === g.category.id);
+  write(
+    `rss/${g.category.id}.xml`,
+    feedXml(
+      list,
+      `${SITE_FULLNAME} · ${g.category.name}`,
+      `${g.category.desc} 共 ${list.length} 篇。`,
+      `/rss/${g.category.id}.xml`
+    )
+  );
+}
+
+/* llms.txt —— 全英文说明 + 中文条目索引（AI 用 UTF-8 读取，不会乱码） */
 const byCat = new Map();
 for (const p of posts) {
-  const key = [p.category?.name, p.subcategory?.name].filter(Boolean).join(' / ') || '未分类';
+  const key = [p.category?.name, p.subcategory?.name].filter(Boolean).join(' / ') || 'Uncategorized';
   const line = `- [${p.title}](${new URL(p.url, SITE).href}): ${p.description}`;
   byCat.set(key, [...(byCat.get(key) ?? []), line]);
 }
 write(
   'llms.txt',
-  `# ${SITE_FULLNAME}
+  `# ${SITE_NAME}
 
-> ${SITE_DESC}
+> ${SITE_TAGLINE}
 
-本文件是给检索系统与 AI 阅读的条目索引。站点为技术参考手册，按主题分组，每篇讲清一件事。
+OpenRef is an open technical reference. Entries are grouped by topic; each entry documents one
+specific thing with runnable code and explicit limits. Written in Chinese, plain and direct.
+
+## Sections
 
 ${[...byCat.entries()].map(([k, v]) => `## ${k}\n\n${v.join('\n')}`).join('\n\n')}
+
+## Optional
+
+- Full text of all entries: ${new URL('/llms-full.txt', SITE).href}
 `
 );
+
+/* llms-full.txt —— 全文喂给 AI，便于被引用 */
+write(
+  'llms-full.txt',
+  `# ${SITE_NAME} - Full Reference
+
+> ${SITE_TAGLINE}
+
+${posts
+  .map(
+    (p) => `## ${p.title}
+
+URL: ${new URL(p.url, SITE).href}
+Section: ${[p.category?.name, p.subcategory?.name].filter(Boolean).join(' / ')}
+Published: ${p.iso}
+
+${p.text.slice(0, 3000)}
+`
+  )
+  .join('\n---\n\n')}
+`
+);
+
+/* 每篇文章自动生成 OG 图（SVG：纯文本生成，中文不会乱码） */
+for (const p of posts) {
+  if (fs.existsSync(path.join(ROOT, 'public/og', `${p.slug}.png`))) continue;
+  write(`og/${p.slug}.svg`, ogSvg(p));
+}
 
 /* ============================================================
  * 5. 完成 / 本地预览
