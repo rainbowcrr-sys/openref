@@ -86,7 +86,7 @@ function renderDirective(kind, raw) {
       if (!src) return '';
       return `<figure class="x-figure"><img src="${escapeHtml(src)}" alt="${escapeHtml(
         caption || ''
-      )}" loading="lazy" />${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
+      )}" loading="lazy" data-zoomable />${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
     }
     case 'badge': {
       const [text, type] = args;
@@ -171,8 +171,40 @@ export function renderMarkdown(src) {
     }
   };
 
+  /* 原生 HTML 块白名单：<details> 这类容器要原样输出，
+     否则会被 escapeHtml 转成字面文字，页面上显示成一堆标签源码 */
+  const BLOCK = /^\s*<(details|div|figure|section|table)\b([^>]*)>/i;
+  const INLINE_HTML = /^\s*<(\/?)?(summary|figcaption|br|hr|span|strong|em|code|a|img|video|iframe|p|ul|ol|li|h[1-6]|blockquote)\b[^>]*>/i;
+
   while (i < lines.length) {
     const line = lines[i];
+
+    // 原生 HTML 容器块：标签原样保留，内部内容仍按 Markdown 渲染
+    const blk = BLOCK.exec(line);
+    if (blk) {
+      flush();
+      const tag = blk[1].toLowerCase();
+      const openTag = line.trim();
+      const buf = [];
+      i++;
+      const closeRe = new RegExp('^\\s*</' + tag + '\\s*>', 'i');
+      while (i < lines.length && !closeRe.test(lines[i])) {
+        buf.push(lines[i]);
+        i++;
+      }
+      const closeTag = i < lines.length ? lines[i].trim() : '</' + tag + '>';
+      if (i < lines.length) i++;
+      out.push(openTag + '\n' + renderMarkdown(buf.join('\n')) + '\n' + closeTag);
+      continue;
+    }
+
+    // 单行原生 HTML（<summary> 等）：原样透传
+    if (INLINE_HTML.test(line) && !line.trim().startsWith('::')) {
+      flush();
+      out.push(line.trim());
+      i++;
+      continue;
+    }
 
     // 行内指令 ::xxx{...}
     const dir = DIRECTIVE.exec(line.trim());
@@ -230,11 +262,26 @@ export function renderMarkdown(src) {
       while (i < lines.length && !/^```\s*$/.test(lines[i])) buf.push(lines[i++]);
       i++;
       const code = buf.join('\n');
+      const rawLines = code.split('\n');
+      const lineCount = rawLines.length;
+      const COLLAPSE_AT = 30; // 超过这个行数默认折叠
+      const collapsible = lineCount > COLLAPSE_AT;
+      // 逐行着色，行号用 CSS counter 生成（不会被复制到剪贴板）
+      const linesHtml = rawLines
+        .map((l) => `<span class="code-line">${highlight(escapeHtml(l))}</span>`)
+        .join('');
       out.push(
-        `<div class="code-block"${lang ? ` data-lang="${escapeHtml(lang)}"` : ''}>
+        `<div class="code-block${collapsible ? ' code-collapsed' : ''}"${
+          lang ? ` data-lang="${escapeHtml(lang)}"` : ''
+        }>
   <div class="code-head"><span class="code-lang">${escapeHtml(lang || 'code')}</span>
   <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
-  <pre class="code"><code>${escapeHtml(code)}</code></pre>
+  <pre class="code" data-colored><code>${linesHtml}</code></pre>
+  ${
+    collapsible
+      ? `<button class="code-expand" type="button">展开全部 ${lineCount} 行</button>`
+      : ''
+  }
 </div>`
       );
       continue;
@@ -248,7 +295,9 @@ export function renderMarkdown(src) {
       const text = h[2].trim();
       const id = slugify(text) || `h-${headings.length}`;
       headings.push({ depth, text, id });
-      out.push(`<h${depth} id="${encodeURIComponent(id)}">${inline(text)}</h${depth}>`);
+      // 不做 encodeURIComponent：中文 id 是合法的，编码后 href="#中文" 与
+      // id="%E4%B8%AD%E6%96%87" 对不上，锚点跳转会失效
+      out.push(`<h${depth} id="${id}">${inline(text)}</h${depth}>`);
       i++;
       continue;
     }
@@ -358,9 +407,13 @@ const KEYWORDS = {
 };
 
 export function colorize(html) {
+  // data-colored 的代码块在 renderMarkdown 里已逐行着色（带行号结构），这里跳过，避免二次包裹
   return html.replace(
-    /<pre class="code"><code>([\s\S]*?)<\/code><\/pre>/g,
-    (_, code) => `<pre class="code"><code>${highlight(code)}</code></pre>`
+    /<pre class="code"([^>]*)><code>([\s\S]*?)<\/code><\/pre>/g,
+    (match, attrs, code) => {
+      if (String(attrs).includes('data-colored')) return match;
+      return `<pre class="code"${attrs}><code>${highlight(code)}</code></pre>`;
+    }
   );
 }
 

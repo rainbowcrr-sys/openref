@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="0" y="0" width="64" height="64" rx="13" ry="13" fill="#0071e3"/>
+  <g fill="#ffffff">
+    <!-- O：放大圆环，evenodd 挖空 -->
+    <path fill-rule="evenodd" d="M19.5 20.2 a11.8 11.8 0 1 0 0 23.6 a11.8 11.8 0 1 0 0 -23.6 Z
+                                 M19.5 26 a6 6 0 1 1 0 12 a6 6 0 1 1 0 -12 Z"/>
+  </g>
+  <!-- R：加粗圆头描边，竖笔 + 半圆碗 + 斜腿 -->
+  <g fill="none" stroke="#ffffff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M35.5 43 V20.5"/>
+    <path d="M35.5 20.5 H41.5 A6 6 0 0 1 41.5 32.5 H35.5"/>
+    <path d="M41.2 32.5 L49 43"/>
+  </g>
+</svg>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="https://openref.de5.net/rss/rss.xsl"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:openref="https://openref.de5.net/ns/rss/1.0">
+  <channel>
+    <title>OpenRef · KV 免费额度与写入策略</title>
+    <link>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</link>
+    <description>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Nov 2026 12:51:00 GMT</lastBuildDate>
+    <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
+    <managingEditor>rainbowcrr-sys</managingEditor>
+    <webMaster></webMaster>
+    <atom:link href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://openref.de5.net/rss/rss-icon.png</url>
+      <title>OpenRef 技术参考</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <item>
+      <title>KV 免费额度与写入策略</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</guid>
+      <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>
+      <description>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</description>
+      <category>云原生与基础设施</category>
+      <category>Cloudflare</category>
+      <category>Cloudflare</category>
+      <category>KV</category>
+      <category>缓存</category>
+      <category>免费额度</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>KV 是最终一致的键值存储：读取极快、全球可用，但写入昂贵且传播有延迟。免费计划每天 10 万次读、1000 次写、1 GB 存储。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>站点配置、开关、重定向表</li><li>渲染结果的缓存</li><li>会话、令牌等低频变更状态</li></ul>
+<p>不适合：计数器、点赞数、实时排行榜——这类写入会立刻耗尽额度。</p>
+<h2 id="最小示例">最小示例</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c">// 写入：带上 TTL，避免冷数据长期占位</span></span><span class="code-line"><span class="tok-k">await</span> env.CACHE.<span class="tok-f">put</span>(<span class="tok-s">`post:${slug}`</span>, html, { expirationTtl: <span class="tok-n">3600</span> });</span><span class="code-line"></span><span class="code-line"><span class="tok-c">// 读取：拿不到就回源重建</span></span><span class="code-line"><span class="tok-k">const</span> cached = <span class="tok-k">await</span> env.CACHE.<span class="tok-k">get</span>(<span class="tok-s">`post:${slug}`</span>);</span><span class="code-line"><span class="tok-k">if</span> (cached) <span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-f">Response</span>(cached, { headers: { <span class="tok-s">'Content-Type'</span>: <span class="tok-s">'text/html'</span> } });</span><span class="code-line"></span><span class="code-line"><span class="tok-k">const</span> html = <span class="tok-k">await</span> <span class="tok-f">render</span>(slug);</span><span class="code-line"><span class="tok-k">await</span> env.CACHE.<span class="tok-f">put</span>(<span class="tok-s">`post:${slug}`</span>, html, { expirationTtl: <span class="tok-n">3600</span> });</span><span class="code-line"><span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-f">Response</span>(html, { headers: { <span class="tok-s">'Content-Type'</span>: <span class="tok-s">'text/html'</span> } });</span></code></pre>
+  
+</div>
+<p>带过期时间的批量列举：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> list = <span class="tok-k">await</span> env.CACHE.<span class="tok-f">list</span>({ prefix: <span class="tok-s">'post:'</span>, limit: <span class="tok-n">100</span> });</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li>键名用前缀分组（<code>post:</code>、<code>user:</code>），<code>list({ prefix })</code> 才能按组枚举。</li><li><code>expirationTtl</code> 单位为秒，<code>expiration</code> 接受绝对时间戳，二选一。</li><li>写入后在全球各点生效通常需要最多 60 秒；需要强一致的场景改用 D1。</li><li>值上限 25 MB，单个键的元数据上限 1024 字节。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>写入额度远小于读取额度，<strong>不要把每个请求都变成一次写</strong>。</li><li>同一键的连续写入会互相覆盖，没有原子自增；计数改用 D1 或 Durable Objects。</li><li><code>list</code> 的结果顺序按字典序，不保证实时一致。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://openref.de5.net/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/latest/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/tags/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/rss/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/rss/rss.xml</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/programming/</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/programming/javascript/</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/cloud/</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/cloud/cloudflare/</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/frontend/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/frontend/performance/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/frontend/seo/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/official/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/official/guide/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/official/guide/rss-subscribe/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/cloud/cloudflare/d1-index/</loc><lastmod>2026-10-24</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</loc><lastmod>2026-10-22</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/</loc><lastmod>2026-10-21</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/frontend/performance/core-web-vitals/</loc><lastmod>2026-10-19</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/programming/javascript/abort-controller/</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://openref.de5.net/contribute/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://openref.de5.net/contribute/agreement/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://openref.de5.net/privacy/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://openref.de5.net/legal/copyright/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://openref.de5.net/contribute/authors/</loc><lastmod>2026-10-28</lastmod></url>
+</urlset>

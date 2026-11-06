@@ -12,9 +12,15 @@ import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatter, renderMarkdown, colorize, escapeHtml } from './src/lib/md.mjs';
-import { layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml } from './src/lib/html.mjs';
-import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME, LANG } from './src/config/site.mjs';
+import { layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml, badgeHtml, rssIconHtml } from './src/lib/html.mjs';
+import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME, LANG, REPO, REPO_BRANCH, CONTENT_DIR } from './src/config/site.mjs';
 import { taxonomy, getCategory, getSub } from './src/data/taxonomy.mjs';
+import { feedListMarkdown, tagSlug, generateRss } from './scripts/gen-rss.mjs';
+
+/* CJK 字符范围：常用汉字 + 扩展汉字 + 兼容汉字 + 日文假名。
+   统一成常量，避免多处正则写法不一致导致统计偏差。 */
+const CJK_RE = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u30ff]/g;
+
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DOCS = path.join(ROOT, 'src/content/docs');
@@ -67,12 +73,23 @@ function autoDescription(body, fallback = '') {
   return fallback;
 }
 
+/* 《使用 RSS 来订阅 OpenRef》里有一行 <!-- FEED_LIST -->，
+   build 时替换成自动生成的五层地址清单，新增文章永不漏。 */
+const FEED_LIST_MD = feedListMarkdown({ DOCS, SITE, taxonomy, tagSlugFn: tagSlug });
+
 const posts = walk(DOCS)
   .map(({ file, id }) => {
     const raw = fs.readFileSync(file, 'utf8');
     const { data, body } = parseFrontmatter(raw);
     if (data.draft === true) return null;
-    const { html, headings, text } = renderMarkdown(body);
+    const author = String(data.author ?? '').trim();
+    /* 留空或 rainbowcrr-sys 都算官方；写了别的名字就是投稿 */
+    const isOfficial = author === '' || author === 'rainbowcrr-sys';
+    if (!data.pubDate) console.warn(`[build] 缺 pubDate：${id}，本次用今天日期（${today()}）`);
+    const bodyResolved = body.includes('<!-- FEED_LIST -->')
+      ? body.replace('<!-- FEED_LIST -->', FEED_LIST_MD)
+      : body;
+    const { html, headings, text } = renderMarkdown(bodyResolved);
 
     const parts = id.split('/');
     const categoryId = data.category ?? parts[0] ?? 'uncategorized';
@@ -94,6 +111,8 @@ const posts = walk(DOCS)
       title: String(data.title ?? parts[parts.length - 1]),
       description: String(data.description ?? autoDescription(body, '')),
       tags: Array.isArray(data.tags) ? data.tags : [],
+      author,
+      isOfficial,
       pubDate,
       updated,
       iso: fmtDate(pubDate),
@@ -160,9 +179,9 @@ function relatedOf(post, limit = 4) {
 
 /** 中文按字计、英文按词计 */
 function countWords(text) {
-  const cjk = (String(text).match(/[\u4e00-\u9fa5\u3040-\u30ff]/g) || []).length;
-  const en = (String(text).replace(/[\u4e00-\u9fa5\u3040-\u30ff]/g, ' ').match(/[A-Za-z][\w'-]*/g) || [])
-    .length;
+  const str = String(text);
+  const cjk = (str.match(CJK_RE) || []).length;
+  const en = (str.replace(CJK_RE, ' ').match(/[A-Za-z][\w'-]*/g) || []).length;
   return cjk + en;
 }
 
@@ -208,6 +227,19 @@ fs.mkdirSync(DIST, { recursive: true });
 const groups = grouped();
 const tags = allTags();
 
+/* 首页统计：总字数与距今天数 */
+const totalWords = posts.reduce((n, p) => n + p.words, 0);
+const totalWordsK = totalWords >= 10000 ? `${(totalWords / 10000).toFixed(1)} 万字` : `${totalWords} 字`;
+const daysAgo = (() => {
+  if (!posts.length) return '—';
+  const d = Math.floor((Date.now() - posts[0].pubDate.valueOf()) / 86400000);
+  if (d <= 0) return '今天';
+  if (d === 1) return '1 天前';
+  if (d < 30) return `${d} 天前`;
+  if (d < 365) return `${Math.floor(d / 30)} 个月前`;
+  return `${Math.floor(d / 365)} 年前`;
+})();
+
 /* ---- 首页 ---- */
 {
   const recent = posts.slice(0, 6);
@@ -219,6 +251,15 @@ const tags = allTags();
     <form class="hero-search" action="/search/" method="get" role="search">
       <input class="search-box" type="search" name="q" placeholder="搜索主题、接口、报错信息…" aria-label="搜索文章" />
     </form>
+    <div class="stat-row">
+      <div class="stat-item"><div class="stat-num">${posts.length}</div><div class="stat-label">条目</div></div>
+      <div class="stat-item"><div class="stat-num">${groups.filter((g) => g.total > 0).length}</div><div class="stat-label">大类</div></div>
+      <div class="stat-item"><div class="stat-num">${groups.reduce((n, g) => n + g.subs.length, 0)}</div><div class="stat-label">子类</div></div>
+      <div class="stat-item"><div class="stat-num">${tags.length}</div><div class="stat-label">标签</div></div>
+      <div class="stat-item"><div class="stat-num">${totalWordsK}</div><div class="stat-label">总字数</div></div>
+      <div class="stat-item"><div class="stat-num">${posts.length ? posts[0].date : '—'}</div><div class="stat-label">最后更新</div></div>
+      <div class="stat-item"><div class="stat-num">${daysAgo}</div><div class="stat-label">更新于</div></div>
+    </div>
   </div>
 </section>
 
@@ -351,10 +392,7 @@ for (const p of posts) {
   const related = relatedOf(p);
   const { prev, next } = neighborsOf(p, posts);
   const url = new URL(p.url, SITE).href;
-  const ogPath = fs.existsSync(path.join(ROOT, 'public/og', `${p.slug}.png`))
-    ? `/og/${p.slug}.png`
-    : `/og/${p.slug}.svg`;
-
+  /* 全站 og:image 统一指向 assets/icons/og-image.png（程序绘制，1200×630） */
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -381,27 +419,60 @@ for (const p of posts) {
   ];
 
   const toc = p.headings.length > 1
-    ? `<aside class="toc"><div class="toc-title">本页内容</div><ul>${p.headings
-        .map((h) => `<li class="${h.depth === 3 ? 'h3' : ''}"><a href="#${encodeURIComponent(h.id)}">${escapeHtml(h.text)}</a></li>`)
+    ? `<aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul>${p.headings
+        .map((h) => `<li class="${h.depth === 3 ? 'h3' : ''}"><a href="#${escapeHtml(h.id)}">${escapeHtml(h.text)}</a></li>`)
         .join('')}</ul></aside>`
     : '';
+
+  /* 手机端目录：同一个目录内容，折叠面板形式（<860px 显示，桌面隐藏） */
+  const tocMobile = p.headings.length > 1
+    ? `<nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">${p.headings.length} 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list">${p.headings
+    .map((h) => `<li class="${h.depth === 3 ? 'h3' : ''}"><a href="#${escapeHtml(h.id)}">${escapeHtml(h.text)}</a></li>`)
+    .join('')}</ul>
+</nav>`
+    : '';
+
+  /* 「编辑此页」：直接跳到 GitHub 上这篇源文件的编辑界面 */
+  const editUrl = `${REPO}/edit/${REPO_BRANCH}/${CONTENT_DIR}/${p.id}.md`;
+  const editBtn = `<a class="edit-btn" href="${editUrl}" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>`;
 
   const body = `
 <article class="article">
   <div class="wrap">
     ${crumbsHtml(crumbs)}
     <header class="article-header">
-      <h1>${escapeHtml(p.title)}</h1>
+      <div class="title-row">
+        <h1>${escapeHtml(p.title)}${badgeHtml(p)}</h1>
+        <div class="title-actions">
+          ${editBtn}
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
       <p class="lede">${escapeHtml(p.description)}</p>
       <div class="meta">
+        ${badgeHtml(p)}
+        <time class="meta-updated" datetime="${p.updatedIso ?? p.iso}">更新于 ${p.updatedIso ?? p.date}</time>
         ${p.category ? `<a class="pill accent" href="/topics/${p.category.id}/">${escapeHtml(p.category.name)}</a>` : ''}
         ${p.subcategory ? `<a class="pill" href="/topics/${p.category.id}/${p.subId}/">${escapeHtml(p.subcategory.name)}</a>` : ''}
         <time datetime="${p.iso}">发布于 ${p.date}</time>
-        ${p.updatedIso ? `<time datetime="${p.updatedIso}">更新于 ${p.updatedIso}</time>` : ''}
         <span class="read-time">约 ${p.words} 字 · ${p.minutes} 分钟</span>
         ${p.tags.map((t) => `<span class="pill">#${escapeHtml(t)}</span>`).join('')}
       </div>
     </header>
+    ${tocMobile}
     <div class="with-toc">
       <div class="prose">${p.html}</div>
       ${toc}
@@ -413,6 +484,18 @@ for (const p of posts) {
             .join('')}</ul></section>`
         : ''
     }
+    <div class="article-subs">
+      <a href="/rss/rss.xml">${rssIconHtml(13)}订阅本站更新</a>
+      <a href="${p.url}rss.xml">${rssIconHtml(13)}订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="${p.id}">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
     ${prevNextHtml(prev, next)}
   </div>
 </article>`;
@@ -424,7 +507,6 @@ for (const p of posts) {
       description: p.description,
       canonical: p.url,
       ogType: 'article',
-      ogImage: ogPath,
       jsonLd,
       bodyHtml: body,
       activePath: '/docs/',
@@ -438,10 +520,10 @@ for (const p of posts) {
 <section class="section">
   <div class="wrap">
     <div class="section-head"><h1>标签</h1><p>按关键词浏览条目，共 ${tags.length} 个标签。</p></div>
-    <div class="meta mb-lg">${tags.map((t) => `<a class="pill" href="#${encodeURIComponent(t.tag)}">#${escapeHtml(t.tag)} · ${t.count}</a>`).join('')}</div>
+    <div class="meta mb-lg">${tags.map((t) => `<a class="pill" href="#tag-${escapeHtml(t.tag)}">#${escapeHtml(t.tag)} · ${t.count}</a>`).join('')}</div>
     ${tags
       .map(
-        (t) => `<div class="tag-block" id="${encodeURIComponent(t.tag)}">
+        (t) => `<div class="tag-block" id="tag-${escapeHtml(t.tag)}">
       <h2>#${escapeHtml(t.tag)}</h2>
       <ul>${posts
         .filter((p) => p.tags.includes(t.tag))
@@ -462,6 +544,15 @@ for (const p of posts) {
   <div class="wrap">
     <div class="section-head"><h1>搜索</h1><p>按关键词、接口名或报错信息检索全站条目。</p></div>
     <input class="search-box" id="q" type="search" placeholder="输入关键词，实时显示结果…" aria-label="搜索文章" autocomplete="off" />
+    <div class="hot-words">
+      <span class="hot-label">热门：</span>
+      ${tags
+        .slice()
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8)
+        .map((t) => `<button class="hot-word" type="button" data-word="${escapeHtml(t.tag)}">${escapeHtml(t.tag)}</button>`)
+        .join('')}
+    </div>
     <div id="results" class="results"></div>
     <p id="empty" class="muted-text" hidden>没有匹配的条目，换个关键词试试。</p>
   </div>
@@ -485,12 +576,112 @@ for (const p of posts) {
   const body = `
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h1>没有找到这个页面</h1><p>地址可能已变更，可以从下面的条目继续：</p></div>
-    <ul class="plain-list">${recent.map((p) => `<li><a href="${p.url}">${escapeHtml(p.title)}</a></li>`).join('')}
-      <li><a href="/topics/">浏览全部分类</a></li></ul>
+    <div class="section-head">
+      <h1>404 未找到页面</h1>
+      <p>这个地址不存在，可能已经变更或被移除了。</p>
+    </div>
+    <div class="notfound-actions">
+      <a class="btn primary" href="/">返回首页</a>
+      <a class="btn" href="/topics/">浏览全部分类</a>
+      <a class="btn" href="/search/">搜索内容</a>
+    </div>
+    ${recent.length ? `<h2 class="notfound-sub">或者看看最近的条目</h2>
+    <ul class="plain-list">${recent.map((p) => `<li><a href="${p.url}">${escapeHtml(p.title)}</a></li>`).join('')}</ul>` : ''}
   </div>
 </section>`;
-  write('404.html', layout({ title: '页面不存在', description: '请求的地址不存在。', canonical: '/404.html', bodyHtml: body, noindex: true }));
+  write('404.html', layout({ title: '404 未找到页面', description: '请求的地址不存在。', canonical: '/404.html', bodyHtml: body, noindex: true }));
+}
+
+/* ---- 独立页面（投稿 / 政策 / 法律）----
+ * 放在 src/content/pages/ 下，目录位置就是 URL：
+ *   pages/contribute/index.md        -> /contribute/
+ *   pages/contribute/agreement.md    -> /contribute/agreement/
+ *   pages/privacy/index.md           -> /privacy/
+ *   pages/legal/copyright.md         -> /legal/copyright/
+ * 这些页面不进文章列表、不进分类、不算 RSS，但会进 sitemap。
+ */
+const PAGES_DIR = path.join(ROOT, 'src/content/pages');
+const standalone = walk(PAGES_DIR)
+  .map(({ file, id }) => {
+    const raw = fs.readFileSync(file, 'utf8');
+    const { data, body } = parseFrontmatter(raw);
+    if (data.draft === true) return null;
+    const { html } = renderMarkdown(body);
+    const parts = id.split('/');
+    const slug = parts[parts.length - 1];
+    const url = slug === 'index' ? `/${parts.slice(0, -1).join('/')}/` : `/${id}/`;
+    const pubRaw = data.pubDate ? new Date(String(data.pubDate)) : null;
+    const pubValid = pubRaw && !Number.isNaN(pubRaw.valueOf());
+    const date = fmtDate(pubValid ? pubRaw : new Date(today()));
+    return {
+      id,
+      url,
+      title: String(data.title ?? slug),
+      description: String(data.description ?? autoDescription(body, '')),
+      date,
+      html: colorize(html),
+      order: Number(data.order ?? 99),
+    };
+  })
+  .filter(Boolean)
+  .sort((a, b) => a.order - b.order || a.url.localeCompare(b.url));
+
+/* 投稿人名录：从 src/data/authors.json 读取，替换页面里的 <!--AUTHORS_LIST--> 占位 */
+const authorsData = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/authors.json'), 'utf8'));
+  } catch (e) {
+    return { authors: [] };
+  }
+})();
+
+function authorsListHtml() {
+  const list = (authorsData.authors || []).filter((a) => (a.posts || []).length > 0);
+  if (list.length === 0) {
+    return `<div class="x-callout x-note"><div class="x-callout-label">暂无条目</div><div class="x-callout-body">目前还没有外部投稿人。第一条投稿发布后，在 <code>src/data/authors.json</code> 里加一条，此处会自动列出署名与条目链接。</div></div>`;
+  }
+  return `<ul class="author-list">${list
+    .map(
+      (a) => `<li class="author-item">
+      <div class="author-name">${escapeHtml(a.name)}</div>
+      <ul class="author-posts">${(a.posts || [])
+        .map(
+          (pp) =>
+            `<li><a href="${escapeHtml(pp.url)}">${escapeHtml(pp.title)}</a><time datetime="${escapeHtml(
+              pp.date
+            )}">${escapeHtml(pp.date)}</time></li>`
+        )
+        .join('')}</ul>
+    </li>`
+    )
+    .join('')}</ul>`;
+}
+
+for (const pg of standalone) {
+  const body = `
+<article class="article">
+  <div class="wrap">
+    <header class="article-header">
+      <h1>${escapeHtml(pg.title)}</h1>
+      <p class="lede">${escapeHtml(pg.description)}</p>
+      <div class="meta"><span class="read-time">生效日期 ${pg.date}</span></div>
+    </header>
+    <div class="prose">${pg.html
+      .replace('<p>%%AUTHORS_LIST%%</p>', authorsListHtml())
+      .replace('%%AUTHORS_LIST%%', authorsListHtml())}</div>
+  </div>
+</article>`;
+  write(
+    `${pg.url.replace(/^\/|\/$/g, '')}/index.html`,
+    layout({
+      title: pg.title,
+      description: pg.description,
+      canonical: pg.url,
+      ogType: 'article',
+      bodyHtml: body,
+      activePath: pg.url,
+    })
+  );
 }
 
 /* ============================================================
@@ -498,14 +689,33 @@ for (const p of posts) {
  * ========================================================== */
 fs.mkdirSync(path.join(DIST, 'assets'), { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'src/styles/global.css'), path.join(DIST, 'assets/global.css'));
-fs.copyFileSync(path.join(ROOT, 'src/assets/search.js'), path.join(DIST, 'assets/search.js'));
+for (const js of ['app.js', 'search.js', 'guard.js']) {
+  fs.copyFileSync(path.join(ROOT, 'src/assets', js), path.join(DIST, 'assets', js));
+}
+fs.copyFileSync(path.join(ROOT, 'src/assets/app.js'), path.join(DIST, 'assets/app.js'));
 
 if (fs.existsSync(path.join(ROOT, 'public'))) {
   fs.cpSync(path.join(ROOT, 'public'), DIST, { recursive: true });
 }
 
+/* ---- GitHub Pages 官方要求的文件 ---- */
+// 注意：CNAME 由 GitHub 在 Settings → Pages 里自行生成并管理，构建器不再写入，
+// 否则每次部署都会覆盖掉你在后台填的自定义域。
+// .nojekyll：跳过 Jekyll，避免 _ 开头文件被吞、Markdown 被二次渲染
+write('.nojekyll', '');
+
 /* 搜索索引 */
-const index = posts.map((p) => ({
+const index = [
+  ...standalone.map((p) => ({
+    t: p.title,
+    d: p.description,
+    u: p.url,
+    c: '站点信息',
+    s: '',
+    g: [],
+    b: p.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 1200),
+  })),
+  ...posts.map((p) => ({
   t: p.title,
   d: p.description,
   u: p.url,
@@ -513,7 +723,8 @@ const index = posts.map((p) => ({
   s: p.subcategory?.name ?? '',
   g: p.tags,
   b: p.text.slice(0, 1200),
-}));
+})),
+];
 write('search-index.json', JSON.stringify(index));
 
 /* ============================================================
@@ -574,6 +785,8 @@ const sitemapEntries = [
   { loc: '/latest/', last: latestIso },
   { loc: '/topics/', last: latestIso },
   { loc: '/tags/', last: latestIso },
+  { loc: '/rss/', last: latestIso },
+  { loc: '/rss/rss.xml', last: latestIso },
   ...groups
     .filter((g) => g.total > 0)
     .flatMap((g) => [
@@ -587,6 +800,7 @@ const sitemapEntries = [
       })),
     ]),
   ...posts.map((p) => ({ loc: p.url, last: p.updatedIso ?? p.iso })),
+  ...standalone.map((p) => ({ loc: p.url, last: p.date })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -654,50 +868,21 @@ Sitemap: ${new URL('/sitemap.xml', SITE).href}
 `
 );
 
-/* RSS —— 全站 */
-function feedXml(list, feedTitle, feedDesc, selfPath) {
-  const items = list
-    .map(
-      (p) => `    <item>
-      <title>${escapeHtml(p.title)}</title>
-      <link>${new URL(p.url, SITE).href}</link>
-      <guid isPermaLink="true">${new URL(p.url, SITE).href}</guid>
-      <pubDate>${p.pubDate.toUTCString()}</pubDate>
-      <description>${escapeHtml(p.description)}</description>
-      ${p.category ? `<category>${escapeHtml(p.category.name)}</category>` : ''}
-      ${p.tags.map((t) => `<category>${escapeHtml(t)}</category>`).join('\n      ')}
-    </item>`
-    )
-    .join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>${escapeHtml(feedTitle)}</title>
-    <link>${SITE}</link>
-    <description>${escapeHtml(feedDesc)}</description>
-    <language>zh-CN</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${new URL(selfPath, SITE).href}" rel="self" type="application/rss+xml" />
-${items}
-  </channel>
-</rss>`;
-}
-
-write('rss.xml', feedXml(posts, SITE_FULLNAME, SITE_DESC, '/rss.xml'));
-
-/* RSS —— 每个分类单独一个订阅源 */
-for (const g of groups.filter((x) => x.total > 0)) {
-  const list = posts.filter((p) => p.categoryId === g.category.id);
-  write(
-    `rss/${g.category.id}.xml`,
-    feedXml(
-      list,
-      `${SITE_FULLNAME} · ${g.category.name}`,
-      `${g.category.desc} 共 ${list.length} 篇。`,
-      `/rss/${g.category.id}.xml`
-    )
-  );
-}
+/* ============================================================
+ * RSS 五层订阅 —— 全站 / 大类 / 子类 / 标签 / 单篇
+ * 具体逻辑在 scripts/gen-rss.mjs，产物直接写进 dist/。
+ * ========================================================== */
+generateRss({
+  posts,
+  groups,
+  tags,
+  taxonomy,
+  DIST,
+  SITE,
+  SITE_FULLNAME,
+  SITE_DESC,
+  DOCS,
+});
 
 /* llms.txt —— 全英文说明 + 中文条目索引（AI 用 UTF-8 读取，不会乱码） */
 const byCat = new Map();
@@ -747,11 +932,8 @@ ${p.text.slice(0, 3000)}
 `
 );
 
-/* 每篇文章自动生成 OG 图（SVG：纯文本生成，中文不会乱码） */
-for (const p of posts) {
-  if (fs.existsSync(path.join(ROOT, 'public/og', `${p.slug}.png`))) continue;
-  write(`og/${p.slug}.svg`, ogSvg(p));
-}
+/* og:image 全站统一用 public/assets/icons/og-image.png（程序绘制）。
+   旧的 per-article OG 图生成器保留在上方，暂不调用。 */
 
 /* ============================================================
  * 5. 完成 / 本地预览

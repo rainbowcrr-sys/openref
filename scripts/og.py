@@ -10,11 +10,31 @@
 不需要也可以：构建器会自动改用 SVG 版 OG 图（中文同样不乱码）。
 """
 import os
+import re
 import sys
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def site_host():
+    """从 src/config/site.mjs 读 SITE，去掉协议与结尾斜杠。
+
+    这样换域名时只需改 site.mjs，OG 图里的地址不会残留旧域名。
+    """
+    cfg = os.path.join(ROOT, "src", "config", "site.mjs")
+    try:
+        raw = open(cfg, encoding="utf-8").read()
+        m = re.search(r"export\s+const\s+SITE\s*=\s*['\"]([^'\"]+)['\"]", raw)
+        if m:
+            return m.group(1).strip().rstrip("/").replace("https://", "").replace("http://", "")
+    except Exception:
+        pass
+    return "openref.de5.net"
+
+
+HOST = site_host()
 W, H = 1200, 630
 BG = (255, 255, 255)
 FG = (29, 29, 31)
@@ -62,7 +82,7 @@ def draw_card(draw, title, subtitle, section):
         draw.text((80, y), line, font=f_desc, fill=MUTED)
         y += 44
 
-    draw.text((80, 566), "docs.openref.workers.dev", font=f_url, fill=MUTED)
+    draw.text((80, 566), HOST, font=f_url, fill=MUTED)
 
 
 def make(path, title, subtitle, section):

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>D1 索引与查询成本 · OpenRef 技术参考</title>
+<meta name="description" content="D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。" />
+<link rel="canonical" href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="D1 索引与查询成本" />
+<meta property="og:description" content="D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。" />
+<meta property="og:url" content="https://openref.de5.net/docs/cloud/cloudflare/d1-index/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="D1 索引与查询成本" />
+<meta name="twitter:description" content="D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"D1 索引与查询成本","description":"D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。","datePublished":"2026-10-24","dateModified":"2026-10-24","articleSection":"云原生与基础设施 / Cloudflare","keywords":"Cloudflare, D1, SQLite, 数据库","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/cloud/cloudflare/d1-index/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"云原生与基础设施","item":"https://openref.de5.net/topics/cloud/"},{"@type":"ListItem","position":3,"name":"Cloudflare","item":"https://openref.de5.net/topics/cloud/cloudflare/"},{"@type":"ListItem","position":4,"name":"D1 索引与查询成本","item":"https://openref.de5.net/docs/cloud/cloudflare/d1-index/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/cloud/">云原生与基础设施</a><span>/</span><a href="/topics/cloud/cloudflare/">Cloudflare</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>D1 索引与查询成本<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/cloud/cloudflare/d1-index.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-10-24">更新于 2026-10-24</time>
+        <a class="pill accent" href="/topics/cloud/">云原生与基础设施</a>
+        <a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a>
+        <time datetime="2026-10-24">发布于 2026-10-24</time>
+        <span class="read-time">约 391 字 · 1 分钟</span>
+        <span class="pill">#Cloudflare</span><span class="pill">#D1</span><span class="pill">#SQLite</span><span class="pill">#数据库</span>
+      </div>
+    </header>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">5 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><p>D1 是运行在 Cloudflare 边缘的 SQLite 数据库。它的计费单位是<strong>扫描行数</strong>：一条 <code>SELECT</code> 实际读取了多少行，就计多少行。没有索引的查询会全表扫描，1 万行的表查一次即计 1 万行。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>文章、用户、配置等结构化数据</li><li>读多写少、单表规模在百万行以内</li><li>需要 SQL 语义但不想维护数据库实例</li></ul>
+<p>不适合：高频写入（如计数器、实时日志），写入额度比读取额度小两个数量级。</p>
+<h2 id="最小示例">最小示例</h2>
+<p>建表同时建索引：</p>
+<div class="code-block" data-lang="sql">
+  <div class="code-head"><span class="code-lang">sql</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">CREATE</span> <span class="tok-k">TABLE</span> posts (</span><span class="code-line">  id INTEGER <span class="tok-k">PRIMARY</span> <span class="tok-k">KEY</span>,</span><span class="code-line">  slug TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span>,</span><span class="code-line">  status TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span>,</span><span class="code-line">  pub_date TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span></span><span class="code-line">);</span><span class="code-line"><span class="tok-k">CREATE</span> <span class="tok-k">INDEX</span> idx_posts_status_date <span class="tok-k">ON</span> <span class="tok-f">posts</span>(status, pub_date);</span></code></pre>
+  
+</div>
+<p>查询必须使用参数化语句：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> { results } = <span class="tok-k">await</span> env.DB.<span class="tok-f">prepare</span>(</span><span class="code-line">  <span class="tok-s">'SELECT id, slug FROM posts WHERE status = ? ORDER BY pub_date DESC LIMIT 20'</span></span><span class="code-line">).<span class="tok-f">bind</span>(<span class="tok-s">'published'</span>).<span class="tok-f">all</span>();</span></code></pre>
+  
+</div>
+<p>批量写入用 <code>batch</code>，只计一次往返：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">await</span> env.DB.<span class="tok-f">batch</span>([</span><span class="code-line">  env.DB.<span class="tok-f">prepare</span>(<span class="tok-s">'INSERT INTO posts(slug, status, pub_date) VALUES(?, ?, ?)'</span>)</span><span class="code-line">    .<span class="tok-f">bind</span>(<span class="tok-s">'a'</span>, <span class="tok-s">'published'</span>, <span class="tok-s">'2026-10-24'</span>),</span><span class="code-line">  env.DB.<span class="tok-f">prepare</span>(<span class="tok-s">'UPDATE posts SET status = ? WHERE slug = ?'</span>)</span><span class="code-line">    .<span class="tok-f">bind</span>(<span class="tok-s">'draft'</span>, <span class="tok-s">'b'</span>),</span><span class="code-line">]);</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li>索引要覆盖 <code>WHERE</code> 与 <code>ORDER BY</code> 用到的列；<code>idx_posts_status_date</code> 同时满足筛选和排序，避免额外排序扫描。</li><li>用 <code>EXPLAIN QUERY PLAN</code> 确认是否走索引，输出中出现 <code>SCAN</code> 即表示全表扫描。</li><li><code>bind()</code> 不只是防注入，也能让语句被复用，减少解析开销。</li><li>单行查询用 <code>.first('column')</code>，避免返回整行再用 JS 拆字段。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>免费计划额度：5 GB 总存储，每天 500 万行读、10 万行写。额度按账户统计，非按库。</li><li>单条查询返回大小有限制，不要用 <code>SELECT *</code> 拉大字段。</li><li>数据库跟随区域部署，跨境访问延迟会上升。</li><li>没有连接概念，每次 <code>prepare</code> 都是一次独立执行；事务用 <code>batch</code> 或 <code>withSession</code>。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+    <section class="related"><h2>相关条目</h2><ul><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a><span>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</span></li><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a><span>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</span></li></ul></section>
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/cloud/cloudflare/d1-index/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="cloud/cloudflare/d1-index">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    <nav class="prev-next" aria-label="上下篇">
+  <a class="pn-item" href="/docs/cloud/cloudflare/kv-free-limits/">
+    <span class="pn-label">上一篇</span>
+    <span class="pn-title">KV 免费额度与写入策略</span>
+  </a>
+  <a class="pn-item" href="/docs/cloud/cloudflare/workers-static-assets/">
+    <span class="pn-label">下一篇</span>
+    <span class="pn-title">用 Workers 静态资源托管站点</span>
+  </a>
+</nav>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>投稿 · OpenRef 技术参考</title>
+<meta name="description" content="OpenRef 接受技术条目投稿。本页说明投稿范围、格式要求与提交方式，所有稿件通过邮件提交。" />
+<link rel="canonical" href="https://openref.de5.net/contribute/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="投稿" />
+<meta property="og:description" content="OpenRef 接受技术条目投稿。本页说明投稿范围、格式要求与提交方式，所有稿件通过邮件提交。" />
+<meta property="og:url" content="https://openref.de5.net/contribute/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="投稿" />
+<meta name="twitter:description" content="OpenRef 接受技术条目投稿。本页说明投稿范围、格式要求与提交方式，所有稿件通过邮件提交。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/" aria-current="page">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <header class="article-header">
+      <h1>投稿</h1>
+      <p class="lede">OpenRef 接受技术条目投稿。本页说明投稿范围、格式要求与提交方式，所有稿件通过邮件提交。</p>
+      <div class="meta"><span class="read-time">生效日期 2026-10-28</span></div>
+    </header>
+    <div class="prose"><p>OpenRef 是一份开放的技术参考手册，按主题分组、条目式写作。如果你写过某件具体的事、踩过某个具体的坑，欢迎把它写成一个条目投给我们。</p>
+<details class="fold-desktop" open>
+[object Object]
+</details>
+<h2 id="投稿前需要准备">投稿前需要准备</h2>
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>说明</th><th>必填</th></tr></thead><tbody><tr><td>主题分类</td><td>属于哪个大类/子类，如&quot;云原生 / Cloudflare&quot;</td><td>是</td></tr><tr><td>标题</td><td>一句话说清解决什么问题</td><td>是</td></tr><tr><td>正文</td><td>Markdown 格式，或直接提交 <code>.md</code> 文件</td><td>是</td></tr><tr><td>署名</td><td>笔名、真名或&quot;匿名&quot;</td><td>是</td></tr><tr><td>参考链接</td><td>官方文档、出处</td><td>否</td></tr></tbody></table></div>
+<div class="x-callout x-warn"><div class="x-callout-label">提交方式</div><div class="x-callout-body"><p><strong>本页面不提供在线表单。</strong> 所有稿件必须通过邮件提交，以确保内容安全与版权可追溯。</p></div></div>
+<h2 id="提交步骤">提交步骤</h2>
+<ol><li>打开你的邮箱，新建一封邮件</li><li><strong>收件人</strong>填：<code>submit@openref.de5.net</code></li><li><strong>邮件主题</strong>写：<code>[投稿] 你的文章标题</code></li><li><strong>邮件正文</strong>按下面模板填写：</li></ol>
+<div class="code-block">
+  <div class="code-head"><span class="code-lang">code</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">主题分类：云原生 / Cloudflare</span><span class="code-line">署名：你的名字（或<span class="tok-s">&quot;匿名&quot;</span>）</span><span class="code-line">参考链接：（可选）</span><span class="code-line"></span><span class="code-line"><span class="tok-c">--- 正文开始 ---</span></span><span class="code-line"></span><span class="code-line">一句话定义：R2 是……</span><span class="code-line"></span><span class="code-line"><span class="tok-c">## 适用场景</span></span><span class="code-line">...</span></code></pre>
+  
+</div>
+<ol><li>如果正文较长，也可以<strong>把 <code>.md</code> 文件作为附件</strong>上传，正文里只写分类和署名</li><li>发送</li></ol>
+<h2 id="审核与通知">审核与通知</h2>
+<ul><li>审核周期通常为 <strong>1 至 7 个工作日</strong></li><li>通过后稿件会以你的署名发布，地址形如 <code>https://openref.de5.net/docs/.../</code></li><li>你会收到一封来自 <code>no-reply@openref.de5.net</code> 的通知邮件，内含稿件链接</li></ul>
+<div class="x-callout x-warn"><div class="x-callout-label">该邮箱只发不收</div><div class="x-callout-body"><p>通知邮件由 <code>no-reply@openref.de5.net</code> 发出，<strong>请勿回复</strong>，回复不会有任何回应。</p></div></div>
+<h2 id="需要改动怎么办">需要改动怎么办</h2>
+<p>稿件发布后如需修改、补充或撤稿，发邮件到 <code>submit@openref.de5.net</code>，主题写 <code>[修改] 原标题</code>，说明要改什么。</p>
+<h2 id="相关约定">相关约定</h2>
+<p>提交稿件即表示你已阅读并同意以下条款：</p>
+<ul><li><a href="/contribute/agreement/">投稿协议</a></li><li><a href="/privacy/">隐私政策</a></li><li><a href="/legal/copyright/">版权与免责</a></li></ul></div>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用 Workers 静态资源托管站点 · OpenRef 技术参考</title>
+<meta name="description" content="不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。" />
+<link rel="canonical" href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="用 Workers 静态资源托管站点" />
+<meta property="og:description" content="不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。" />
+<meta property="og:url" content="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="用 Workers 静态资源托管站点" />
+<meta name="twitter:description" content="不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"用 Workers 静态资源托管站点","description":"不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 <name>.<subdomain>.workers.dev 地址。","datePublished":"2026-10-26","dateModified":"2026-10-26","articleSection":"云原生与基础设施 / Cloudflare","keywords":"Cloudflare, Workers, 静态托管","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"云原生与基础设施","item":"https://openref.de5.net/topics/cloud/"},{"@type":"ListItem","position":3,"name":"Cloudflare","item":"https://openref.de5.net/topics/cloud/cloudflare/"},{"@type":"ListItem","position":4,"name":"用 Workers 静态资源托管站点","item":"https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/cloud/">云原生与基础设施</a><span>/</span><a href="/topics/cloud/cloudflare/">Cloudflare</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>用 Workers 静态资源托管站点<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/cloud/cloudflare/workers-static-assets.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-10-26">更新于 2026-10-26</time>
+        <a class="pill accent" href="/topics/cloud/">云原生与基础设施</a>
+        <a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a>
+        <time datetime="2026-10-26">发布于 2026-10-26</time>
+        <span class="read-time">约 380 字 · 1 分钟</span>
+        <span class="pill">#Cloudflare</span><span class="pill">#Workers</span><span class="pill">#静态托管</span>
+      </div>
+    </header>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">5 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><p>Workers 的静态资源（Static Assets）让单个 Worker 同时具备「文件托管」和「可编程」两种能力：命中路径时直接返回磁盘上的文件，未命中时交给 Worker 代码处理。一个项目即可发布整站，无需另建 Pages。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>想把静态站点发布到 <code>&lt;name&gt;.&lt;subdomain&gt;.workers.dev</code> 子域</li><li>静态页面为主，同时需要少量动态接口</li><li>不想维护 Pages 与 Worker 两个项目</li></ul>
+<p>不适合：需要按分支预览、需要 Pages 内置构建流水线的场景。</p>
+<h2 id="最小示例">最小示例</h2>
+<p>配置 <code>wrangler.jsonc</code>：</p>
+<div class="code-block" data-lang="jsonc">
+  <div class="code-head"><span class="code-lang">jsonc</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">{</span><span class="code-line">  <span class="tok-s">&quot;name&quot;</span>: <span class="tok-s">&quot;docs&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;compatibility_date&quot;</span>: <span class="tok-s">&quot;2025-09-25&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;assets&quot;</span>: {</span><span class="code-line">    <span class="tok-s">&quot;directory&quot;</span>: <span class="tok-s">&quot;./dist&quot;</span>,</span><span class="code-line">    <span class="tok-s">&quot;not_found_handling&quot;</span>: <span class="tok-s">&quot;404-page&quot;</span></span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>发布：</p>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">npx wrangler deploy</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>name</code> 决定最终地址。账户子域为 <code>openref.workers.dev</code> 时，<code>&quot;name&quot;: &quot;docs&quot;</code> 得到 <code>https://docs.openref.workers.dev</code>。</li><li><code>assets.directory</code> 指向构建产物目录，Astro 默认为 <code>dist/</code>。</li><li><code>not_found_handling</code> 有两种取值：<code>&quot;404-page&quot;</code> 返回目录内已生成的 <code>404.html</code>；<code>&quot;single-page-application&quot;</code> 把所有未命中路径回退到 <code>index.html</code>，用于前端路由。</li><li>只配 <code>assets</code> 而不配 <code>main</code>，Wrangler 会部署为纯静态站点；之后需要接口时再加 <code>main</code>，静态文件仍然优先命中。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>单个 Worker 打包后上限 10 MB（免费计划，压缩后）；静态资源不计入，但走同一份配置。</li><li><code>*.workers.dev</code> 子域由 Cloudflare 统一提供，策略可能调整；正式站点建议绑定自有域名，在「设置 → 触发器 → 自定义域」中添加。</li><li>绑定自有域要求该域名的 DNS 托管在 Cloudflare。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a></li><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a></li></ul></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+    <section class="related"><h2>相关条目</h2><ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a><span>D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。</span></li><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a><span>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</span></li></ul></section>
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/cloud/cloudflare/workers-static-assets/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="cloud/cloudflare/workers-static-assets">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    <nav class="prev-next" aria-label="上下篇">
+  <a class="pn-item" href="/docs/cloud/cloudflare/d1-index/">
+    <span class="pn-label">上一篇</span>
+    <span class="pn-title">D1 索引与查询成本</span>
+  </a>
+  <span class="pn-item empty"></span>
+</nav>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

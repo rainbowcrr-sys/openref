@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用 RSS 来订阅 OpenRef · OpenRef 技术参考</title>
+<meta name="description" content="OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。" />
+<link rel="canonical" href="https://openref.de5.net/docs/official/guide/rss-subscribe/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="使用 RSS 来订阅 OpenRef" />
+<meta property="og:description" content="OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。" />
+<meta property="og:url" content="https://openref.de5.net/docs/official/guide/rss-subscribe/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="使用 RSS 来订阅 OpenRef" />
+<meta name="twitter:description" content="OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"使用 RSS 来订阅 OpenRef","description":"OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。","datePublished":"2026-11-06","dateModified":"2026-11-06","articleSection":"官方 / 指南","keywords":"RSS, 订阅, OpenRef","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/official/guide/rss-subscribe/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"官方","item":"https://openref.de5.net/topics/official/"},{"@type":"ListItem","position":3,"name":"指南","item":"https://openref.de5.net/topics/official/guide/"},{"@type":"ListItem","position":4,"name":"使用 RSS 来订阅 OpenRef","item":"https://openref.de5.net/docs/official/guide/rss-subscribe/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/official/">官方</a><span>/</span><a href="/topics/official/guide/">指南</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>使用 RSS 来订阅 OpenRef<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/official/guide/rss-subscribe.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-11-06">更新于 2026-11-06</time>
+        <a class="pill accent" href="/topics/official/">官方</a>
+        <a class="pill" href="/topics/official/guide/">指南</a>
+        <time datetime="2026-11-06">发布于 2026-11-06</time>
+        <span class="read-time">约 1493 字 · 4 分钟</span>
+        <span class="pill">#RSS</span><span class="pill">#订阅</span><span class="pill">#OpenRef</span>
+      </div>
+    </header>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">12 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#网页feedly--inoreader">网页：Feedly / Inoreader</a></li><li class=""><a href="#手机netnewswire--inoreader">手机：NetNewsWire / Inoreader</a></li><li class=""><a href="#桌面rss-guard">桌面：RSS Guard</a></li><li class=""><a href="#自建freshrss">自建：FreshRSS</a></li><li class=""><a href="#地址清单">地址清单</a></li><li class="h3"><a href="#全站">全站</a></li><li class="h3"><a href="#opml-一键导入">OPML 一键导入</a></li><li class="h3"><a href="#按大类">按大类</a></li><li class="h3"><a href="#按子类">按子类</a></li><li class="h3"><a href="#按标签">按标签</a></li><li class="h3"><a href="#按单篇每篇一个一篇不漏">按单篇（每篇一个，一篇不漏）</a></li><li class=""><a href="#几个常见问题">几个常见问题</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><p>RSS 是一种很老的协议，但到今天仍然是「不打扰地看更新」最好的方式：没有算法推荐、没有推送权限、没有账号绑定。你把一个地址交给阅读器，之后有新文章它自己去取。</p>
+<p>OpenRef 的订阅分成五层，粒度从粗到细：</p>
+<ul><li><strong>全站</strong> —— 所有文章，最常用</li><li><strong>大类</strong> —— 只收某个主题，例如「云原生与基础设施」</li><li><strong>子类</strong> —— 更细一层，例如 Cloudflare、SEO</li><li><strong>标签</strong> —— 跨分类按关键词聚合，例如 <code>#D1</code></li><li><strong>单篇</strong> —— 只订这一篇，文章有修改时你会收到更新</li></ul>
+<p>「自选大类或子类」不是让你勾选生成一份专属源，而是把现成的地址列出来，你自己复制想要的那几条。静态站不会拼装个人化 feed，这样反而更稳：地址是死的，永远有效。</p>
+<h2 id="网页feedly--inoreader">网页：Feedly / Inoreader</h2>
+<p>适合在电脑浏览器里看，换设备自动同步。</p>
+<ol><li>打开 feedly.com 或 inoreader.com，注册并登录</li><li>找到 <strong>Add Content / 添加订阅</strong>（Feedly 是左侧 <code>+ Follow</code>，Inoreader 是左上角 <code>+</code>）</li><li>粘贴下面清单里的地址，点 <strong>Follow / 订阅</strong></li></ol>
+<p>想一次导入全部五层，用 OPML：阅读器里找 <strong>Import OPML</strong>，上传 <code>opml.xml</code>，所有地址会按「全站 / 大类 / 子类 / 标签 / 单篇」分好组。</p>
+<h2 id="手机netnewswire--inoreader">手机：NetNewsWire / Inoreader</h2>
+<p>适合通勤时刷。NetNewsWire 是 iOS/macOS 上的免费开源阅读器；Inoreader 有 iOS 和安卓 App。</p>
+<ol><li>在 App Store / 应用商店装好 App，登录（NetNewsWire 可以不登录直接用）</li><li>点 <strong>+</strong> → <strong>Add Feed / 添加订阅</strong></li><li>粘贴地址 → 确认</li></ol>
+<p>iOS 上也可以直接在 Safari 里点页面上的订阅图标，系统会提示用哪个阅读器打开。安卓同理，取决于你装了哪些支持 RSS 的 App。</p>
+<h2 id="桌面rss-guard">桌面：RSS Guard</h2>
+<p>Windows / macOS / Linux 都能装，纯本地，不依赖任何账号。</p>
+<ol><li>打开 RSS Guard，菜单 <strong>Feeds → Add new feed</strong></li><li>粘贴地址，起个名字，选好归到哪个文件夹</li><li>点 <strong>OK</strong>，之后按 F5 或设定间隔自动拉取</li></ol>
+<p>桌面客户端同样支持 <strong>Import OPML</strong>：Feeds → Import/Export → Import feeds from OPML 2.0。</p>
+<h2 id="自建freshrss">自建：FreshRSS</h2>
+<p>想把订阅完全握在自己手里，用 FreshRSS（PHP，可跑在 NAS / 小主机上）。</p>
+<ol><li>按官方文档部署好 FreshRSS 并登录</li><li>左侧 <strong>+ 添加信息源</strong>，粘贴地址</li><li>保存后放进对应分类目录，配置好自动更新周期</li></ol>
+<p>导入 OPML：设置 → 导入/导出 → 选择 <code>opml.xml</code> 上传。之后手机可以用支持 Fever / GReader API 的 App 连自己的服务器。</p>
+<h2 id="地址清单">地址清单</h2>
+<p>下面这份清单由构建脚本自动生成，每次新增文章都会同步更新，不会漏。地址都指向本站，直接复制即可。</p>
+<h3 id="全站">全站</h3>
+<ul><li><strong>全站订阅（最常用）</strong>　<code>https://openref.de5.net/rss/rss.xml</code></li></ul>
+<ul><li><strong>全站备用地址</strong>　<code>https://openref.de5.net/rss/feed.xml</code></li></ul>
+<h3 id="opml-一键导入">OPML 一键导入</h3>
+<ul><li><strong>全部订阅地址清单</strong>　<code>https://openref.de5.net/rss/opml.xml</code></li></ul>
+<h3 id="按大类">按大类</h3>
+<ul><li><strong>编程</strong>　<code>https://openref.de5.net/rss/topics/programming/rss.xml</code></li><li><strong>云原生与基础设施</strong>　<code>https://openref.de5.net/rss/topics/cloud/rss.xml</code></li><li><strong>前端工程</strong>　<code>https://openref.de5.net/rss/topics/frontend/rss.xml</code></li><li><strong>官方</strong>　<code>https://openref.de5.net/rss/topics/official/rss.xml</code></li></ul>
+<h3 id="按子类">按子类</h3>
+<ul><li><strong>编程 / JavaScript / TypeScript</strong>　<code>https://openref.de5.net/rss/topics/programming/javascript/rss.xml</code></li><li><strong>云原生与基础设施 / Cloudflare</strong>　<code>https://openref.de5.net/rss/topics/cloud/cloudflare/rss.xml</code></li><li><strong>前端工程 / 性能优化</strong>　<code>https://openref.de5.net/rss/topics/frontend/performance/rss.xml</code></li><li><strong>前端工程 / SEO</strong>　<code>https://openref.de5.net/rss/topics/frontend/seo/rss.xml</code></li><li><strong>官方 / 指南</strong>　<code>https://openref.de5.net/rss/topics/official/guide/rss.xml</code></li></ul>
+<h3 id="按标签">按标签</h3>
+<ul><li><strong>#CLS</strong>　<code>https://openref.de5.net/rss/tags/cls/rss.xml</code></li><li><strong>#Cloudflare</strong>　<code>https://openref.de5.net/rss/tags/cloudflare/rss.xml</code></li><li><strong>#D1</strong>　<code>https://openref.de5.net/rss/tags/d1/rss.xml</code></li><li><strong>#INP</strong>　<code>https://openref.de5.net/rss/tags/inp/rss.xml</code></li><li><strong>#JavaScript</strong>　<code>https://openref.de5.net/rss/tags/javascript/rss.xml</code></li><li><strong>#KV</strong>　<code>https://openref.de5.net/rss/tags/kv/rss.xml</code></li><li><strong>#LCP</strong>　<code>https://openref.de5.net/rss/tags/lcp/rss.xml</code></li><li><strong>#OpenRef</strong>　<code>https://openref.de5.net/rss/tags/openref/rss.xml</code></li><li><strong>#RSS</strong>　<code>https://openref.de5.net/rss/tags/rss/rss.xml</code></li><li><strong>#SEO</strong>　<code>https://openref.de5.net/rss/tags/seo/rss.xml</code></li><li><strong>#SQLite</strong>　<code>https://openref.de5.net/rss/tags/sqlite/rss.xml</code></li><li><strong>#Workers</strong>　<code>https://openref.de5.net/rss/tags/workers/rss.xml</code></li><li><strong>#fetch</strong>　<code>https://openref.de5.net/rss/tags/fetch/rss.xml</code></li><li><strong>#免费额度</strong>　<code>https://openref.de5.net/rss/tags/mian-fei-e-du/rss.xml</code></li><li><strong>#前端</strong>　<code>https://openref.de5.net/rss/tags/qian-duan/rss.xml</code></li><li><strong>#异步</strong>　<code>https://openref.de5.net/rss/tags/yi-bu/rss.xml</code></li><li><strong>#性能</strong>　<code>https://openref.de5.net/rss/tags/xing-neng/rss.xml</code></li><li><strong>#收录</strong>　<code>https://openref.de5.net/rss/tags/shou-lu/rss.xml</code></li><li><strong>#数据库</strong>　<code>https://openref.de5.net/rss/tags/shu-ju-ku/rss.xml</code></li><li><strong>#站点地图</strong>　<code>https://openref.de5.net/rss/tags/zhan-dian-di-tu/rss.xml</code></li><li><strong>#结构化数据</strong>　<code>https://openref.de5.net/rss/tags/jie-gou-hua-shu-ju/rss.xml</code></li><li><strong>#缓存</strong>　<code>https://openref.de5.net/rss/tags/huan-cun/rss.xml</code></li><li><strong>#订阅</strong>　<code>https://openref.de5.net/rss/tags/ding-yue/rss.xml</code></li><li><strong>#静态托管</strong>　<code>https://openref.de5.net/rss/tags/jing-tai-tuo-guan/rss.xml</code></li></ul>
+<h3 id="按单篇每篇一个一篇不漏">按单篇（每篇一个，一篇不漏）</h3>
+<ul><li><strong>D1 索引与查询成本</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/d1-index/rss.xml</code></li><li><strong>KV 免费额度与写入策略</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/rss.xml</code></li><li><strong>用 Workers 静态资源托管站点</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/rss.xml</code></li><li><strong>核心网页指标与优化顺序</strong>　<code>https://openref.de5.net/docs/frontend/performance/core-web-vitals/rss.xml</code></li><li><strong>技术 SEO 检查清单</strong>　<code>https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/rss.xml</code></li><li><strong>使用 RSS 来订阅 OpenRef</strong>　<code>https://openref.de5.net/docs/official/guide/rss-subscribe/rss.xml</code></li><li><strong>AbortController 取消请求</strong>　<code>https://openref.de5.net/docs/programming/javascript/abort-controller/rss.xml</code></li></ul>
+<blockquote>单篇订阅的规律：文章地址后面加 <code>rss.xml</code>。例如本文就是 <code>/docs/official/guide/rss-subscribe/rss.xml</code>。</blockquote>
+<h2 id="几个常见问题">几个常见问题</h2>
+<p><strong>地址能改吗？</strong> 不能随便改。文章和分类的地址是固定死的，改名会让旧订阅失效，所以文件名和路径一律用英文小写，页面上的中文只是显示名。</p>
+<p><strong>订阅后为什么没立刻看到新文章？</strong> 阅读器按自己的周期拉取，通常几分钟到一小时。想马上看，手动刷新一下。</p>
+<p><strong>单篇订阅有什么用？</strong> 比如你只关心 D1 那篇的额度说明，订阅它之后，文章一旦修订，阅读器就会把更新推给你，不用整站都订。</p>
+<p><strong>会不会重复推送？</strong> 不会。同一篇文章在五层 feed 里的唯一标识都是它的文章链接，同时订多份时阅读器会自动去重。</p></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#网页feedly--inoreader">网页：Feedly / Inoreader</a></li><li class=""><a href="#手机netnewswire--inoreader">手机：NetNewsWire / Inoreader</a></li><li class=""><a href="#桌面rss-guard">桌面：RSS Guard</a></li><li class=""><a href="#自建freshrss">自建：FreshRSS</a></li><li class=""><a href="#地址清单">地址清单</a></li><li class="h3"><a href="#全站">全站</a></li><li class="h3"><a href="#opml-一键导入">OPML 一键导入</a></li><li class="h3"><a href="#按大类">按大类</a></li><li class="h3"><a href="#按子类">按子类</a></li><li class="h3"><a href="#按标签">按标签</a></li><li class="h3"><a href="#按单篇每篇一个一篇不漏">按单篇（每篇一个，一篇不漏）</a></li><li class=""><a href="#几个常见问题">几个常见问题</a></li></ul></aside>
+    </div>
+    
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/official/guide/rss-subscribe/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="official/guide/rss-subscribe">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

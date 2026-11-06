@@ -146,4 +146,13 @@
     });
 
   input.addEventListener('input', render);
+
+  /* 热门词：点了直接填入并搜索 */
+  document.querySelectorAll('.hot-word').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      input.value = btn.dataset.word || '';
+      render();
+      input.focus();
+    });
+  });
 })();

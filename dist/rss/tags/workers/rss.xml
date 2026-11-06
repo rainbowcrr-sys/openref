@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="https://openref.de5.net/rss/rss.xsl"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:openref="https://openref.de5.net/ns/rss/1.0">
+  <channel>
+    <title>OpenRef · #Workers</title>
+    <link>https://openref.de5.net/tags/</link>
+    <description>标签 #Workers 下的全部条目，共 1 篇。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Nov 2026 12:50:57 GMT</lastBuildDate>
+    <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
+    <managingEditor>rainbowcrr-sys</managingEditor>
+    <webMaster></webMaster>
+    <atom:link href="https://openref.de5.net/rss/tags/workers/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://openref.de5.net/rss/rss-icon.png</url>
+      <title>OpenRef 技术参考</title>
+      <link>https://openref.de5.net/tags/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <item>
+      <title>用 Workers 静态资源托管站点</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</guid>
+      <pubDate>Sun, 25 Oct 2026 16:00:00 GMT</pubDate>
+      <description>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</description>
+      <category>云原生与基础设施</category>
+      <category>Cloudflare</category>
+      <category>Cloudflare</category>
+      <category>Workers</category>
+      <category>静态托管</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>Workers 的静态资源（Static Assets）让单个 Worker 同时具备「文件托管」和「可编程」两种能力：命中路径时直接返回磁盘上的文件，未命中时交给 Worker 代码处理。一个项目即可发布整站，无需另建 Pages。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>想把静态站点发布到 <code>&lt;name&gt;.&lt;subdomain&gt;.workers.dev</code> 子域</li><li>静态页面为主，同时需要少量动态接口</li><li>不想维护 Pages 与 Worker 两个项目</li></ul>
+<p>不适合：需要按分支预览、需要 Pages 内置构建流水线的场景。</p>
+<h2 id="最小示例">最小示例</h2>
+<p>配置 <code>wrangler.jsonc</code>：</p>
+<div class="code-block" data-lang="jsonc">
+  <div class="code-head"><span class="code-lang">jsonc</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">{</span><span class="code-line">  <span class="tok-s">&quot;name&quot;</span>: <span class="tok-s">&quot;docs&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;compatibility_date&quot;</span>: <span class="tok-s">&quot;2025-09-25&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;assets&quot;</span>: {</span><span class="code-line">    <span class="tok-s">&quot;directory&quot;</span>: <span class="tok-s">&quot;./dist&quot;</span>,</span><span class="code-line">    <span class="tok-s">&quot;not_found_handling&quot;</span>: <span class="tok-s">&quot;404-page&quot;</span></span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>发布：</p>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">npx wrangler deploy</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>name</code> 决定最终地址。账户子域为 <code>openref.workers.dev</code> 时，<code>&quot;name&quot;: &quot;docs&quot;</code> 得到 <code>https://docs.openref.workers.dev</code>。</li><li><code>assets.directory</code> 指向构建产物目录，Astro 默认为 <code>dist/</code>。</li><li><code>not_found_handling</code> 有两种取值：<code>&quot;404-page&quot;</code> 返回目录内已生成的 <code>404.html</code>；<code>&quot;single-page-application&quot;</code> 把所有未命中路径回退到 <code>index.html</code>，用于前端路由。</li><li>只配 <code>assets</code> 而不配 <code>main</code>，Wrangler 会部署为纯静态站点；之后需要接口时再加 <code>main</code>，静态文件仍然优先命中。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>单个 Worker 打包后上限 10 MB（免费计划，压缩后）；静态资源不计入，但走同一份配置。</li><li><code>*.workers.dev</code> 子域由 Cloudflare 统一提供，策略可能调整；正式站点建议绑定自有域名，在「设置 → 触发器 → 自定义域」中添加。</li><li>绑定自有域要求该域名的 DNS 托管在 Cloudflare。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a></li><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+  </channel>
+</rss>

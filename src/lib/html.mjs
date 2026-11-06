@@ -6,7 +6,34 @@ export const NAV = [
   { label: '文章', href: '/latest/' },
   { label: '标签', href: '/tags/' },
   { label: '搜索', href: '/search/' },
+  { label: '投稿', href: '/contribute/' },
 ];
+
+/** 全球通用官方橙 RSS 标：固定橙色，不随深浅色变化 */
+export const RSS_ICON = '/assets/icons/rss-icon.png';
+export const rssIconHtml = (size = 15) =>
+  `<img class="rss-icon" src="${RSS_ICON}" width="${size}" height="${size}" alt="" aria-hidden="true" />`;
+
+/**
+ * 官方 / 投稿徽章。author 留空或 rainbowcrr-sys = 官方，其余 = 投稿。
+ * 深色由 CSS 变量调色，打印时保留。
+ */
+export function badgeHtml(post) {
+  const official = post?.isOfficial !== false;
+  return official
+    ? '<span class="badge badge-official">OpenRef OFFICIAL</span>'
+    : '<span class="badge badge-contribution">投稿</span>';
+}
+
+/** 页脚政策链接（每个页面都显示，利于信任信号与合规） */
+export const POLICY_LINKS = [
+  { label: '投稿', href: '/contribute/' },
+  { label: '投稿协议', href: '/contribute/agreement/' },
+  { label: '隐私政策', href: '/privacy/' },
+  { label: '版权与免责', href: '/legal/copyright/' },
+];
+
+export const GITHUB_REPO = 'https://github.com/rainbowcrr-sys/openref';
 
 export function layout({
   title,
@@ -22,7 +49,8 @@ export function layout({
 }) {
   const pageTitle = fullTitle(title);
   const url = new URL(canonical, SITE).href;
-  const image = ogImage ? new URL(ogImage, SITE).href : new URL('/og-default.png', SITE).href;
+  /* 全站统一默认分享图：assets/icons/og-image.png（程序绘制，1200×630） */
+  const image = ogImage ? new URL(ogImage, SITE).href : new URL('/assets/icons/og-image.png', SITE).href;
 
   const websiteLd = {
     '@context': 'https://schema.org',
@@ -46,11 +74,14 @@ export function layout({
 <title>${escapeHtml(pageTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}" />
 <link rel="canonical" href="${url}" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 ${noindex ? '<meta name="robots" content="noindex,nofollow" />' : ''}
-<link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="/rss/rss.xml" />
 <meta property="og:site_name" content="${escapeHtml(SITE_FULLNAME)}" />
 <meta property="og:type" content="${ogType}" />
 <meta property="og:title" content="${escapeHtml(title ?? SITE_FULLNAME)}" />
@@ -68,6 +99,9 @@ ${ldList.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</
 ${extraHead}
 </head>
 <body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="site-header">
   <div class="wrap">
@@ -79,7 +113,19 @@ ${extraHead}
             activePath === l.href || activePath.startsWith(l.href) ? ' aria-current="page"' : ''
           }>${l.label}</a>`
       ).join('')}
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色"></button>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新">${rssIconHtml(14)}<span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
     </nav>
   </div>
 </header>
@@ -93,12 +139,24 @@ ${bodyHtml}
       <div class="mt">条目式技术参考 · 内容可自由引用</div>
     </div>
     <div class="right">
-      <a href="/rss.xml">RSS</a> · <a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a>
+      <div class="footer-sub">
+        <a href="/rss/rss.xml">${rssIconHtml(13)}全站 RSS</a>
+        <a href="/rss/opml.xml">${rssIconHtml(13)}OPML 一键导入全部</a>
+        <a href="/rss/">${rssIconHtml(13)}全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
       <div class="mt">© ${new Date().getFullYear()} ${escapeHtml(ORG_NAME)}</div>
     </div>
   </div>
+  <div class="wrap footer-policy">
+    ${POLICY_LINKS.map((l) => `<a href="${l.href}">${l.label}</a>`).join('<span class="sep">·</span>')}
+    <span class="sep">·</span>
+    <a href="${GITHUB_REPO}" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
 </footer>
 <script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
 </body>
 </html>
 `;
@@ -125,7 +183,7 @@ export function cardHtml(post, tax) {
         }</div>`
       : ''
   }
-  <h3><a href="${post.url}">${escapeHtml(post.title)}</a></h3>
+  <h3><a href="${post.url}">${escapeHtml(post.title)}</a>${badgeHtml(post)}</h3>
   <p>${escapeHtml(post.description)}</p>
   <div class="meta"><time datetime="${post.iso}">${post.date}</time>${(post.tags || [])
     .slice(0, 3)
@@ -137,7 +195,7 @@ export function cardHtml(post, tax) {
 export function postRowHtml(post, tax) {
   return `<li><a class="post-row" href="${post.url}">
   <div>
-    <h3>${escapeHtml(post.title)}</h3>
+    <h3>${escapeHtml(post.title)}${badgeHtml(post)}</h3>
     <p>${escapeHtml(post.description)}</p>
     ${
       tax.category
@@ -161,8 +219,9 @@ export function prevNextHtml(prev, next) {
     <span class="pn-title">${escapeHtml(p.title)}</span>
   </a>`
       : '<span class="pn-item empty"></span>';
+  /* 上一篇在左、下一篇在右：HTML 里 prev 写前面 */
   return `<nav class="prev-next" aria-label="上下篇">
-  ${item(next, '下一篇')}
   ${item(prev, '上一篇')}
+  ${item(next, '下一篇')}
 </nav>`;
 }

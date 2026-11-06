@@ -1,0 +1,72 @@
+# OpenRef - Full Reference
+
+> 直白、可检索、能直接照着做的技术参考手册。
+
+## 使用 RSS 来订阅 OpenRef
+
+URL: https://openref.de5.net/docs/official/guide/rss-subscribe/
+Section: 官方 / 指南
+Published: 2026-11-06
+
+RSS 是一种很老的协议，但到今天仍然是「不打扰地看更新」最好的方式：没有算法推荐、没有推送权限、没有账号绑定。你把一个地址交给阅读器，之后有新文章它自己去取。 OpenRef 的订阅分成五层，粒度从粗到细： 全站 —— 所有文章，最常用 大类 —— 只收某个主题，例如「云原生与基础设施」 子类 —— 更细一层，例如 Cloudflare、SEO 标签 —— 跨分类按关键词聚合，例如 #D1 单篇 —— 只订这一篇，文章有修改时你会收到更新 「自选大类或子类」不是让你勾选生成一份专属源，而是把现成的地址列出来，你自己复制想要的那几条。静态站不会拼装个人化 feed，这样反而更稳：地址是死的，永远有效。 网页：Feedly / Inoreader 适合在电脑浏览器里看，换设备自动同步。 打开 feedly.com 或 inoreader.com，注册并登录 找到 Add Content / 添加订阅 （Feedly 是左侧 + Follow ，Inoreader 是左上角 + ） 粘贴下面清单里的地址，点 Follow / 订阅 想一次导入全部五层，用 OPML：阅读器里找 Import OPML ，上传 opml.xml ，所有地址会按「全站 / 大类 / 子类 / 标签 / 单篇」分好组。 手机：NetNewsWire / Inoreader 适合通勤时刷。NetNewsWire 是 iOS/macOS 上的免费开源阅读器；Inoreader 有 iOS 和安卓 App。 在 App Store / 应用商店装好 App，登录（NetNewsWire 可以不登录直接用） 点 + → Add Feed / 添加订阅 粘贴地址 → 确认 iOS 上也可以直接在 Safari 里点页面上的订阅图标，系统会提示用哪个阅读器打开。安卓同理，取决于你装了哪些支持 RSS 的 App。 桌面：RSS Guard Windows / macOS / Linux 都能装，纯本地，不依赖任何账号。 打开 RSS Guard，菜单 Feeds → Add new feed 粘贴地址，起个名字，选好归到哪个文件夹 点 OK ，之后按 F5 或设定间隔自动拉取 桌面客户端同样支持 Import OPML ：Feeds → Import/Export → Import feeds from OPML 2.0。 自建：FreshRSS 想把订阅完全握在自己手里，用 FreshRSS（PHP，可跑在 NAS / 小主机上）。 按官方文档部署好 FreshRSS 并登录 左侧 + 添加信息源 ，粘贴地址 保存后放进对应分类目录，配置好自动更新周期 导入 OPML：设置 → 导入/导出 → 选择 opml.xml 上传。之后手机可以用支持 Fever / GReader API 的 App 连自己的服务器。 地址清单 下面这份清单由构建脚本自动生成，每次新增文章都会同步更新，不会漏。地址都指向本站，直接复制即可。 全站 全站订阅（最常用） https://openref.de5.net/rss/rss.xml 全站备用地址 https://openref.de5.net/rss/feed.xml OPML 一键导入 全部订阅地址清单 https://openref.de5.net/rss/opml.xml 按大类 编程 https://openref.de5.net/rss/topics/programming/rss.xml 云原生与基础设施 https://openref.de5.net/rss/topics/cloud/rss.xml 前端工程 https://openref.de5.net/rss/topics/frontend/rss.xml 官方 https://openref.de5.net/rss/topics/official/rss.xml 按子类 编程 / JavaScript / TypeScript https://openref.de5.net/rss/topics/programming/javascript/rss.xml 云原生与基础设施 / Cloudflare https://openref.de5.net/rss/topics/cloud/cloudflare/rss.xml 前端工程 / 性能优化 https://openref.de5.net/rss/topics/frontend/performance/rss.xml 前端工程 / SEO https://openref.de5.net/rss/topics/frontend/seo/rss.xml 官方 / 指南 https://openref.de5.net/rss/topics/official/guide/rss.xml 按标签 #CLS https://openref.de5.net/rss/tags/cls/rss.xml #Cloudflare https://openref.de5.net/rss/tags/cloudflare/rss.xml #D1 https://openref.de5.net/rss/tags/d1/rss.xml #INP https://openref.de5.net/rss/tags/inp/rss.xml #JavaScript https://openref.de5.net/rss/tags/javascript/rss.xml #KV https://openref.de5.net/rss/tags/kv/rss.xml #LCP https://openref.de5.net/rss/tags/lcp/rss.xml #OpenRef https://openref.de5.net/rss/tags/openref/rss.xml #RSS https://openref.de5.net/rss/tags/rss/rss.xml #SEO https://openref.de5.net/rss/tags/seo/rss.xml #SQLite https://openref.de5.net/rss/tags/sqlite/rss.xml #Workers https://openref.de5.net/rss/tags/workers/rss.xml #fetch https://openref.de5.net/rss/tags/fetch/rss.xml #免费额度 https://openref.de5.net/rss/tags/mian-fei-e-du/rss.xml #前端 https://openref.de5.net/rss/tags/qian-duan/rss.xml #异步 https://openref.de5.net/rss/tags/yi-bu/rss.xml #性能 https://openref.de5.net/rss/tags/xing-neng/rss.xml #收录 https://openref.de5.net/rss/tags/sho
+
+---
+
+## 用 Workers 静态资源托管站点
+
+URL: https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/
+Section: 云原生与基础设施 / Cloudflare
+Published: 2026-10-26
+
+Workers 的静态资源（Static Assets）让单个 Worker 同时具备「文件托管」和「可编程」两种能力：命中路径时直接返回磁盘上的文件，未命中时交给 Worker 代码处理。一个项目即可发布整站，无需另建 Pages。 适用场景 想把静态站点发布到 name . subdomain .workers.dev 子域 静态页面为主，同时需要少量动态接口 不想维护 Pages 与 Worker 两个项目 不适合：需要按分支预览、需要 Pages 内置构建流水线的场景。 最小示例 配置 wrangler.jsonc ： jsonc 复制 发布： bash 复制 说明 name 决定最终地址。账户子域为 openref.workers.dev 时， name : docs 得到 https://docs.openref.workers.dev 。 assets.directory 指向构建产物目录，Astro 默认为 dist/ 。 not_found_handling 有两种取值： 404-page 返回目录内已生成的 404.html ； single-page-application 把所有未命中路径回退到 index.html ，用于前端路由。 只配 assets 而不配 main ，Wrangler 会部署为纯静态站点；之后需要接口时再加 main ，静态文件仍然优先命中。 限制 单个 Worker 打包后上限 10 MB（免费计划，压缩后）；静态资源不计入，但走同一份配置。 *.workers.dev 子域由 Cloudflare 统一提供，策略可能调整；正式站点建议绑定自有域名，在「设置 → 触发器 → 自定义域」中添加。 绑定自有域要求该域名的 DNS 托管在 Cloudflare。 下一步 D1 索引与查询成本 KV 免费额度与写入策略
+
+---
+
+## D1 索引与查询成本
+
+URL: https://openref.de5.net/docs/cloud/cloudflare/d1-index/
+Section: 云原生与基础设施 / Cloudflare
+Published: 2026-10-24
+
+D1 是运行在 Cloudflare 边缘的 SQLite 数据库。它的计费单位是 扫描行数 ：一条 SELECT 实际读取了多少行，就计多少行。没有索引的查询会全表扫描，1 万行的表查一次即计 1 万行。 适用场景 文章、用户、配置等结构化数据 读多写少、单表规模在百万行以内 需要 SQL 语义但不想维护数据库实例 不适合：高频写入（如计数器、实时日志），写入额度比读取额度小两个数量级。 最小示例 建表同时建索引： sql 复制 查询必须使用参数化语句： js 复制 批量写入用 batch ，只计一次往返： js 复制 说明 索引要覆盖 WHERE 与 ORDER BY 用到的列； idx_posts_status_date 同时满足筛选和排序，避免额外排序扫描。 用 EXPLAIN QUERY PLAN 确认是否走索引，输出中出现 SCAN 即表示全表扫描。 bind() 不只是防注入，也能让语句被复用，减少解析开销。 单行查询用 .first('column') ，避免返回整行再用 JS 拆字段。 限制 免费计划额度：5 GB 总存储，每天 500 万行读、10 万行写。额度按账户统计，非按库。 单条查询返回大小有限制，不要用 SELECT * 拉大字段。 数据库跟随区域部署，跨境访问延迟会上升。 没有连接概念，每次 prepare 都是一次独立执行；事务用 batch 或 withSession 。 下一步 KV 免费额度与写入策略 用 Workers 静态资源托管站点
+
+---
+
+## KV 免费额度与写入策略
+
+URL: https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/
+Section: 云原生与基础设施 / Cloudflare
+Published: 2026-10-22
+
+KV 是最终一致的键值存储：读取极快、全球可用，但写入昂贵且传播有延迟。免费计划每天 10 万次读、1000 次写、1 GB 存储。 适用场景 站点配置、开关、重定向表 渲染结果的缓存 会话、令牌等低频变更状态 不适合：计数器、点赞数、实时排行榜——这类写入会立刻耗尽额度。 最小示例 js 复制 带过期时间的批量列举： js 复制 说明 键名用前缀分组（ post: 、 user: ）， list({ prefix }) 才能按组枚举。 expirationTtl 单位为秒， expiration 接受绝对时间戳，二选一。 写入后在全球各点生效通常需要最多 60 秒；需要强一致的场景改用 D1。 值上限 25 MB，单个键的元数据上限 1024 字节。 限制 写入额度远小于读取额度， 不要把每个请求都变成一次写 。 同一键的连续写入会互相覆盖，没有原子自增；计数改用 D1 或 Durable Objects。 list 的结果顺序按字典序，不保证实时一致。 下一步 D1 索引与查询成本 用 Workers 静态资源托管站点
+
+---
+
+## 技术 SEO 检查清单
+
+URL: https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/
+Section: 前端工程 / SEO
+Published: 2026-10-21
+
+搜索引擎收录依赖三件事：抓得到、读得懂、判得重。技术 SEO 就是围绕这三点做保证，与内容质量无关。 适用场景 新站上线前的逐项核验 页面改版后收录异常的排查 纯前端框架项目（SPA）的收录修复 最小示例 每个页面输出的元信息： html 复制 站点根目录： txt 复制 xml 复制 说明 预渲染优先 ：静态 HTML 让爬虫无需执行 JS 即可拿到正文。客户端渲染的 SPA 常出现「收录了空壳」。 canonical 必须唯一 ：同一内容存在多个 URL 时，用 canonical 指定权威版本；否则权重被分散。 description 不参与排名但影响点击率 ，每页应不同。 结构化数据 用 JSON-LD 声明文章类型与发布时间，帮助生成搜索结果摘要： html 复制 上线后主动提交 ：在 Google Search Console 与 Bing Webmaster Tools 提交站点地图；Bing 支持 IndexNow，发布新页后立即推送可显著缩短收录时间。 限制 新域名通常需要数天到数周才建立信任，提交站点地图只加速抓取，不保证收录。 预览环境（ *.pages.dev 、 *.workers.dev 的部署预览）应加 noindex ，避免与正式页重复；正式环境上线前记得移除。 站点地图只放希望收录的 URL，不要包含搜索页、标签聚合页等重复内容页。 下一步 核心网页指标与优化顺序 用 Workers 静态资源托管站点
+
+---
+
+## 核心网页指标与优化顺序
+
+URL: https://openref.de5.net/docs/frontend/performance/core-web-vitals/
+Section: 前端工程 / 性能优化
+Published: 2026-10-19
+
+核心网页指标（Core Web Vitals）是三量化用户体验的指标，按「75 百分位用户达到」为通过标准。优化前先确认是哪一个不达标，三者的成因与解法几乎不重叠。 适用场景 页面体验报告或 Lighthouse 显示指标未达标 上线前的性能验收 移动端加载或卡顿的归因分析 阈值 指标 含义 良好 需改进 LCP 最大内容绘制完成时间 ≤ 2.5 s 4 s INP 交互到下一次绘制的延迟 ≤ 200 ms 500 ms CLS 累计布局偏移 ≤ 0.1 0.25 最小示例 为图片预留空间并优先加载首屏图： html 复制 拆分长任务，避免单次执行阻塞主线程： js 复制 说明 LCP 通常由首屏图片、字体或渲染阻塞脚本决定。给 img 写死 width / height ，避免用 JS 决定尺寸。 INP 差几乎都源于主线程长任务。把大循环切片、把计算移入 Web Worker、减少事件回调里的同步布局读取。 CLS 的成因是尺寸未知的元素：无尺寸图片、动态插入的广告位、晚加载的字体导致重排。用 min-height 或 font-display: optional 规避。 字体与关键 CSS 内联，非关键 JS 用 defer ，能让 LCP 提前。 限制 指标取自真实用户数据（CrUX），本地 Lighthouse 分数不能直接代表线上结果。 单页内 LCP 元素可能变化（如轮播图），需以实际监测为准。 优化动作互相牵制：预加载过多资源会改善 LCP 但拖慢 INP。 下一步 技术 SEO 检查清单 AbortController 取消请求
+
+---
+
+## AbortController 取消请求
+
+URL: https://openref.de5.net/docs/programming/javascript/abort-controller/
+Section: 编程 / JavaScript / TypeScript
+Published: 2026-10-17
+
+AbortController 提供一个 signal ，把它传给 fetch 后，调用 controller.abort() 即可中止请求。被中止的请求会抛出一个 AbortError ，需要在 catch 中区分处理。 适用场景 请求超时控制 页面切换或组件卸载时取消未完成的请求 搜索框输入时取消上一次请求，只保留最新结果 最小示例 js 复制 Node 18+ 与主流浏览器可直接生成超时信号： js 复制 说明 abort() 可以传原因： controller.abort(new Error('页面已离开')) ，在 catch 中通过 err.cause 读取。 一个 controller 的 signal 可以传给多个 fetch ，一次 abort() 取消全部请求。 中止发生在响应体读取阶段同样有效： res.body 的流会被关闭。 已完成的请求再调用 abort() 不会产生任何效果。 限制 取消是客户端行为，服务端可能已经处理完该请求。 AbortSignal.timeout 在旧版 Safari 不可用，需要降级到手动 setTimeout 。 不要复用同一个 controller 发起下一轮请求，每次请求应新建。 下一步 核心网页指标与优化顺序 技术 SEO 检查清单
+

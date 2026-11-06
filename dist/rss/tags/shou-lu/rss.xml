@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="https://openref.de5.net/rss/rss.xsl"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:openref="https://openref.de5.net/ns/rss/1.0">
+  <channel>
+    <title>OpenRef · #收录</title>
+    <link>https://openref.de5.net/tags/</link>
+    <description>标签 #收录 下的全部条目，共 1 篇。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Nov 2026 12:50:58 GMT</lastBuildDate>
+    <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
+    <managingEditor>rainbowcrr-sys</managingEditor>
+    <webMaster></webMaster>
+    <atom:link href="https://openref.de5.net/rss/tags/shou-lu/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://openref.de5.net/rss/rss-icon.png</url>
+      <title>OpenRef 技术参考</title>
+      <link>https://openref.de5.net/tags/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <item>
+      <title>技术 SEO 检查清单</title>
+      <link>https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/</guid>
+      <pubDate>Tue, 20 Oct 2026 16:00:00 GMT</pubDate>
+      <description>让页面能被 Google 与 Bing 正常收录的最低要求：预渲染 HTML、唯一元信息、站点地图、结构化数据，以及上线后主动提交索引。按清单逐项核验即可。</description>
+      <category>前端工程</category>
+      <category>SEO</category>
+      <category>SEO</category>
+      <category>收录</category>
+      <category>站点地图</category>
+      <category>结构化数据</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>搜索引擎收录依赖三件事：抓得到、读得懂、判得重。技术 SEO 就是围绕这三点做保证，与内容质量无关。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>新站上线前的逐项核验</li><li>页面改版后收录异常的排查</li><li>纯前端框架项目（SPA）的收录修复</li></ul>
+<h2 id="最小示例">最小示例</h2>
+<p>每个页面输出的元信息：</p>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;title&gt;页面标题 · 站点名&lt;/title&gt;</span><span class="code-line">&lt;meta name=<span class="tok-s">&quot;description&quot;</span> content=<span class="tok-s">&quot;50–120 字，说明这一页解决什么问题&quot;</span> /&gt;</span><span class="code-line">&lt;link rel=<span class="tok-s">&quot;canonical&quot;</span> href=<span class="tok-s">&quot;https://example.com/docs/a/&quot;</span> /&gt;</span><span class="code-line">&lt;meta property=<span class="tok-s">&quot;og:title&quot;</span> content=<span class="tok-s">&quot;页面标题&quot;</span> /&gt;</span></code></pre>
+  
+</div>
+<p>站点根目录：</p>
+<div class="code-block" data-lang="txt">
+  <div class="code-head"><span class="code-lang">txt</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c"># robots.txt</span></span><span class="code-line">User-agent: *</span><span class="code-line">Allow: /</span><span class="code-line"></span><span class="code-line">Sitemap: https:<span class="tok-c">//example.com/sitemap-index.xml</span></span></code></pre>
+  
+</div>
+<div class="code-block" data-lang="xml">
+  <div class="code-head"><span class="code-lang">xml</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c">&lt;!-- sitemap.xml --&gt;</span></span><span class="code-line">&lt;urlset xmlns=<span class="tok-s">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span>&gt;</span><span class="code-line">  &lt;url&gt;&lt;loc&gt;https:<span class="tok-c">//example.com/docs/a/&lt;/loc&gt;&lt;/url&gt;</span></span><span class="code-line">  &lt;url&gt;&lt;loc&gt;https:<span class="tok-c">//example.com/docs/b/&lt;/loc&gt;&lt;/url&gt;</span></span><span class="code-line">&lt;/urlset&gt;</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><strong>预渲染优先</strong>：静态 HTML 让爬虫无需执行 JS 即可拿到正文。客户端渲染的 SPA 常出现「收录了空壳」。</li><li><strong>canonical 必须唯一</strong>：同一内容存在多个 URL 时，用 canonical 指定权威版本；否则权重被分散。</li><li><strong>description 不参与排名但影响点击率</strong>，每页应不同。</li><li><strong>结构化数据</strong>用 JSON-LD 声明文章类型与发布时间，帮助生成搜索结果摘要：</li></ul>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;script <span class="tok-k">type</span>=<span class="tok-s">&quot;application/ld+json&quot;</span>&gt;</span><span class="code-line">  {<span class="tok-s">&quot;@context&quot;</span>:<span class="tok-s">&quot;https://schema.org&quot;</span>,<span class="tok-s">&quot;@type&quot;</span>:<span class="tok-s">&quot;TechArticle&quot;</span>,<span class="tok-s">&quot;headline&quot;</span>:<span class="tok-s">&quot;标题&quot;</span>,</span><span class="code-line">   <span class="tok-s">&quot;datePublished&quot;</span>:<span class="tok-s">&quot;2026-10-21&quot;</span>,<span class="tok-s">&quot;dateModified&quot;</span>:<span class="tok-s">&quot;2026-10-21&quot;</span>}</span><span class="code-line">&lt;/script&gt;</span></code></pre>
+  
+</div>
+<ul><li><strong>上线后主动提交</strong>：在 Google Search Console 与 Bing Webmaster Tools 提交站点地图；Bing 支持 IndexNow，发布新页后立即推送可显著缩短收录时间。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>新域名通常需要数天到数周才建立信任，提交站点地图只加速抓取，不保证收录。</li><li>预览环境（<code>*.pages.dev</code>、<code>*.workers.dev</code> 的部署预览）应加 <code>noindex</code>，避免与正式页重复；正式环境上线前记得移除。</li><li>站点地图只放希望收录的 URL，不要包含搜索页、标签聚合页等重复内容页。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+  </channel>
+</rss>

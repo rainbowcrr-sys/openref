@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="https://openref.de5.net/rss/rss.xsl"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:openref="https://openref.de5.net/ns/rss/1.0">
+  <channel>
+    <title>OpenRef · AbortController 取消请求</title>
+    <link>https://openref.de5.net/docs/programming/javascript/abort-controller/</link>
+    <description>fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Nov 2026 12:51:01 GMT</lastBuildDate>
+    <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
+    <managingEditor>rainbowcrr-sys</managingEditor>
+    <webMaster></webMaster>
+    <atom:link href="https://openref.de5.net/docs/programming/javascript/abort-controller/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://openref.de5.net/rss/rss-icon.png</url>
+      <title>OpenRef 技术参考</title>
+      <link>https://openref.de5.net/docs/programming/javascript/abort-controller/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <item>
+      <title>AbortController 取消请求</title>
+      <link>https://openref.de5.net/docs/programming/javascript/abort-controller/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/programming/javascript/abort-controller/</guid>
+      <pubDate>Fri, 16 Oct 2026 16:00:00 GMT</pubDate>
+      <description>fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</description>
+      <category>编程</category>
+      <category>JavaScript / TypeScript</category>
+      <category>JavaScript</category>
+      <category>fetch</category>
+      <category>异步</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p><code>AbortController</code> 提供一个 <code>signal</code>，把它传给 <code>fetch</code> 后，调用 <code>controller.abort()</code> 即可中止请求。被中止的请求会抛出一个 <code>AbortError</code>，需要在 <code>catch</code> 中区分处理。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>请求超时控制</li><li>页面切换或组件卸载时取消未完成的请求</li><li>搜索框输入时取消上一次请求，只保留最新结果</li></ul>
+<h2 id="最小示例">最小示例</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> controller = <span class="tok-k">new</span> <span class="tok-f">AbortController</span>();</span><span class="code-line"></span><span class="code-line"><span class="tok-f">setTimeout</span>(() =&gt; controller.<span class="tok-f">abort</span>(), <span class="tok-n">5000</span>);</span><span class="code-line"></span><span class="code-line"><span class="tok-k">try</span> {</span><span class="code-line">  <span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: controller.signal });</span><span class="code-line">  <span class="tok-k">const</span> data = <span class="tok-k">await</span> res.<span class="tok-f">json</span>();</span><span class="code-line">} <span class="tok-k">catch</span> (err) {</span><span class="code-line">  <span class="tok-k">if</span> (err.name === <span class="tok-s">'AbortError'</span>) {</span><span class="code-line">    console.<span class="tok-f">log</span>(<span class="tok-s">'请求已取消'</span>);</span><span class="code-line">  } <span class="tok-k">else</span> {</span><span class="code-line">    <span class="tok-k">throw</span> err;</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>Node 18+ 与主流浏览器可直接生成超时信号：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: AbortSignal.<span class="tok-f">timeout</span>(<span class="tok-n">5000</span>) });</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>abort()</code> 可以传原因：<code>controller.abort(new Error('页面已离开'))</code>，在 <code>catch</code> 中通过 <code>err.cause</code> 读取。</li><li>一个 controller 的 signal 可以传给多个 <code>fetch</code>，一次 <code>abort()</code> 取消全部请求。</li><li>中止发生在响应体读取阶段同样有效：<code>res.body</code> 的流会被关闭。</li><li>已完成的请求再调用 <code>abort()</code> 不会产生任何效果。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>取消是客户端行为，服务端可能已经处理完该请求。</li><li><code>AbortSignal.timeout</code> 在旧版 Safari 不可用，需要降级到手动 <code>setTimeout</code>。</li><li>不要复用同一个 controller 发起下一轮请求，每次请求应新建。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a></li><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+  </channel>
+</rss>

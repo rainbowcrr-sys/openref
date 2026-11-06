@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AbortController 取消请求 · OpenRef 技术参考</title>
+<meta name="description" content="fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。" />
+<link rel="canonical" href="https://openref.de5.net/docs/programming/javascript/abort-controller/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="AbortController 取消请求" />
+<meta property="og:description" content="fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。" />
+<meta property="og:url" content="https://openref.de5.net/docs/programming/javascript/abort-controller/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AbortController 取消请求" />
+<meta name="twitter:description" content="fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"AbortController 取消请求","description":"fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。","datePublished":"2026-10-17","dateModified":"2026-10-17","articleSection":"编程 / JavaScript / TypeScript","keywords":"JavaScript, fetch, 异步","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/programming/javascript/abort-controller/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"编程","item":"https://openref.de5.net/topics/programming/"},{"@type":"ListItem","position":3,"name":"JavaScript / TypeScript","item":"https://openref.de5.net/topics/programming/javascript/"},{"@type":"ListItem","position":4,"name":"AbortController 取消请求","item":"https://openref.de5.net/docs/programming/javascript/abort-controller/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/programming/">编程</a><span>/</span><a href="/topics/programming/javascript/">JavaScript / TypeScript</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>AbortController 取消请求<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/programming/javascript/abort-controller.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-10-17">更新于 2026-10-17</time>
+        <a class="pill accent" href="/topics/programming/">编程</a>
+        <a class="pill" href="/topics/programming/javascript/">JavaScript / TypeScript</a>
+        <time datetime="2026-10-17">发布于 2026-10-17</time>
+        <span class="read-time">约 289 字 · 1 分钟</span>
+        <span class="pill">#JavaScript</span><span class="pill">#fetch</span><span class="pill">#异步</span>
+      </div>
+    </header>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">5 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><p><code>AbortController</code> 提供一个 <code>signal</code>，把它传给 <code>fetch</code> 后，调用 <code>controller.abort()</code> 即可中止请求。被中止的请求会抛出一个 <code>AbortError</code>，需要在 <code>catch</code> 中区分处理。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>请求超时控制</li><li>页面切换或组件卸载时取消未完成的请求</li><li>搜索框输入时取消上一次请求，只保留最新结果</li></ul>
+<h2 id="最小示例">最小示例</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> controller = <span class="tok-k">new</span> <span class="tok-f">AbortController</span>();</span><span class="code-line"></span><span class="code-line"><span class="tok-f">setTimeout</span>(() =&gt; controller.<span class="tok-f">abort</span>(), <span class="tok-n">5000</span>);</span><span class="code-line"></span><span class="code-line"><span class="tok-k">try</span> {</span><span class="code-line">  <span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: controller.signal });</span><span class="code-line">  <span class="tok-k">const</span> data = <span class="tok-k">await</span> res.<span class="tok-f">json</span>();</span><span class="code-line">} <span class="tok-k">catch</span> (err) {</span><span class="code-line">  <span class="tok-k">if</span> (err.name === <span class="tok-s">'AbortError'</span>) {</span><span class="code-line">    console.<span class="tok-f">log</span>(<span class="tok-s">'请求已取消'</span>);</span><span class="code-line">  } <span class="tok-k">else</span> {</span><span class="code-line">    <span class="tok-k">throw</span> err;</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>Node 18+ 与主流浏览器可直接生成超时信号：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: AbortSignal.<span class="tok-f">timeout</span>(<span class="tok-n">5000</span>) });</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>abort()</code> 可以传原因：<code>controller.abort(new Error('页面已离开'))</code>，在 <code>catch</code> 中通过 <code>err.cause</code> 读取。</li><li>一个 controller 的 signal 可以传给多个 <code>fetch</code>，一次 <code>abort()</code> 取消全部请求。</li><li>中止发生在响应体读取阶段同样有效：<code>res.body</code> 的流会被关闭。</li><li>已完成的请求再调用 <code>abort()</code> 不会产生任何效果。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>取消是客户端行为，服务端可能已经处理完该请求。</li><li><code>AbortSignal.timeout</code> 在旧版 Safari 不可用，需要降级到手动 <code>setTimeout</code>。</li><li>不要复用同一个 controller 发起下一轮请求，每次请求应新建。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a></li><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a></li></ul></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+    
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/programming/javascript/abort-controller/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="programming/javascript/abort-controller">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

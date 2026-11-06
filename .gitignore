@@ -1,4 +1,9 @@
 node_modules/
-dist/
 .DS_Store
 *.log
+.astro/
+.wrangler/
+
+# Python 构建缓存
+__pycache__/
+*.pyc

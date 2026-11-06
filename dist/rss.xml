@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="https://openref.de5.net/rss/rss.xsl"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:openref="https://openref.de5.net/ns/rss/1.0">
+  <channel>
+    <title>OpenRef 技术参考</title>
+    <link>https://openref.de5.net/</link>
+    <description>OpenRef 是一份开放的技术参考：按主题分组，条目式写作，覆盖 Cloudflare 边缘计算、前端工程、编程与系统基础。每篇讲清一件事，给出可直接运行的代码与明确的限制。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 06 Nov 2026 12:50:51 GMT</lastBuildDate>
+    <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
+    <managingEditor>rainbowcrr-sys</managingEditor>
+    <webMaster></webMaster>
+    <atom:link href="https://openref.de5.net/rss/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://openref.de5.net/rss/rss-icon.png</url>
+      <title>OpenRef 技术参考</title>
+      <link>https://openref.de5.net/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <item>
+      <title>使用 RSS 来订阅 OpenRef</title>
+      <link>https://openref.de5.net/docs/official/guide/rss-subscribe/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/official/guide/rss-subscribe/</guid>
+      <pubDate>Thu, 05 Nov 2026 16:00:00 GMT</pubDate>
+      <description>OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。</description>
+      <category>官方</category>
+      <category>指南</category>
+      <category>RSS</category>
+      <category>订阅</category>
+      <category>OpenRef</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#网页feedly--inoreader">网页：Feedly / Inoreader</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#手机netnewswire--inoreader">手机：NetNewsWire / Inoreader</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#桌面rss-guard">桌面：RSS Guard</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#自建freshrss">自建：FreshRSS</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#地址清单">地址清单</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#全站">全站</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#opml-一键导入">OPML 一键导入</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#按大类">按大类</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#按子类">按子类</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#按标签">按标签</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#按单篇每篇一个一篇不漏">按单篇（每篇一个，一篇不漏）</a></li><li><a href="https://openref.de5.net/docs/official/guide/rss-subscribe/#几个常见问题">几个常见问题</a></li></ul></nav><div class="feed-content"><p>RSS 是一种很老的协议，但到今天仍然是「不打扰地看更新」最好的方式：没有算法推荐、没有推送权限、没有账号绑定。你把一个地址交给阅读器，之后有新文章它自己去取。</p>
+<p>OpenRef 的订阅分成五层，粒度从粗到细：</p>
+<ul><li><strong>全站</strong> —— 所有文章，最常用</li><li><strong>大类</strong> —— 只收某个主题，例如「云原生与基础设施」</li><li><strong>子类</strong> —— 更细一层，例如 Cloudflare、SEO</li><li><strong>标签</strong> —— 跨分类按关键词聚合，例如 <code>#D1</code></li><li><strong>单篇</strong> —— 只订这一篇，文章有修改时你会收到更新</li></ul>
+<p>「自选大类或子类」不是让你勾选生成一份专属源，而是把现成的地址列出来，你自己复制想要的那几条。静态站不会拼装个人化 feed，这样反而更稳：地址是死的，永远有效。</p>
+<h2 id="网页feedly--inoreader">网页：Feedly / Inoreader</h2>
+<p>适合在电脑浏览器里看，换设备自动同步。</p>
+<ol><li>打开 feedly.com 或 inoreader.com，注册并登录</li><li>找到 <strong>Add Content / 添加订阅</strong>（Feedly 是左侧 <code>+ Follow</code>，Inoreader 是左上角 <code>+</code>）</li><li>粘贴下面清单里的地址，点 <strong>Follow / 订阅</strong></li></ol>
+<p>想一次导入全部五层，用 OPML：阅读器里找 <strong>Import OPML</strong>，上传 <code>opml.xml</code>，所有地址会按「全站 / 大类 / 子类 / 标签 / 单篇」分好组。</p>
+<h2 id="手机netnewswire--inoreader">手机：NetNewsWire / Inoreader</h2>
+<p>适合通勤时刷。NetNewsWire 是 iOS/macOS 上的免费开源阅读器；Inoreader 有 iOS 和安卓 App。</p>
+<ol><li>在 App Store / 应用商店装好 App，登录（NetNewsWire 可以不登录直接用）</li><li>点 <strong>+</strong> → <strong>Add Feed / 添加订阅</strong></li><li>粘贴地址 → 确认</li></ol>
+<p>iOS 上也可以直接在 Safari 里点页面上的订阅图标，系统会提示用哪个阅读器打开。安卓同理，取决于你装了哪些支持 RSS 的 App。</p>
+<h2 id="桌面rss-guard">桌面：RSS Guard</h2>
+<p>Windows / macOS / Linux 都能装，纯本地，不依赖任何账号。</p>
+<ol><li>打开 RSS Guard，菜单 <strong>Feeds → Add new feed</strong></li><li>粘贴地址，起个名字，选好归到哪个文件夹</li><li>点 <strong>OK</strong>，之后按 F5 或设定间隔自动拉取</li></ol>
+<p>桌面客户端同样支持 <strong>Import OPML</strong>：Feeds → Import/Export → Import feeds from OPML 2.0。</p>
+<h2 id="自建freshrss">自建：FreshRSS</h2>
+<p>想把订阅完全握在自己手里，用 FreshRSS（PHP，可跑在 NAS / 小主机上）。</p>
+<ol><li>按官方文档部署好 FreshRSS 并登录</li><li>左侧 <strong>+ 添加信息源</strong>，粘贴地址</li><li>保存后放进对应分类目录，配置好自动更新周期</li></ol>
+<p>导入 OPML：设置 → 导入/导出 → 选择 <code>opml.xml</code> 上传。之后手机可以用支持 Fever / GReader API 的 App 连自己的服务器。</p>
+<h2 id="地址清单">地址清单</h2>
+<p>下面这份清单由构建脚本自动生成，每次新增文章都会同步更新，不会漏。地址都指向本站，直接复制即可。</p>
+<h3 id="全站">全站</h3>
+<ul><li><strong>全站订阅（最常用）</strong>　<code>https://openref.de5.net/rss/rss.xml</code></li></ul>
+<ul><li><strong>全站备用地址</strong>　<code>https://openref.de5.net/rss/feed.xml</code></li></ul>
+<h3 id="opml-一键导入">OPML 一键导入</h3>
+<ul><li><strong>全部订阅地址清单</strong>　<code>https://openref.de5.net/rss/opml.xml</code></li></ul>
+<h3 id="按大类">按大类</h3>
+<ul><li><strong>编程</strong>　<code>https://openref.de5.net/rss/topics/programming/rss.xml</code></li><li><strong>云原生与基础设施</strong>　<code>https://openref.de5.net/rss/topics/cloud/rss.xml</code></li><li><strong>前端工程</strong>　<code>https://openref.de5.net/rss/topics/frontend/rss.xml</code></li><li><strong>官方</strong>　<code>https://openref.de5.net/rss/topics/official/rss.xml</code></li></ul>
+<h3 id="按子类">按子类</h3>
+<ul><li><strong>编程 / JavaScript / TypeScript</strong>　<code>https://openref.de5.net/rss/topics/programming/javascript/rss.xml</code></li><li><strong>云原生与基础设施 / Cloudflare</strong>　<code>https://openref.de5.net/rss/topics/cloud/cloudflare/rss.xml</code></li><li><strong>前端工程 / 性能优化</strong>　<code>https://openref.de5.net/rss/topics/frontend/performance/rss.xml</code></li><li><strong>前端工程 / SEO</strong>　<code>https://openref.de5.net/rss/topics/frontend/seo/rss.xml</code></li><li><strong>官方 / 指南</strong>　<code>https://openref.de5.net/rss/topics/official/guide/rss.xml</code></li></ul>
+<h3 id="按标签">按标签</h3>
+<ul><li><strong>#CLS</strong>　<code>https://openref.de5.net/rss/tags/cls/rss.xml</code></li><li><strong>#Cloudflare</strong>　<code>https://openref.de5.net/rss/tags/cloudflare/rss.xml</code></li><li><strong>#D1</strong>　<code>https://openref.de5.net/rss/tags/d1/rss.xml</code></li><li><strong>#INP</strong>　<code>https://openref.de5.net/rss/tags/inp/rss.xml</code></li><li><strong>#JavaScript</strong>　<code>https://openref.de5.net/rss/tags/javascript/rss.xml</code></li><li><strong>#KV</strong>　<code>https://openref.de5.net/rss/tags/kv/rss.xml</code></li><li><strong>#LCP</strong>　<code>https://openref.de5.net/rss/tags/lcp/rss.xml</code></li><li><strong>#OpenRef</strong>　<code>https://openref.de5.net/rss/tags/openref/rss.xml</code></li><li><strong>#RSS</strong>　<code>https://openref.de5.net/rss/tags/rss/rss.xml</code></li><li><strong>#SEO</strong>　<code>https://openref.de5.net/rss/tags/seo/rss.xml</code></li><li><strong>#SQLite</strong>　<code>https://openref.de5.net/rss/tags/sqlite/rss.xml</code></li><li><strong>#Workers</strong>　<code>https://openref.de5.net/rss/tags/workers/rss.xml</code></li><li><strong>#fetch</strong>　<code>https://openref.de5.net/rss/tags/fetch/rss.xml</code></li><li><strong>#免费额度</strong>　<code>https://openref.de5.net/rss/tags/mian-fei-e-du/rss.xml</code></li><li><strong>#前端</strong>　<code>https://openref.de5.net/rss/tags/qian-duan/rss.xml</code></li><li><strong>#异步</strong>　<code>https://openref.de5.net/rss/tags/yi-bu/rss.xml</code></li><li><strong>#性能</strong>　<code>https://openref.de5.net/rss/tags/xing-neng/rss.xml</code></li><li><strong>#收录</strong>　<code>https://openref.de5.net/rss/tags/shou-lu/rss.xml</code></li><li><strong>#数据库</strong>　<code>https://openref.de5.net/rss/tags/shu-ju-ku/rss.xml</code></li><li><strong>#站点地图</strong>　<code>https://openref.de5.net/rss/tags/zhan-dian-di-tu/rss.xml</code></li><li><strong>#结构化数据</strong>　<code>https://openref.de5.net/rss/tags/jie-gou-hua-shu-ju/rss.xml</code></li><li><strong>#缓存</strong>　<code>https://openref.de5.net/rss/tags/huan-cun/rss.xml</code></li><li><strong>#订阅</strong>　<code>https://openref.de5.net/rss/tags/ding-yue/rss.xml</code></li><li><strong>#静态托管</strong>　<code>https://openref.de5.net/rss/tags/jing-tai-tuo-guan/rss.xml</code></li></ul>
+<h3 id="按单篇每篇一个一篇不漏">按单篇（每篇一个，一篇不漏）</h3>
+<ul><li><strong>D1 索引与查询成本</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/d1-index/rss.xml</code></li><li><strong>KV 免费额度与写入策略</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/rss.xml</code></li><li><strong>用 Workers 静态资源托管站点</strong>　<code>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/rss.xml</code></li><li><strong>核心网页指标与优化顺序</strong>　<code>https://openref.de5.net/docs/frontend/performance/core-web-vitals/rss.xml</code></li><li><strong>技术 SEO 检查清单</strong>　<code>https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/rss.xml</code></li><li><strong>使用 RSS 来订阅 OpenRef</strong>　<code>https://openref.de5.net/docs/official/guide/rss-subscribe/rss.xml</code></li><li><strong>AbortController 取消请求</strong>　<code>https://openref.de5.net/docs/programming/javascript/abort-controller/rss.xml</code></li></ul>
+<blockquote>单篇订阅的规律：文章地址后面加 <code>rss.xml</code>。例如本文就是 <code>/docs/official/guide/rss-subscribe/rss.xml</code>。</blockquote>
+<h2 id="几个常见问题">几个常见问题</h2>
+<p><strong>地址能改吗？</strong> 不能随便改。文章和分类的地址是固定死的，改名会让旧订阅失效，所以文件名和路径一律用英文小写，页面上的中文只是显示名。</p>
+<p><strong>订阅后为什么没立刻看到新文章？</strong> 阅读器按自己的周期拉取，通常几分钟到一小时。想马上看，手动刷新一下。</p>
+<p><strong>单篇订阅有什么用？</strong> 比如你只关心 D1 那篇的额度说明，订阅它之后，文章一旦修订，阅读器就会把更新推给你，不用整站都订。</p>
+<p><strong>会不会重复推送？</strong> 不会。同一篇文章在五层 feed 里的唯一标识都是它的文章链接，同时订多份时阅读器会自动去重。</p></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>用 Workers 静态资源托管站点</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</guid>
+      <pubDate>Sun, 25 Oct 2026 16:00:00 GMT</pubDate>
+      <description>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</description>
+      <category>云原生与基础设施</category>
+      <category>Cloudflare</category>
+      <category>Cloudflare</category>
+      <category>Workers</category>
+      <category>静态托管</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>Workers 的静态资源（Static Assets）让单个 Worker 同时具备「文件托管」和「可编程」两种能力：命中路径时直接返回磁盘上的文件，未命中时交给 Worker 代码处理。一个项目即可发布整站，无需另建 Pages。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>想把静态站点发布到 <code>&lt;name&gt;.&lt;subdomain&gt;.workers.dev</code> 子域</li><li>静态页面为主，同时需要少量动态接口</li><li>不想维护 Pages 与 Worker 两个项目</li></ul>
+<p>不适合：需要按分支预览、需要 Pages 内置构建流水线的场景。</p>
+<h2 id="最小示例">最小示例</h2>
+<p>配置 <code>wrangler.jsonc</code>：</p>
+<div class="code-block" data-lang="jsonc">
+  <div class="code-head"><span class="code-lang">jsonc</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">{</span><span class="code-line">  <span class="tok-s">&quot;name&quot;</span>: <span class="tok-s">&quot;docs&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;compatibility_date&quot;</span>: <span class="tok-s">&quot;2025-09-25&quot;</span>,</span><span class="code-line">  <span class="tok-s">&quot;assets&quot;</span>: {</span><span class="code-line">    <span class="tok-s">&quot;directory&quot;</span>: <span class="tok-s">&quot;./dist&quot;</span>,</span><span class="code-line">    <span class="tok-s">&quot;not_found_handling&quot;</span>: <span class="tok-s">&quot;404-page&quot;</span></span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>发布：</p>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">npx wrangler deploy</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>name</code> 决定最终地址。账户子域为 <code>openref.workers.dev</code> 时，<code>&quot;name&quot;: &quot;docs&quot;</code> 得到 <code>https://docs.openref.workers.dev</code>。</li><li><code>assets.directory</code> 指向构建产物目录，Astro 默认为 <code>dist/</code>。</li><li><code>not_found_handling</code> 有两种取值：<code>&quot;404-page&quot;</code> 返回目录内已生成的 <code>404.html</code>；<code>&quot;single-page-application&quot;</code> 把所有未命中路径回退到 <code>index.html</code>，用于前端路由。</li><li>只配 <code>assets</code> 而不配 <code>main</code>，Wrangler 会部署为纯静态站点；之后需要接口时再加 <code>main</code>，静态文件仍然优先命中。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>单个 Worker 打包后上限 10 MB（免费计划，压缩后）；静态资源不计入，但走同一份配置。</li><li><code>*.workers.dev</code> 子域由 Cloudflare 统一提供，策略可能调整；正式站点建议绑定自有域名，在「设置 → 触发器 → 自定义域」中添加。</li><li>绑定自有域要求该域名的 DNS 托管在 Cloudflare。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a></li><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>D1 索引与查询成本</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/d1-index/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/cloud/cloudflare/d1-index/</guid>
+      <pubDate>Fri, 23 Oct 2026 16:00:00 GMT</pubDate>
+      <description>D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。</description>
+      <category>云原生与基础设施</category>
+      <category>Cloudflare</category>
+      <category>Cloudflare</category>
+      <category>D1</category>
+      <category>SQLite</category>
+      <category>数据库</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/d1-index/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>D1 是运行在 Cloudflare 边缘的 SQLite 数据库。它的计费单位是<strong>扫描行数</strong>：一条 <code>SELECT</code> 实际读取了多少行，就计多少行。没有索引的查询会全表扫描，1 万行的表查一次即计 1 万行。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>文章、用户、配置等结构化数据</li><li>读多写少、单表规模在百万行以内</li><li>需要 SQL 语义但不想维护数据库实例</li></ul>
+<p>不适合：高频写入（如计数器、实时日志），写入额度比读取额度小两个数量级。</p>
+<h2 id="最小示例">最小示例</h2>
+<p>建表同时建索引：</p>
+<div class="code-block" data-lang="sql">
+  <div class="code-head"><span class="code-lang">sql</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">CREATE</span> <span class="tok-k">TABLE</span> posts (</span><span class="code-line">  id INTEGER <span class="tok-k">PRIMARY</span> <span class="tok-k">KEY</span>,</span><span class="code-line">  slug TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span>,</span><span class="code-line">  status TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span>,</span><span class="code-line">  pub_date TEXT <span class="tok-k">NOT</span> <span class="tok-k">NULL</span></span><span class="code-line">);</span><span class="code-line"><span class="tok-k">CREATE</span> <span class="tok-k">INDEX</span> idx_posts_status_date <span class="tok-k">ON</span> <span class="tok-f">posts</span>(status, pub_date);</span></code></pre>
+  
+</div>
+<p>查询必须使用参数化语句：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> { results } = <span class="tok-k">await</span> env.DB.<span class="tok-f">prepare</span>(</span><span class="code-line">  <span class="tok-s">'SELECT id, slug FROM posts WHERE status = ? ORDER BY pub_date DESC LIMIT 20'</span></span><span class="code-line">).<span class="tok-f">bind</span>(<span class="tok-s">'published'</span>).<span class="tok-f">all</span>();</span></code></pre>
+  
+</div>
+<p>批量写入用 <code>batch</code>，只计一次往返：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">await</span> env.DB.<span class="tok-f">batch</span>([</span><span class="code-line">  env.DB.<span class="tok-f">prepare</span>(<span class="tok-s">'INSERT INTO posts(slug, status, pub_date) VALUES(?, ?, ?)'</span>)</span><span class="code-line">    .<span class="tok-f">bind</span>(<span class="tok-s">'a'</span>, <span class="tok-s">'published'</span>, <span class="tok-s">'2026-10-24'</span>),</span><span class="code-line">  env.DB.<span class="tok-f">prepare</span>(<span class="tok-s">'UPDATE posts SET status = ? WHERE slug = ?'</span>)</span><span class="code-line">    .<span class="tok-f">bind</span>(<span class="tok-s">'draft'</span>, <span class="tok-s">'b'</span>),</span><span class="code-line">]);</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li>索引要覆盖 <code>WHERE</code> 与 <code>ORDER BY</code> 用到的列；<code>idx_posts_status_date</code> 同时满足筛选和排序，避免额外排序扫描。</li><li>用 <code>EXPLAIN QUERY PLAN</code> 确认是否走索引，输出中出现 <code>SCAN</code> 即表示全表扫描。</li><li><code>bind()</code> 不只是防注入，也能让语句被复用，减少解析开销。</li><li>单行查询用 <code>.first('column')</code>，避免返回整行再用 JS 拆字段。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>免费计划额度：5 GB 总存储，每天 500 万行读、10 万行写。额度按账户统计，非按库。</li><li>单条查询返回大小有限制，不要用 <code>SELECT *</code> 拉大字段。</li><li>数据库跟随区域部署，跨境访问延迟会上升。</li><li>没有连接概念，每次 <code>prepare</code> 都是一次独立执行；事务用 <code>batch</code> 或 <code>withSession</code>。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>KV 免费额度与写入策略</title>
+      <link>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</guid>
+      <pubDate>Wed, 21 Oct 2026 16:00:00 GMT</pubDate>
+      <description>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</description>
+      <category>云原生与基础设施</category>
+      <category>Cloudflare</category>
+      <category>Cloudflare</category>
+      <category>KV</category>
+      <category>缓存</category>
+      <category>免费额度</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>KV 是最终一致的键值存储：读取极快、全球可用，但写入昂贵且传播有延迟。免费计划每天 10 万次读、1000 次写、1 GB 存储。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>站点配置、开关、重定向表</li><li>渲染结果的缓存</li><li>会话、令牌等低频变更状态</li></ul>
+<p>不适合：计数器、点赞数、实时排行榜——这类写入会立刻耗尽额度。</p>
+<h2 id="最小示例">最小示例</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c">// 写入：带上 TTL，避免冷数据长期占位</span></span><span class="code-line"><span class="tok-k">await</span> env.CACHE.<span class="tok-f">put</span>(<span class="tok-s">`post:${slug}`</span>, html, { expirationTtl: <span class="tok-n">3600</span> });</span><span class="code-line"></span><span class="code-line"><span class="tok-c">// 读取：拿不到就回源重建</span></span><span class="code-line"><span class="tok-k">const</span> cached = <span class="tok-k">await</span> env.CACHE.<span class="tok-k">get</span>(<span class="tok-s">`post:${slug}`</span>);</span><span class="code-line"><span class="tok-k">if</span> (cached) <span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-f">Response</span>(cached, { headers: { <span class="tok-s">'Content-Type'</span>: <span class="tok-s">'text/html'</span> } });</span><span class="code-line"></span><span class="code-line"><span class="tok-k">const</span> html = <span class="tok-k">await</span> <span class="tok-f">render</span>(slug);</span><span class="code-line"><span class="tok-k">await</span> env.CACHE.<span class="tok-f">put</span>(<span class="tok-s">`post:${slug}`</span>, html, { expirationTtl: <span class="tok-n">3600</span> });</span><span class="code-line"><span class="tok-k">return</span> <span class="tok-k">new</span> <span class="tok-f">Response</span>(html, { headers: { <span class="tok-s">'Content-Type'</span>: <span class="tok-s">'text/html'</span> } });</span></code></pre>
+  
+</div>
+<p>带过期时间的批量列举：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> list = <span class="tok-k">await</span> env.CACHE.<span class="tok-f">list</span>({ prefix: <span class="tok-s">'post:'</span>, limit: <span class="tok-n">100</span> });</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li>键名用前缀分组（<code>post:</code>、<code>user:</code>），<code>list({ prefix })</code> 才能按组枚举。</li><li><code>expirationTtl</code> 单位为秒，<code>expiration</code> 接受绝对时间戳，二选一。</li><li>写入后在全球各点生效通常需要最多 60 秒；需要强一致的场景改用 D1。</li><li>值上限 25 MB，单个键的元数据上限 1024 字节。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>写入额度远小于读取额度，<strong>不要把每个请求都变成一次写</strong>。</li><li>同一键的连续写入会互相覆盖，没有原子自增；计数改用 D1 或 Durable Objects。</li><li><code>list</code> 的结果顺序按字典序，不保证实时一致。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>技术 SEO 检查清单</title>
+      <link>https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/</guid>
+      <pubDate>Tue, 20 Oct 2026 16:00:00 GMT</pubDate>
+      <description>让页面能被 Google 与 Bing 正常收录的最低要求：预渲染 HTML、唯一元信息、站点地图、结构化数据，以及上线后主动提交索引。按清单逐项核验即可。</description>
+      <category>前端工程</category>
+      <category>SEO</category>
+      <category>SEO</category>
+      <category>收录</category>
+      <category>站点地图</category>
+      <category>结构化数据</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>搜索引擎收录依赖三件事：抓得到、读得懂、判得重。技术 SEO 就是围绕这三点做保证，与内容质量无关。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>新站上线前的逐项核验</li><li>页面改版后收录异常的排查</li><li>纯前端框架项目（SPA）的收录修复</li></ul>
+<h2 id="最小示例">最小示例</h2>
+<p>每个页面输出的元信息：</p>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;title&gt;页面标题 · 站点名&lt;/title&gt;</span><span class="code-line">&lt;meta name=<span class="tok-s">&quot;description&quot;</span> content=<span class="tok-s">&quot;50–120 字，说明这一页解决什么问题&quot;</span> /&gt;</span><span class="code-line">&lt;link rel=<span class="tok-s">&quot;canonical&quot;</span> href=<span class="tok-s">&quot;https://example.com/docs/a/&quot;</span> /&gt;</span><span class="code-line">&lt;meta property=<span class="tok-s">&quot;og:title&quot;</span> content=<span class="tok-s">&quot;页面标题&quot;</span> /&gt;</span></code></pre>
+  
+</div>
+<p>站点根目录：</p>
+<div class="code-block" data-lang="txt">
+  <div class="code-head"><span class="code-lang">txt</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c"># robots.txt</span></span><span class="code-line">User-agent: *</span><span class="code-line">Allow: /</span><span class="code-line"></span><span class="code-line">Sitemap: https:<span class="tok-c">//example.com/sitemap-index.xml</span></span></code></pre>
+  
+</div>
+<div class="code-block" data-lang="xml">
+  <div class="code-head"><span class="code-lang">xml</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c">&lt;!-- sitemap.xml --&gt;</span></span><span class="code-line">&lt;urlset xmlns=<span class="tok-s">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span>&gt;</span><span class="code-line">  &lt;url&gt;&lt;loc&gt;https:<span class="tok-c">//example.com/docs/a/&lt;/loc&gt;&lt;/url&gt;</span></span><span class="code-line">  &lt;url&gt;&lt;loc&gt;https:<span class="tok-c">//example.com/docs/b/&lt;/loc&gt;&lt;/url&gt;</span></span><span class="code-line">&lt;/urlset&gt;</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><strong>预渲染优先</strong>：静态 HTML 让爬虫无需执行 JS 即可拿到正文。客户端渲染的 SPA 常出现「收录了空壳」。</li><li><strong>canonical 必须唯一</strong>：同一内容存在多个 URL 时，用 canonical 指定权威版本；否则权重被分散。</li><li><strong>description 不参与排名但影响点击率</strong>，每页应不同。</li><li><strong>结构化数据</strong>用 JSON-LD 声明文章类型与发布时间，帮助生成搜索结果摘要：</li></ul>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;script <span class="tok-k">type</span>=<span class="tok-s">&quot;application/ld+json&quot;</span>&gt;</span><span class="code-line">  {<span class="tok-s">&quot;@context&quot;</span>:<span class="tok-s">&quot;https://schema.org&quot;</span>,<span class="tok-s">&quot;@type&quot;</span>:<span class="tok-s">&quot;TechArticle&quot;</span>,<span class="tok-s">&quot;headline&quot;</span>:<span class="tok-s">&quot;标题&quot;</span>,</span><span class="code-line">   <span class="tok-s">&quot;datePublished&quot;</span>:<span class="tok-s">&quot;2026-10-21&quot;</span>,<span class="tok-s">&quot;dateModified&quot;</span>:<span class="tok-s">&quot;2026-10-21&quot;</span>}</span><span class="code-line">&lt;/script&gt;</span></code></pre>
+  
+</div>
+<ul><li><strong>上线后主动提交</strong>：在 Google Search Console 与 Bing Webmaster Tools 提交站点地图；Bing 支持 IndexNow，发布新页后立即推送可显著缩短收录时间。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>新域名通常需要数天到数周才建立信任，提交站点地图只加速抓取，不保证收录。</li><li>预览环境（<code>*.pages.dev</code>、<code>*.workers.dev</code> 的部署预览）应加 <code>noindex</code>，避免与正式页重复；正式环境上线前记得移除。</li><li>站点地图只放希望收录的 URL，不要包含搜索页、标签聚合页等重复内容页。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a></li><li><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>核心网页指标与优化顺序</title>
+      <link>https://openref.de5.net/docs/frontend/performance/core-web-vitals/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/frontend/performance/core-web-vitals/</guid>
+      <pubDate>Sun, 18 Oct 2026 16:00:00 GMT</pubDate>
+      <description>LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。</description>
+      <category>前端工程</category>
+      <category>性能优化</category>
+      <category>性能</category>
+      <category>LCP</category>
+      <category>INP</category>
+      <category>CLS</category>
+      <category>前端</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#阈值">阈值</a></li><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p>核心网页指标（Core Web Vitals）是三量化用户体验的指标，按「75 百分位用户达到」为通过标准。优化前先确认是哪一个不达标，三者的成因与解法几乎不重叠。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>页面体验报告或 Lighthouse 显示指标未达标</li><li>上线前的性能验收</li><li>移动端加载或卡顿的归因分析</li></ul>
+<h2 id="阈值">阈值</h2>
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>含义</th><th>良好</th><th>需改进</th></tr></thead><tbody><tr><td>LCP</td><td>最大内容绘制完成时间</td><td>≤ 2.5 s</td><td>&gt; 4 s</td></tr><tr><td>INP</td><td>交互到下一次绘制的延迟</td><td>≤ 200 ms</td><td>&gt; 500 ms</td></tr><tr><td>CLS</td><td>累计布局偏移</td><td>≤ 0.1</td><td>&gt; 0.25</td></tr></tbody></table></div>
+<h2 id="最小示例">最小示例</h2>
+<p>为图片预留空间并优先加载首屏图：</p>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;img src=<span class="tok-s">&quot;/hero.webp&quot;</span> width=<span class="tok-s">&quot;1200&quot;</span> height=<span class="tok-s">&quot;600&quot;</span> fetchpriority=<span class="tok-s">&quot;high&quot;</span> alt=<span class="tok-s">&quot;示意图&quot;</span> /&gt;</span></code></pre>
+  
+</div>
+<p>拆分长任务，避免单次执行阻塞主线程：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">async</span> <span class="tok-k">function</span> <span class="tok-f">processAll</span>(items) {</span><span class="code-line">  <span class="tok-k">for</span> (<span class="tok-k">const</span> item <span class="tok-k">of</span> items) {</span><span class="code-line">    <span class="tok-f">doWork</span>(item);</span><span class="code-line">    <span class="tok-c">// 让出主线程，使浏览器能响应输入</span></span><span class="code-line">    <span class="tok-k">await</span> <span class="tok-k">new</span> <span class="tok-f">Promise</span>((r) =&gt; <span class="tok-f">setTimeout</span>(r, <span class="tok-n">0</span>));</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><strong>LCP</strong> 通常由首屏图片、字体或渲染阻塞脚本决定。给 <code>&lt;img&gt;</code> 写死 <code>width</code>/<code>height</code>，避免用 JS 决定尺寸。</li><li><strong>INP</strong> 差几乎都源于主线程长任务。把大循环切片、把计算移入 Web Worker、减少事件回调里的同步布局读取。</li><li><strong>CLS</strong> 的成因是尺寸未知的元素：无尺寸图片、动态插入的广告位、晚加载的字体导致重排。用 <code>min-height</code> 或 <code>font-display: optional</code> 规避。</li><li>字体与关键 CSS 内联，非关键 JS 用 <code>defer</code>，能让 LCP 提前。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>指标取自真实用户数据（CrUX），本地 Lighthouse 分数不能直接代表线上结果。</li><li>单页内 LCP 元素可能变化（如轮播图），需以实际监测为准。</li><li>优化动作互相牵制：预加载过多资源会改善 LCP 但拖慢 INP。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a></li><li><a href="/docs/programming/javascript/abort-controller/">AbortController 取消请求</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+    <item>
+      <title>AbortController 取消请求</title>
+      <link>https://openref.de5.net/docs/programming/javascript/abort-controller/</link>
+      <guid isPermaLink="true">https://openref.de5.net/docs/programming/javascript/abort-controller/</guid>
+      <pubDate>Fri, 16 Oct 2026 16:00:00 GMT</pubDate>
+      <description>fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</description>
+      <category>编程</category>
+      <category>JavaScript / TypeScript</category>
+      <category>JavaScript</category>
+      <category>fetch</category>
+      <category>异步</category>
+      <content:encoded><![CDATA[<p style="margin:0 0 14px"><span style="display:inline-block;background:#0071e3;color:#ffffff;font:600 12px/1.7 Arial,Helvetica,sans-serif;padding:2px 10px;border-radius:999px;letter-spacing:.02em">OpenRef OFFICIAL</span></p><nav class="feed-toc"><strong>本页内容</strong><ul><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#适用场景">适用场景</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#最小示例">最小示例</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#说明">说明</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#限制">限制</a></li><li><a href="https://openref.de5.net/docs/programming/javascript/abort-controller/#下一步">下一步</a></li></ul></nav><div class="feed-content"><p><code>AbortController</code> 提供一个 <code>signal</code>，把它传给 <code>fetch</code> 后，调用 <code>controller.abort()</code> 即可中止请求。被中止的请求会抛出一个 <code>AbortError</code>，需要在 <code>catch</code> 中区分处理。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>请求超时控制</li><li>页面切换或组件卸载时取消未完成的请求</li><li>搜索框输入时取消上一次请求，只保留最新结果</li></ul>
+<h2 id="最小示例">最小示例</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> controller = <span class="tok-k">new</span> <span class="tok-f">AbortController</span>();</span><span class="code-line"></span><span class="code-line"><span class="tok-f">setTimeout</span>(() =&gt; controller.<span class="tok-f">abort</span>(), <span class="tok-n">5000</span>);</span><span class="code-line"></span><span class="code-line"><span class="tok-k">try</span> {</span><span class="code-line">  <span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: controller.signal });</span><span class="code-line">  <span class="tok-k">const</span> data = <span class="tok-k">await</span> res.<span class="tok-f">json</span>();</span><span class="code-line">} <span class="tok-k">catch</span> (err) {</span><span class="code-line">  <span class="tok-k">if</span> (err.name === <span class="tok-s">'AbortError'</span>) {</span><span class="code-line">    console.<span class="tok-f">log</span>(<span class="tok-s">'请求已取消'</span>);</span><span class="code-line">  } <span class="tok-k">else</span> {</span><span class="code-line">    <span class="tok-k">throw</span> err;</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p>Node 18+ 与主流浏览器可直接生成超时信号：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'/api/data'</span>, { signal: AbortSignal.<span class="tok-f">timeout</span>(<span class="tok-n">5000</span>) });</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><code>abort()</code> 可以传原因：<code>controller.abort(new Error('页面已离开'))</code>，在 <code>catch</code> 中通过 <code>err.cause</code> 读取。</li><li>一个 controller 的 signal 可以传给多个 <code>fetch</code>，一次 <code>abort()</code> 取消全部请求。</li><li>中止发生在响应体读取阶段同样有效：<code>res.body</code> 的流会被关闭。</li><li>已完成的请求再调用 <code>abort()</code> 不会产生任何效果。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>取消是客户端行为，服务端可能已经处理完该请求。</li><li><code>AbortSignal.timeout</code> 在旧版 Safari 不可用，需要降级到手动 <code>setTimeout</code>。</li><li>不要复用同一个 controller 发起下一轮请求，每次请求应新建。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a></li><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a></li></ul></div>]]></content:encoded>
+      <openref:badge>official</openref:badge>
+    </item>
+  </channel>
+</rss>

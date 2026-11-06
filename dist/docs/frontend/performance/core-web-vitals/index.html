@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>核心网页指标与优化顺序 · OpenRef 技术参考</title>
+<meta name="description" content="LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。" />
+<link rel="canonical" href="https://openref.de5.net/docs/frontend/performance/core-web-vitals/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="核心网页指标与优化顺序" />
+<meta property="og:description" content="LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。" />
+<meta property="og:url" content="https://openref.de5.net/docs/frontend/performance/core-web-vitals/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="核心网页指标与优化顺序" />
+<meta name="twitter:description" content="LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"核心网页指标与优化顺序","description":"LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。","datePublished":"2026-10-19","dateModified":"2026-10-19","articleSection":"前端工程 / 性能优化","keywords":"性能, LCP, INP, CLS, 前端","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/frontend/performance/core-web-vitals/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"前端工程","item":"https://openref.de5.net/topics/frontend/"},{"@type":"ListItem","position":3,"name":"性能优化","item":"https://openref.de5.net/topics/frontend/performance/"},{"@type":"ListItem","position":4,"name":"核心网页指标与优化顺序","item":"https://openref.de5.net/docs/frontend/performance/core-web-vitals/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/frontend/">前端工程</a><span>/</span><a href="/topics/frontend/performance/">性能优化</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>核心网页指标与优化顺序<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/frontend/performance/core-web-vitals.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-10-19">更新于 2026-10-19</time>
+        <a class="pill accent" href="/topics/frontend/">前端工程</a>
+        <a class="pill" href="/topics/frontend/performance/">性能优化</a>
+        <time datetime="2026-10-19">发布于 2026-10-19</time>
+        <span class="read-time">约 409 字 · 1 分钟</span>
+        <span class="pill">#性能</span><span class="pill">#LCP</span><span class="pill">#INP</span><span class="pill">#CLS</span><span class="pill">#前端</span>
+      </div>
+    </header>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">6 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#阈值">阈值</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><p>核心网页指标（Core Web Vitals）是三量化用户体验的指标，按「75 百分位用户达到」为通过标准。优化前先确认是哪一个不达标，三者的成因与解法几乎不重叠。</p>
+<h2 id="适用场景">适用场景</h2>
+<ul><li>页面体验报告或 Lighthouse 显示指标未达标</li><li>上线前的性能验收</li><li>移动端加载或卡顿的归因分析</li></ul>
+<h2 id="阈值">阈值</h2>
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>含义</th><th>良好</th><th>需改进</th></tr></thead><tbody><tr><td>LCP</td><td>最大内容绘制完成时间</td><td>≤ 2.5 s</td><td>&gt; 4 s</td></tr><tr><td>INP</td><td>交互到下一次绘制的延迟</td><td>≤ 200 ms</td><td>&gt; 500 ms</td></tr><tr><td>CLS</td><td>累计布局偏移</td><td>≤ 0.1</td><td>&gt; 0.25</td></tr></tbody></table></div>
+<h2 id="最小示例">最小示例</h2>
+<p>为图片预留空间并优先加载首屏图：</p>
+<div class="code-block" data-lang="html">
+  <div class="code-head"><span class="code-lang">html</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">&lt;img src=<span class="tok-s">&quot;/hero.webp&quot;</span> width=<span class="tok-s">&quot;1200&quot;</span> height=<span class="tok-s">&quot;600&quot;</span> fetchpriority=<span class="tok-s">&quot;high&quot;</span> alt=<span class="tok-s">&quot;示意图&quot;</span> /&gt;</span></code></pre>
+  
+</div>
+<p>拆分长任务，避免单次执行阻塞主线程：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">async</span> <span class="tok-k">function</span> <span class="tok-f">processAll</span>(items) {</span><span class="code-line">  <span class="tok-k">for</span> (<span class="tok-k">const</span> item <span class="tok-k">of</span> items) {</span><span class="code-line">    <span class="tok-f">doWork</span>(item);</span><span class="code-line">    <span class="tok-c">// 让出主线程，使浏览器能响应输入</span></span><span class="code-line">    <span class="tok-k">await</span> <span class="tok-k">new</span> <span class="tok-f">Promise</span>((r) =&gt; <span class="tok-f">setTimeout</span>(r, <span class="tok-n">0</span>));</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<h2 id="说明">说明</h2>
+<ul><li><strong>LCP</strong> 通常由首屏图片、字体或渲染阻塞脚本决定。给 <code>&lt;img&gt;</code> 写死 <code>width</code>/<code>height</code>，避免用 JS 决定尺寸。</li><li><strong>INP</strong> 差几乎都源于主线程长任务。把大循环切片、把计算移入 Web Worker、减少事件回调里的同步布局读取。</li><li><strong>CLS</strong> 的成因是尺寸未知的元素：无尺寸图片、动态插入的广告位、晚加载的字体导致重排。用 <code>min-height</code> 或 <code>font-display: optional</code> 规避。</li><li>字体与关键 CSS 内联，非关键 JS 用 <code>defer</code>，能让 LCP 提前。</li></ul>
+<h2 id="限制">限制</h2>
+<ul><li>指标取自真实用户数据（CrUX），本地 Lighthouse 分数不能直接代表线上结果。</li><li>单页内 LCP 元素可能变化（如轮播图），需以实际监测为准。</li><li>优化动作互相牵制：预加载过多资源会改善 LCP 但拖慢 INP。</li></ul>
+<h2 id="下一步">下一步</h2>
+<ul><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a></li><li><a href="/docs/programming/javascript/abort-controller/">AbortController 取消请求</a></li></ul></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#适用场景">适用场景</a></li><li class=""><a href="#阈值">阈值</a></li><li class=""><a href="#最小示例">最小示例</a></li><li class=""><a href="#说明">说明</a></li><li class=""><a href="#限制">限制</a></li><li class=""><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+    <section class="related"><h2>相关条目</h2><ul><li><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a><span>让页面能被 Google 与 Bing 正常收录的最低要求：预渲染 HTML、唯一元信息、站点地图、结构化数据，以及上线后主动提交索引。按清单逐项核验即可。</span></li></ul></section>
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/frontend/performance/core-web-vitals/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="frontend/performance/core-web-vitals">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>

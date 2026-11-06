@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenRef 发信</title>
+<style>
+  :root{
+    --bg:#fff; --fg:#1a1a1a; --muted:#666; --line:#e2e2e2;
+    --accent:#0071e3; --soft:#f6f6f6; --ok:#16a34a; --err:#dc2626;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16181c; --fg:#e8e8e8; --muted:#9aa0a6; --line:#2f3338;
+           --accent:#4da3ff; --soft:#1e2126; }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:20px 16px 48px;
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--fg); line-height:1.6; font-size:15px;
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+  h1{font-size:21px;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:22px;}
+  label{display:block;font-size:13.5px;font-weight:600;margin:16px 0 6px;}
+  input,select,textarea{
+    width:100%; padding:10px 12px; font:inherit; font-size:15px;
+    border:1px solid var(--line); border-radius:9px;
+    background:var(--bg); color:var(--fg);
+  }
+  textarea{min-height:190px; resize:vertical; line-height:1.75;}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent); outline-offset:-1px;}
+  button{
+    margin-top:20px; width:100%; padding:13px;
+    font:inherit; font-size:16px; font-weight:600;
+    color:#fff; background:var(--accent); border:0; border-radius:10px; cursor:pointer;
+  }
+  button:disabled{opacity:.55;cursor:default;}
+  .card{
+    border:1px solid var(--line); border-radius:11px;
+    padding:14px 16px; background:var(--soft); margin-bottom:6px;
+  }
+  .card summary{cursor:pointer;font-weight:600;font-size:14px;}
+  .card .hint{color:var(--muted);font-size:12.5px;margin-top:8px;}
+  .msg{
+    margin-top:16px; padding:11px 14px; border-radius:9px;
+    font-size:14px; display:none; white-space:pre-wrap; word-break:break-all;
+  }
+  .msg.ok{display:block;background:rgba(22,163,74,.12);color:var(--ok);}
+  .msg.err{display:block;background:rgba(220,38,38,.12);color:var(--err);}
+  .row{display:flex;gap:10px;}
+  .row>*{flex:1;}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:26px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OpenRef 发信</h1>
+  <div class="sub">用 no-reply@openref.de5.net 给投稿人 / 读者回信</div>
+
+  <details class="card" id="cfg">
+    <summary>连接设置（第一次填，之后自动记住）</summary>
+    <label for="wurl">Worker 地址</label>
+    <input id="wurl" placeholder="https://send.openref.de5.net" autocomplete="off">
+    <label for="wsec">口令（SEND_SECRET）</label>
+    <input id="wsec" type="password" placeholder="Worker 里设的 SEND_SECRET" autocomplete="off">
+    <div class="hint">这两项存在本机浏览器里，不会上传。</div>
+  </details>
+
+  <label for="to">收件人</label>
+  <input id="to" type="email" placeholder="someone@example.com">
+
+  <label for="tpl">模板</label>
+  <select id="tpl">
+    <option value="pass">稿件审核通过</option>
+    <option value="revise">稿件需修改</option>
+    <option value="reject">稿件未通过</option>
+    <option value="reprint">转载许可（同意）</option>
+    <option value="blank">空白</option>
+  </select>
+
+  <label for="link">稿件 / 页面链接</label>
+  <input id="link" placeholder="https://openref.de5.net/docs/...">
+
+  <label for="subject">主题</label>
+  <input id="subject">
+
+  <label for="body">正文</label>
+  <textarea id="body"></textarea>
+
+  <button id="send">发送</button>
+  <div class="msg" id="msg"></div>
+
+  <div class="foot">发件人显示为 no-reply@openref.de5.net</div>
+</div>
+
+<script>
+var TPL = {
+  pass: {
+    s: '稿件已通过审核并发布',
+    b: '创作者您好！\n\n您的稿件已通过审核并上传。\n\n{LINK}\n\n感谢您的投稿！ヾ(≧∇≦谢谢≧∇≦)ノ\n\n—— OpenRef 编辑部\n\n（本邮件由系统发送，请勿直接回复）'
+  },
+  revise: {
+    s: '稿件需要修改',
+    b: '创作者您好！\n\n感谢您的投稿。稿件整体方向没问题，但有几处需要调整：\n\n1. （在此填写具体修改意见）\n2. \n\n修改完成后请回复本邮件，或直接重新提交。\n\n—— OpenRef 编辑部'
+  },
+  reject: {
+    s: '关于您的投稿',
+    b: '创作者您好！\n\n感谢您对 OpenRef 的关注。很遗憾，这篇稿件与本站收录方向不太吻合，本次未能采纳。\n\n原因：（在此填写）\n\n欢迎您后续继续投稿其他主题。\n\n—— OpenRef 编辑部'
+  },
+  reprint: {
+    s: '转载许可确认',
+    b: '您好！\n\n同意您转载 OpenRef 的内容，条件如下：\n\n1. 保留原文链接与署名：{LINK}\n2. 注明作者与来源「OpenRef 技术参考」\n3. 不得用于商业用途，不得删改正文原意\n\n感谢您的认可。\n\n—— OpenRef 编辑部'
+  },
+  blank: { s: '', b: '' }
+};
+
+var $ = function (id) { return document.getElementById(id); };
+
+function fill() {
+  var t = TPL[$('tpl').value];
+  var link = $('link').value.trim() || '{LINK}';
+  $('subject').value = t.s;
+  $('body').value = t.b.split('{LINK}').join(link);
+}
+
+$('tpl').addEventListener('change', fill);
+$('link').addEventListener('input', function () {
+  // 只在用户没手动改过正文时才自动更新链接
+  var t = TPL[$('tpl').value];
+  var link = $('link').value.trim() || '{LINK}';
+  var auto = t.b.split('{LINK}').join(link);
+  if ($('body').value === '' || $('body').value.indexOf('{LINK}') >= 0) {
+    $('body').value = auto;
+  }
+});
+
+// 读取保存的设置
+try {
+  $('wurl').value = localStorage.getItem('or_wurl') || '';
+  $('wsec').value = localStorage.getItem('or_wsec') || '';
+} catch (e) {}
+if (!$('wurl').value) $('cfg').setAttribute('open', '');
+
+fill();
+
+$('send').addEventListener('click', function () {
+  var wurl = $('wurl').value.trim();
+  var msg = $('msg');
+  msg.className = 'msg';
+  msg.textContent = '';
+
+  if (!wurl) { msg.className = 'msg err'; msg.textContent = '请先填写 Worker 地址'; $('cfg').setAttribute('open', ''); return; }
+  var to = $('to').value.trim();
+  var subject = $('subject').value.trim();
+  var text = $('body').value;
+  if (!to) { msg.className = 'msg err'; msg.textContent = '请填写收件人'; return; }
+  if (!subject) { msg.className = 'msg err'; msg.textContent = '请填写主题'; return; }
+
+  try {
+    localStorage.setItem('or_wurl', wurl);
+    localStorage.setItem('or_wsec', $('wsec').value);
+  } catch (e) {}
+
+  var btn = $('send');
+  btn.disabled = true;
+  btn.textContent = '发送中…';
+
+  fetch(wurl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: to,
+      subject: subject,
+      text: text,
+      secret: $('wsec').value
+    })
+  })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      btn.disabled = false;
+      btn.textContent = '发送';
+      if (res.ok && res.d.ok) {
+        msg.className = 'msg ok';
+        msg.textContent = '已发送！Resend 邮件 ID：' + res.d.id;
+      } else {
+        msg.className = 'msg err';
+        msg.textContent = '发送失败：' + (res.d.error || JSON.stringify(res.d));
+      }
+    })
+    .catch(function (e) {
+      btn.disabled = false;
+      btn.textContent = '发送';
+      msg.className = 'msg err';
+      msg.textContent = '请求出错：' + e.message + '\n（检查 Worker 地址是否正确、网络是否可达）';
+    });
+});
+</script>
+</body>
+</html>

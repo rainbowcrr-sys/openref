@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>OpenRef 订阅列表</title>
+    <dateCreated>Fri, 06 Nov 2026 12:51:01 GMT</dateCreated>
+    <ownerName>rainbowcrr-sys</ownerName>
+  </head>
+  <body>
+    <outline text="全站" title="全站">
+      <outline type="rss" text="OpenRef 全站" title="OpenRef 全站" xmlUrl="https://openref.de5.net/rss/rss.xml" htmlUrl="https://openref.de5.net/" />
+    </outline>
+    <outline text="大类" title="大类">
+      <outline type="rss" text="OpenRef · 编程" title="OpenRef · 编程" xmlUrl="https://openref.de5.net/rss/topics/programming/rss.xml" htmlUrl="https://openref.de5.net/topics/programming/" />
+      <outline type="rss" text="OpenRef · 云原生与基础设施" title="OpenRef · 云原生与基础设施" xmlUrl="https://openref.de5.net/rss/topics/cloud/rss.xml" htmlUrl="https://openref.de5.net/topics/cloud/" />
+      <outline type="rss" text="OpenRef · 前端工程" title="OpenRef · 前端工程" xmlUrl="https://openref.de5.net/rss/topics/frontend/rss.xml" htmlUrl="https://openref.de5.net/topics/frontend/" />
+      <outline type="rss" text="OpenRef · 官方" title="OpenRef · 官方" xmlUrl="https://openref.de5.net/rss/topics/official/rss.xml" htmlUrl="https://openref.de5.net/topics/official/" />
+    </outline>
+    <outline text="子类" title="子类">
+      <outline type="rss" text="OpenRef · 编程 / JavaScript / TypeScript" title="OpenRef · 编程 / JavaScript / TypeScript" xmlUrl="https://openref.de5.net/rss/topics/programming/javascript/rss.xml" htmlUrl="https://openref.de5.net/topics/programming/javascript/" />
+      <outline type="rss" text="OpenRef · 云原生与基础设施 / Cloudflare" title="OpenRef · 云原生与基础设施 / Cloudflare" xmlUrl="https://openref.de5.net/rss/topics/cloud/cloudflare/rss.xml" htmlUrl="https://openref.de5.net/topics/cloud/cloudflare/" />
+      <outline type="rss" text="OpenRef · 前端工程 / 性能优化" title="OpenRef · 前端工程 / 性能优化" xmlUrl="https://openref.de5.net/rss/topics/frontend/performance/rss.xml" htmlUrl="https://openref.de5.net/topics/frontend/performance/" />
+      <outline type="rss" text="OpenRef · 前端工程 / SEO" title="OpenRef · 前端工程 / SEO" xmlUrl="https://openref.de5.net/rss/topics/frontend/seo/rss.xml" htmlUrl="https://openref.de5.net/topics/frontend/seo/" />
+      <outline type="rss" text="OpenRef · 官方 / 指南" title="OpenRef · 官方 / 指南" xmlUrl="https://openref.de5.net/rss/topics/official/guide/rss.xml" htmlUrl="https://openref.de5.net/topics/official/guide/" />
+    </outline>
+    <outline text="标签" title="标签">
+      <outline type="rss" text="OpenRef · #Cloudflare" title="OpenRef · #Cloudflare" xmlUrl="https://openref.de5.net/rss/tags/cloudflare/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #CLS" title="OpenRef · #CLS" xmlUrl="https://openref.de5.net/rss/tags/cls/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #D1" title="OpenRef · #D1" xmlUrl="https://openref.de5.net/rss/tags/d1/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #fetch" title="OpenRef · #fetch" xmlUrl="https://openref.de5.net/rss/tags/fetch/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #INP" title="OpenRef · #INP" xmlUrl="https://openref.de5.net/rss/tags/inp/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #JavaScript" title="OpenRef · #JavaScript" xmlUrl="https://openref.de5.net/rss/tags/javascript/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #KV" title="OpenRef · #KV" xmlUrl="https://openref.de5.net/rss/tags/kv/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #LCP" title="OpenRef · #LCP" xmlUrl="https://openref.de5.net/rss/tags/lcp/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #OpenRef" title="OpenRef · #OpenRef" xmlUrl="https://openref.de5.net/rss/tags/openref/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #RSS" title="OpenRef · #RSS" xmlUrl="https://openref.de5.net/rss/tags/rss/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #SEO" title="OpenRef · #SEO" xmlUrl="https://openref.de5.net/rss/tags/seo/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #SQLite" title="OpenRef · #SQLite" xmlUrl="https://openref.de5.net/rss/tags/sqlite/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #Workers" title="OpenRef · #Workers" xmlUrl="https://openref.de5.net/rss/tags/workers/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #免费额度" title="OpenRef · #免费额度" xmlUrl="https://openref.de5.net/rss/tags/mian-fei-e-du/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #前端" title="OpenRef · #前端" xmlUrl="https://openref.de5.net/rss/tags/qian-duan/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #异步" title="OpenRef · #异步" xmlUrl="https://openref.de5.net/rss/tags/yi-bu/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #性能" title="OpenRef · #性能" xmlUrl="https://openref.de5.net/rss/tags/xing-neng/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #收录" title="OpenRef · #收录" xmlUrl="https://openref.de5.net/rss/tags/shou-lu/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #数据库" title="OpenRef · #数据库" xmlUrl="https://openref.de5.net/rss/tags/shu-ju-ku/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #站点地图" title="OpenRef · #站点地图" xmlUrl="https://openref.de5.net/rss/tags/zhan-dian-di-tu/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #结构化数据" title="OpenRef · #结构化数据" xmlUrl="https://openref.de5.net/rss/tags/jie-gou-hua-shu-ju/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #缓存" title="OpenRef · #缓存" xmlUrl="https://openref.de5.net/rss/tags/huan-cun/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #订阅" title="OpenRef · #订阅" xmlUrl="https://openref.de5.net/rss/tags/ding-yue/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+      <outline type="rss" text="OpenRef · #静态托管" title="OpenRef · #静态托管" xmlUrl="https://openref.de5.net/rss/tags/jing-tai-tuo-guan/rss.xml" htmlUrl="https://openref.de5.net/tags/" />
+    </outline>
+    <outline text="单篇" title="单篇">
+      <outline type="rss" text="OpenRef · 使用 RSS 来订阅 OpenRef" title="OpenRef · 使用 RSS 来订阅 OpenRef" xmlUrl="https://openref.de5.net/docs/official/guide/rss-subscribe/rss.xml" htmlUrl="https://openref.de5.net/docs/official/guide/rss-subscribe/" />
+      <outline type="rss" text="OpenRef · 用 Workers 静态资源托管站点" title="OpenRef · 用 Workers 静态资源托管站点" xmlUrl="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/rss.xml" htmlUrl="https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/" />
+      <outline type="rss" text="OpenRef · D1 索引与查询成本" title="OpenRef · D1 索引与查询成本" xmlUrl="https://openref.de5.net/docs/cloud/cloudflare/d1-index/rss.xml" htmlUrl="https://openref.de5.net/docs/cloud/cloudflare/d1-index/" />
+      <outline type="rss" text="OpenRef · KV 免费额度与写入策略" title="OpenRef · KV 免费额度与写入策略" xmlUrl="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/rss.xml" htmlUrl="https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/" />
+      <outline type="rss" text="OpenRef · 技术 SEO 检查清单" title="OpenRef · 技术 SEO 检查清单" xmlUrl="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/rss.xml" htmlUrl="https://openref.de5.net/docs/frontend/seo/technical-seo-checklist/" />
+      <outline type="rss" text="OpenRef · 核心网页指标与优化顺序" title="OpenRef · 核心网页指标与优化顺序" xmlUrl="https://openref.de5.net/docs/frontend/performance/core-web-vitals/rss.xml" htmlUrl="https://openref.de5.net/docs/frontend/performance/core-web-vitals/" />
+      <outline type="rss" text="OpenRef · AbortController 取消请求" title="OpenRef · AbortController 取消请求" xmlUrl="https://openref.de5.net/docs/programming/javascript/abort-controller/rss.xml" htmlUrl="https://openref.de5.net/docs/programming/javascript/abort-controller/" />
+    </outline>
+  </body>
+</opml>

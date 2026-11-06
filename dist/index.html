@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenRef 技术参考 — 直白、可检索、能直接照着做的技术参考手册。</title>
+<meta name="description" content="OpenRef 是一份开放的技术参考：按主题分组，条目式写作，覆盖 Cloudflare 边缘计算、前端工程、编程与系统基础。每篇讲清一件事，给出可直接运行的代码与明确的限制。" />
+<link rel="canonical" href="https://openref.de5.net/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="OpenRef 技术参考" />
+<meta property="og:description" content="OpenRef 是一份开放的技术参考：按主题分组，条目式写作，覆盖 Cloudflare 边缘计算、前端工程、编程与系统基础。每篇讲清一件事，给出可直接运行的代码与明确的限制。" />
+<meta property="og:url" content="https://openref.de5.net/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="OpenRef 技术参考" />
+<meta name="twitter:description" content="OpenRef 是一份开放的技术参考：按主题分组，条目式写作，覆盖 Cloudflare 边缘计算、前端工程、编程与系统基础。每篇讲清一件事，给出可直接运行的代码与明确的限制。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>OpenRef 技术参考</h1>
+    <p>直白、可检索、能直接照着做的技术参考手册。</p>
+    <form class="hero-search" action="/search/" method="get" role="search">
+      <input class="search-box" type="search" name="q" placeholder="搜索主题、接口、报错信息…" aria-label="搜索文章" />
+    </form>
+    <div class="stat-row">
+      <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">条目</div></div>
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">大类</div></div>
+      <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">子类</div></div>
+      <div class="stat-item"><div class="stat-num">24</div><div class="stat-label">标签</div></div>
+      <div class="stat-item"><div class="stat-num">3643 字</div><div class="stat-label">总字数</div></div>
+      <div class="stat-item"><div class="stat-num">2026-11-06</div><div class="stat-label">最后更新</div></div>
+      <div class="stat-item"><div class="stat-num">今天</div><div class="stat-label">更新于</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>最新条目</h2>
+      <p>共 7 篇，按发布时间排列。</p>
+    </div>
+    <div class="grid"><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/official/">官方</a><a class="pill" href="/topics/official/guide/">指南</a></div>
+  <h3><a href="/docs/official/guide/rss-subscribe/">使用 RSS 来订阅 OpenRef</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。</p>
+  <div class="meta"><time datetime="2026-11-06">2026-11-06</time><span class="pill">#RSS</span><span class="pill">#订阅</span><span class="pill">#OpenRef</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</p>
+  <div class="meta"><time datetime="2026-10-26">2026-10-26</time><span class="pill">#Cloudflare</span><span class="pill">#Workers</span><span class="pill">#静态托管</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。</p>
+  <div class="meta"><time datetime="2026-10-24">2026-10-24</time><span class="pill">#Cloudflare</span><span class="pill">#D1</span><span class="pill">#SQLite</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</p>
+  <div class="meta"><time datetime="2026-10-22">2026-10-22</time><span class="pill">#Cloudflare</span><span class="pill">#KV</span><span class="pill">#缓存</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/frontend/">前端工程</a><a class="pill" href="/topics/frontend/seo/">SEO</a></div>
+  <h3><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>让页面能被 Google 与 Bing 正常收录的最低要求：预渲染 HTML、唯一元信息、站点地图、结构化数据，以及上线后主动提交索引。按清单逐项核验即可。</p>
+  <div class="meta"><time datetime="2026-10-21">2026-10-21</time><span class="pill">#SEO</span><span class="pill">#收录</span><span class="pill">#站点地图</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/frontend/">前端工程</a><a class="pill" href="/topics/frontend/performance/">性能优化</a></div>
+  <h3><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。</p>
+  <div class="meta"><time datetime="2026-10-19">2026-10-19</time><span class="pill">#性能</span><span class="pill">#LCP</span><span class="pill">#INP</span></div>
+</article></div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><a href="/topics/programming/">编程</a></h2>
+      <p>语言特性、标准库、常见写法与陷阱。 · 1 篇</p>
+      <div class="meta mt"><a class="pill" href="/topics/programming/javascript/">JavaScript / TypeScript · 1</a></div>
+    </div>
+    <div class="grid"><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/programming/">编程</a><a class="pill" href="/topics/programming/javascript/">JavaScript / TypeScript</a></div>
+  <h3><a href="/docs/programming/javascript/abort-controller/">AbortController 取消请求</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</p>
+  <div class="meta"><time datetime="2026-10-17">2026-10-17</time><span class="pill">#JavaScript</span><span class="pill">#fetch</span><span class="pill">#异步</span></div>
+</article></div>
+  </div>
+</section>
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><a href="/topics/cloud/">云原生与基础设施</a></h2>
+      <p>边缘计算、Serverless、部署与运维。 · 3 篇</p>
+      <div class="meta mt"><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare · 3</a></div>
+    </div>
+    <div class="grid"><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/workers-static-assets/">用 Workers 静态资源托管站点</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</p>
+  <div class="meta"><time datetime="2026-10-26">2026-10-26</time><span class="pill">#Cloudflare</span><span class="pill">#Workers</span><span class="pill">#静态托管</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/d1-index/">D1 索引与查询成本</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>D1 按「扫描行数」计费而不是按请求数。缺索引的查询会把整表行数算进额度，本文说明如何建索引、如何写查询、以及免费额度的实际边界。</p>
+  <div class="meta"><time datetime="2026-10-24">2026-10-24</time><span class="pill">#Cloudflare</span><span class="pill">#D1</span><span class="pill">#SQLite</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/cloud/">云原生与基础设施</a><a class="pill" href="/topics/cloud/cloudflare/">Cloudflare</a></div>
+  <h3><a href="/docs/cloud/cloudflare/kv-free-limits/">KV 免费额度与写入策略</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</p>
+  <div class="meta"><time datetime="2026-10-22">2026-10-22</time><span class="pill">#Cloudflare</span><span class="pill">#KV</span><span class="pill">#缓存</span></div>
+</article></div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><a href="/topics/frontend/">前端工程</a></h2>
+      <p>浏览器行为、渲染性能、可访问性与 SEO。 · 2 篇</p>
+      <div class="meta mt"><a class="pill" href="/topics/frontend/performance/">性能优化 · 1</a><a class="pill" href="/topics/frontend/seo/">SEO · 1</a></div>
+    </div>
+    <div class="grid"><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/frontend/">前端工程</a><a class="pill" href="/topics/frontend/performance/">性能优化</a></div>
+  <h3><a href="/docs/frontend/performance/core-web-vitals/">核心网页指标与优化顺序</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。</p>
+  <div class="meta"><time datetime="2026-10-19">2026-10-19</time><span class="pill">#性能</span><span class="pill">#LCP</span><span class="pill">#INP</span></div>
+</article><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/frontend/">前端工程</a><a class="pill" href="/topics/frontend/seo/">SEO</a></div>
+  <h3><a href="/docs/frontend/seo/technical-seo-checklist/">技术 SEO 检查清单</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>让页面能被 Google 与 Bing 正常收录的最低要求：预渲染 HTML、唯一元信息、站点地图、结构化数据，以及上线后主动提交索引。按清单逐项核验即可。</p>
+  <div class="meta"><time datetime="2026-10-21">2026-10-21</time><span class="pill">#SEO</span><span class="pill">#收录</span><span class="pill">#站点地图</span></div>
+</article></div>
+  </div>
+</section>
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><a href="/topics/official/">官方</a></h2>
+      <p>关于 OpenRef 站点本身的使用说明、功能更新与公告。 · 1 篇</p>
+      <div class="meta mt"><a class="pill" href="/topics/official/guide/">指南 · 1</a></div>
+    </div>
+    <div class="grid"><article class="card">
+  <div class="meta mb"><a class="pill" href="/topics/official/">官方</a><a class="pill" href="/topics/official/guide/">指南</a></div>
+  <h3><a href="/docs/official/guide/rss-subscribe/">使用 RSS 来订阅 OpenRef</a><span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+  <p>OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。</p>
+  <div class="meta"><time datetime="2026-11-06">2026-11-06</time><span class="pill">#RSS</span><span class="pill">#订阅</span><span class="pill">#OpenRef</span></div>
+</article></div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+  </div>
+  </div>
+</footer>
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/guard.js"></script>
+</body>
+</html>
