@@ -438,8 +438,8 @@ git push
 
 - [ ] `https://openref.de5.net/` 能打开
 - [ ] 样式正常（不是纯文字）
-- [ ] 右键菜单被禁用
-- [ ] F12 被拦截
+- [ ] 右键菜单可用（不拦截）
+- [ ] F12 可正常打开
 - [ ] 首页统计数字显示正常
 - [ ] `/robots.txt` 能打开
 - [ ] `/sitemap.xml` 能打开，URL 都是 `https://openref.de5.net/...`

@@ -709,9 +709,6 @@ fs.copyFileSync(path.join(ROOT, 'src/styles/global.css'), path.join(DIST, 'asset
 for (const js of ['app.js', 'search.js', 'consent.js', 'cache.js', 'stats.js', 'version.js']) {
   fs.copyFileSync(path.join(ROOT, 'src/assets', js), path.join(DIST, 'assets', js));
 }
-/* 旧防护脚本废弃：右键、F12、开发者工具、插件检测一律不禁用 */
-try { fs.unlinkSync(path.join(DIST, 'assets', 'guard.js')); } catch (e) {}
-
 if (fs.existsSync(path.join(ROOT, 'public'))) {
   fs.cpSync(path.join(ROOT, 'public'), DIST, { recursive: true });
 }

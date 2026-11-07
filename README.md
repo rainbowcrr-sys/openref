@@ -65,7 +65,6 @@ python3 scripts/og.py --all   # 生成 PNG 版分享图（可选，需 Pillow）
 | `src/data/taxonomy.json` | 分类树，唯一数据源 |
 | `src/config/site.mjs` | 站点名、地址、描述 |
 | `src/styles/global.css` | 苹果风样式 + 深色模式 |
-| `src/assets/guard.js` | 前端防护（禁右键 / 屏蔽 DevTools 快捷键） |
 | `build.mjs` | 构建器，零依赖 |
 | `WRITING-GUIDE.md` | **完整写作与语法说明** |
 | `WRITING-TEMPLATE.md` | 发文时复制的模板 |
@@ -79,17 +78,6 @@ python3 scripts/og.py --all   # 生成 PNG 版分享图（可选，需 Pillow）
 首页 / 全部文章 / 分类总览 / 各分类页 / 标签页 / 搜索页 / 404，
 以及 `sitemap.xml`（带 lastmod）、`robots.txt`、`rss.xml`、分类 RSS、
 `llms.txt`、`llms-full.txt`、搜索索引、每页 OG 图与结构化数据。
-
----
-
-## ⚠️ 关于「F12 看不到源码」
-
-`guard.js` 已做到：禁用右键菜单、屏蔽 F12 / Ctrl+Shift+I / Ctrl+U 等快捷键、
-检测到 DevTools 打开时覆盖页面。
-
-**但要清楚**：浏览器必须先下载 HTML/CSS/JS 才能渲染，任何访客都能通过
-「右键查看源代码 / curl / 保存网页」拿到内容；仓库又是 public，源码本身就在 GitHub 上。
-这属于**提高门槛**，不是加密，无法真正禁止。
 
 ---
 

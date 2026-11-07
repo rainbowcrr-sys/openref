@@ -177,7 +177,7 @@ rm -r dist
 node build.mjs
 ```
 
-然后看 `dist/assets/` 里应该有 `app.js`、`search.js`、`guard.js` 三个文件。
+然后看 `dist/assets/` 里应该有 `app.js`、`search.js`、`consent.js`、`cache.js`、`stats.js`、`version.js` 这些文件（不含任何防护脚本）。
 
 ---
 

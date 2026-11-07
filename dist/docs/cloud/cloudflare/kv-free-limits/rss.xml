@@ -9,7 +9,7 @@
     <link>https://openref.de5.net/docs/cloud/cloudflare/kv-free-limits/</link>
     <description>KV 的写入额度只有每天 1000 次，却常被当成数据库用。本文给出它的正确用途、记数替代方案，以及最终一致带来的读取陷阱。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 07 Nov 2026 02:09:34 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 03:04:00 GMT</lastBuildDate>
     <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
     <managingEditor>rainbowcrr-sys</managingEditor>
     <webMaster></webMaster>

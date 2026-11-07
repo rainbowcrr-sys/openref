@@ -582,8 +582,8 @@ https://openref.de5.net
 
 - ✅ 能打开，样式正常（不是纯文字）
 - ✅ 首页统计数字显示
-- ✅ 右键菜单被禁用
-- ✅ F12 被拦截
+- ✅ 不拦截右键菜单
+- ✅ F12 可正常打开
 
 ---
 
@@ -656,8 +656,8 @@ openref serve         # 打开 localhost:4321 预览
 - [ ] `https://openref.de5.net/robots.txt` 能打开
 - [ ] `https://openref.de5.net/sitemap.xml` 能打开
 - [ ] `https://openref.de5.net/404.html` 或随便一个不存在的页面 → 出现 404 快闪页
-- [ ] 右键菜单被禁用
-- [ ] F12 被拦截
+- [ ] 右键菜单可用（不拦截）
+- [ ] F12 可正常打开
 - [ ] 深色模式切换能用，刷新后不变
 
 ---
