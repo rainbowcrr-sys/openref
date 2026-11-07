@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenRef 服务状态</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230071e3'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='system-ui'>O</text></svg>" />
+<style>
+  :root { color-scheme: light dark; --bg:#f5f5f7; --card:#fff; --text:#1d1d1f; --muted:#6e6e73; --line:#e5e5ea; --green:#30d158; --amber:#ff9f0a; --red:#ff453a; --blue:#0071e3; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#000; --card:#1c1c1e; --text:#f5f5f7; --muted:#98989f; --line:#38383a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",system-ui,sans-serif; }
+  .wrap { max-width:760px; margin:0 auto; padding:56px 20px 80px; }
+  h1 { font-size:30px; letter-spacing:-.02em; margin:0 0 6px; }
+  .sub { color:var(--muted); margin:0 0 32px; }
+  .overall { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px; margin-bottom:24px; }
+  .dot { width:11px; height:11px; border-radius:50%; background:var(--muted); flex:none; }
+  .dot.ok { background:var(--green); } .dot.warn { background:var(--amber); } .dot.bad { background:var(--red); }
+  .overall strong { font-size:17px; } .overall span { color:var(--muted); font-size:13px; }
+  .grid { display:grid; gap:12px; }
+  .card { display:flex; align-items:center; gap:14px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .card .dot { width:9px; height:9px; }
+  .card .name { font-weight:600; flex:1; }
+  .card .desc { color:var(--muted); font-size:13px; }
+  .card .state { font-size:13px; color:var(--muted); }
+  .foot { margin-top:28px; color:var(--muted); font-size:13px; }
+  a { color:var(--blue); text-decoration:none; }
+  .refresh { border:0; background:var(--blue); color:#fff; border-radius:9px; padding:8px 14px; font-size:14px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OpenRef 服务状态</h1>
+  <p class="sub">站点、订阅、统计与基础设施的实时状态。GitHub 维护时这里也会亮黄灯。</p>
+
+  <div class="overall">
+    <span class="dot" id="overall-dot"></span>
+    <div><strong id="overall-title">正在检查…</strong><br /><span id="overall-sub">读取各服务状态中</span></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><span class="dot" id="d-github"></span><div class="name">GitHub</div><div class="state" id="s-github">检查中</div></div>
+    <div class="card"><span class="dot" id="d-worker"></span><div class="name">统计上报</div><div class="state" id="s-worker">检查中</div></div>
+    <div class="card"><span class="dot" id="d-site"></span><div class="name">主站 openref.de5.net</div><div class="state" id="s-site">检查中</div></div>
+    <div class="card"><span class="dot" id="d-status"></span><div class="name">状态页自身（Pages）</div><div class="state" id="s-status">运行中</div></div>
+  </div>
+
+  <p class="foot">
+    数据源：GitHub Status 公开接口 + 统计 Worker 的 <code>/health</code>。<br />
+    返回 <a href="https://openref.de5.net">openref.de5.net</a> ·
+    <button class="refresh" type="button" id="refresh">重新检查</button>
+  </p>
+</div>
+<script src="./app.js" defer></script>
+</body>
+</html>

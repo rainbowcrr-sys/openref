@@ -16,6 +16,7 @@ import { layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml, badgeHtml, rss
 import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME, LANG, REPO, REPO_BRANCH, CONTENT_DIR } from './src/config/site.mjs';
 import { taxonomy, getCategory, getSub } from './src/data/taxonomy.mjs';
 import { feedListMarkdown, tagSlug, generateRss } from './scripts/gen-rss.mjs';
+import { collectVersionGroups, versionBarHtml } from './src/lib/versions.mjs';
 
 /* CJK 字符范围：常用汉字 + 扩展汉字 + 兼容汉字 + 日文假名。
    统一成常量，避免多处正则写法不一致导致统计偏差。 */
@@ -77,7 +78,10 @@ function autoDescription(body, fallback = '') {
    build 时替换成自动生成的五层地址清单，新增文章永不漏。 */
 const FEED_LIST_MD = feedListMarkdown({ DOCS, SITE, taxonomy, tagSlugFn: tagSlug });
 
-const posts = walk(DOCS)
+const VERSION_GROUPS = collectVersionGroups(DOCS);
+const VERSION_FILE_IDS = new Set(VERSION_GROUPS.flatMap((g) => [...g.fileIds]));
+
+const allPosts = walk(DOCS)
   .map(({ file, id }) => {
     const raw = fs.readFileSync(file, 'utf8');
     const { data, body } = parseFrontmatter(raw);
@@ -129,7 +133,12 @@ const posts = walk(DOCS)
       subcategory,
     };
   })
-  .filter(Boolean)
+  .filter(Boolean);
+
+/* 版本组：组内 md 不单独成篇，合并成「目录名」一个页面；页面壳用 pubDate 最新那版 */
+const posts = allPosts
+  .filter((p) => !VERSION_FILE_IDS.has(p.id))
+  .concat(VERSION_GROUPS.map((g) => g.post))
   .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
 
 /* ============================================================
@@ -441,7 +450,8 @@ for (const p of posts) {
     : '';
 
   /* 「编辑此页」：直接跳到 GitHub 上这篇源文件的编辑界面 */
-  const editUrl = `${REPO}/edit/${REPO_BRANCH}/${CONTENT_DIR}/${p.id}.md`;
+  const editFile = p.versionGroup ? `${p.id}/${p.versionGroup.latest.file}` : `${p.id}.md`;
+  const editUrl = `${REPO}/edit/${REPO_BRANCH}/${CONTENT_DIR}/${editFile}`;
   const editBtn = `<a class="edit-btn" href="${editUrl}" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
     <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
       <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
@@ -472,6 +482,7 @@ for (const p of posts) {
         ${p.tags.map((t) => `<span class="pill">#${escapeHtml(t)}</span>`).join('')}
       </div>
     </header>
+    ${p.versionGroup ? versionBarHtml(p.versionGroup) : ''}
     ${tocMobile}
     <div class="with-toc">
       <div class="prose">${p.html}</div>
@@ -487,6 +498,12 @@ for (const p of posts) {
     <div class="article-subs">
       <a href="/rss/rss.xml">${rssIconHtml(13)}订阅本站更新</a>
       <a href="${p.url}rss.xml">${rssIconHtml(13)}订阅本文更新</a>
+      ${p.versionGroup ? `<a href="/rss/series/${escapeHtml(p.versionGroup.series)}/rss.xml">${rssIconHtml(13)}订阅本组全部版本</a>` : ''}
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本文" data-label="缓存本文">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本文</span>
+        </button>
     </div>
     <div class="useful-wrap">
       <button class="useful-btn" id="useful-btn" type="button" data-id="${p.id}">
@@ -689,10 +706,11 @@ for (const pg of standalone) {
  * ========================================================== */
 fs.mkdirSync(path.join(DIST, 'assets'), { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'src/styles/global.css'), path.join(DIST, 'assets/global.css'));
-for (const js of ['app.js', 'search.js', 'guard.js']) {
+for (const js of ['app.js', 'search.js', 'consent.js', 'cache.js', 'stats.js', 'version.js']) {
   fs.copyFileSync(path.join(ROOT, 'src/assets', js), path.join(DIST, 'assets', js));
 }
-fs.copyFileSync(path.join(ROOT, 'src/assets/app.js'), path.join(DIST, 'assets/app.js'));
+/* 旧防护脚本废弃：右键、F12、开发者工具、插件检测一律不禁用 */
+try { fs.unlinkSync(path.join(DIST, 'assets', 'guard.js')); } catch (e) {}
 
 if (fs.existsSync(path.join(ROOT, 'public'))) {
   fs.cpSync(path.join(ROOT, 'public'), DIST, { recursive: true });
@@ -882,6 +900,7 @@ generateRss({
   SITE_FULLNAME,
   SITE_DESC,
   DOCS,
+  versionGroups: VERSION_GROUPS,
 });
 
 /* llms.txt —— 全英文说明 + 中文条目索引（AI 用 UTF-8 读取，不会乱码） */

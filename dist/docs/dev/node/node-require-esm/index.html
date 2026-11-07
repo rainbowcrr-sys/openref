@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用 require() 加载 ESM（Node 22） · OpenRef 技术参考</title>
+<meta name="description" content="Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。" />
+<link rel="canonical" href="https://openref.de5.net/docs/dev/node/node-require-esm/" />
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/assets/icons/icon-512.png" sizes="512x512" />
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="alternate" type="application/rss+xml" title="OpenRef" href="/rss/rss.xml" />
+<meta property="og:site_name" content="OpenRef 技术参考" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="用 require() 加载 ESM（Node 22）" />
+<meta property="og:description" content="Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。" />
+<meta property="og:url" content="https://openref.de5.net/docs/dev/node/node-require-esm/" />
+<meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="用 require() 加载 ESM（Node 22）" />
+<meta name="twitter:description" content="Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。" />
+<meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
+<link rel="stylesheet" href="/assets/global.css" />
+<script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"用 require() 加载 ESM（Node 22）","description":"Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。","datePublished":"2026-11-07","dateModified":"2026-11-07","articleSection":"开发工具与运行时 / Node.js","keywords":"Node.js, ESM, CommonJS","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://openref.de5.net/docs/dev/node/node-require-esm/"},"author":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"},"publisher":{"@type":"Organization","name":"OpenRef","url":"https://openref.de5.net"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://openref.de5.net/"},{"@type":"ListItem","position":2,"name":"开发工具与运行时","item":"https://openref.de5.net/topics/dev/"},{"@type":"ListItem","position":3,"name":"Node.js","item":"https://openref.de5.net/topics/dev/node/"},{"@type":"ListItem","position":4,"name":"用 require() 加载 ESM（Node 22）","item":"https://openref.de5.net/docs/dev/node/node-require-esm/"}]}</script>
+
+</head>
+<body>
+<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
+     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
+<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">OpenRef</a>
+    <nav class="nav" aria-label="主导航">
+      <a href="/topics/">分类</a><a href="/latest/">文章</a><a href="/tags/">标签</a><a href="/search/">搜索</a><a href="/contribute/">投稿</a>
+      <a class="nav-subscribe" href="/rss/rss.xml" title="订阅本站更新"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="14" height="14" alt="" aria-hidden="true" /><span>订阅</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"/>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2"/>
+            <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path d="M20.5 14.3A8.6 8.6 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z" fill="currentColor"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+
+<article class="article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span><a href="/topics/dev/">开发工具与运行时</a><span>/</span><a href="/topics/dev/node/">Node.js</a></nav>
+    <header class="article-header">
+      <div class="title-row">
+        <h1>用 require() 加载 ESM（Node 22）<span class="badge badge-official">OpenRef OFFICIAL</span></h1>
+        <div class="title-actions">
+          <a class="edit-btn" href="https://github.com/rainbowcrr-sys/openref/edit/main/src/content/docs/dev/node/node-require-esm/node22.md" target="_blank" rel="noopener" title="在 GitHub 编辑此页" aria-label="在 GitHub 编辑此页">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path d="M3 21h4.2L19.4 8.8a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3 16.8V21z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+      <path d="M14.6 4.6l4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>
+  </a>
+          <button class="print-btn" type="button" onclick="window.print()" aria-label="打印本页">打印</button>
+        </div>
+      </div>
+      <p class="lede">Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。</p>
+      <div class="meta">
+        <span class="badge badge-official">OpenRef OFFICIAL</span>
+        <time class="meta-updated" datetime="2026-11-07">更新于 2026-11-07</time>
+        <a class="pill accent" href="/topics/dev/">开发工具与运行时</a>
+        <a class="pill" href="/topics/dev/node/">Node.js</a>
+        <time datetime="2026-11-07">发布于 2026-11-07</time>
+        <span class="read-time">约 338 字 · 1 分钟</span>
+        <span class="pill">#Node.js</span><span class="pill">#ESM</span><span class="pill">#CommonJS</span>
+      </div>
+    </header>
+    
+<div class="version-timeline" id="version-timeline" aria-label="版本时间线">
+  <div class="vt-head"><span class="vt-label">版本</span><span class="vt-hint">共 2 个环境版本 · 点一下换正文，旧版不会删</span></div>
+  <div class="vt-track" role="tablist"><button type="button" class="vt-item" data-vi="0" aria-pressed="false">
+  <span class="vt-name">Node 20</span>
+  <span class="vt-date">2026-11-06</span>
+</button><button type="button" class="vt-item is-active" data-vi="1" aria-pressed="true">
+  <span class="vt-name">Node 22</span>
+  <span class="vt-date">2026-11-07</span>
+</button></div>
+</div>
+<div class="version-warn" id="version-warn" hidden></div>
+<script type="application/json" id="version-data">[{"i":0,"version":"Node 20","env":"Node 20.19.0 及以上（需 --experimental-require-module）","iso":"2026-11-06","file":"node20.md","html":"\u003ch2 id=\"一句话结论\">一句话结论\u003c/h2>\n\u003cp>Node 20.19 起才支持用 \u003ccode>require()\u003c/code> 同步加载 ESM，并且\u003cstrong>必须加\u003c/strong> \u003ccode>--experimental-require-module\u003c/code> 开关；被加载的模块里不能有顶层 \u003ccode>await\u003c/code>。\u003c/p>\n\u003cp>这个能力是 20.19.0 才回移植进 Node 20 的，早期 20.x 完全不支持，别在老机器上照抄本文。\u003c/p>\n\u003ch2 id=\"1-先确认版本\">1. 先确认版本\u003c/h2>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">node\u003c/span> -v\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\"># 需要 v20.19.0 或更高\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>低于这个版本就直接换 Node 22 版教程，或者改用动态 \u003ccode>import()\u003c/code>，别折腾 flag。\u003c/p>\n\u003ch2 id=\"2-准备两个文件\">2. 准备两个文件\u003c/h2>\n\u003cp>\u003ccode>esm.mjs\u003c/code>（被加载的 ES 模块）：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">export\u003c/span> \u003cspan class=\"tok-k\">const\u003c/span> name = \u003cspan class=\"tok-s\">'openref'\u003c/span>;\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">export\u003c/span> \u003cspan class=\"tok-k\">function\u003c/span> \u003cspan class=\"tok-f\">twice\u003c/span>(n) {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">return\u003c/span> n * \u003cspan class=\"tok-n\">2\u003c/span>;\u003c/span>\u003cspan class=\"code-line\">}\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>\u003ccode>main.cjs\u003c/code>（CommonJS 侧）：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">const\u003c/span> \u003cspan class=\"tok-k\">mod\u003c/span> = \u003cspan class=\"tok-f\">require\u003c/span>(\u003cspan class=\"tok-s\">'./esm.mjs'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-k\">mod\u003c/span>.name, \u003cspan class=\"tok-k\">mod\u003c/span>.\u003cspan class=\"tok-f\">twice\u003c/span>(\u003cspan class=\"tok-n\">21\u003c/span>));\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>注意扩展名必须是 \u003ccode>.mjs\u003c/code>，或者在最近的 \u003ccode>package.json\u003c/code> 里写了 \u003ccode>&quot;type&quot;: &quot;module&quot;\u003c/code>，否则 Node 会把它当 CommonJS 解析。\u003c/p>\n\u003ch2 id=\"3-运行关键在这一步\">3. 运行（关键在这一步）\u003c/h2>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">node\u003c/span> \u003cspan class=\"tok-c\">--experimental-require-module main.cjs\u003c/span>\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\"># openref 42\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>\u003cstrong>不加这个 flag\u003c/strong> 会直接报：\u003c/p>\n\u003cdiv class=\"code-block\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">code\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">Error [ERR_REQUIRE_ESM]: \u003cspan class=\"tok-f\">require\u003c/span>() \u003cspan class=\"tok-k\">of\u003c/span> ES Module ... \u003cspan class=\"tok-k\">not\u003c/span> supported.\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>不想每次手打，可以写进环境变量：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">NODE_OPTIONS=\u003cspan class=\"tok-c\">--experimental-require-module node main.cjs\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003ch2 id=\"4-两个硬限制\">4. 两个硬限制\u003c/h2>\n\u003cul>\u003cli>\u003cstrong>顶层 \u003ccode>await\u003c/code> 不行。\u003c/strong> 被 require 的模块里只要有顶层 \u003ccode>await\u003c/code>，就会抛 \u003ccode>ERR_REQUIRE_ASYNC_MODULE\u003c/code>。因为 \u003ccode>require()\u003c/code> 是同步的，没法等一个异步模块初始化完。\u003c/li>\u003cli>\u003cstrong>拿不到 \u003ccode>import.meta\u003c/code>。\u003c/strong> 走 require 路径时模块是被同步求值的，别指望在模块里读 \u003ccode>import.meta.url\u003c/code> 做路径拼接。\u003c/li>\u003c/ul>\n\u003cp>真遇到顶层 \u003ccode>await\u003c/code>，退回异步写法：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\">// main.cjs\u003c/span>\u003c/span>\u003cspan class=\"code-line\">(\u003cspan class=\"tok-k\">async\u003c/span> () =&gt; {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">const\u003c/span> \u003cspan class=\"tok-k\">mod\u003c/span> = \u003cspan class=\"tok-k\">await\u003c/span> \u003cspan class=\"tok-k\">import\u003c/span>(\u003cspan class=\"tok-s\">'./esm.mjs'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">  console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-k\">mod\u003c/span>.name);\u003c/span>\u003cspan class=\"code-line\">})();\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003ch2 id=\"5-什么时候该用\">5. 什么时候该用\u003c/h2>\n\u003cp>只在「CommonJS 老代码要引一个纯同步的 ESM 包」时用。新项目直接写 ESM，不要为了兼容再绕一圈。\u003c/p>\n\u003cblockquote>本文对应 Node 20 环境。若你用的是 Node 22.12 及以上，请看同一组里的 \u003cstrong>Node 22\u003c/strong> 版本：那边默认开启，不需要任何 flag。旧版本不会删，还在用 Node 20 的人照着这篇就能跑。\u003c/blockquote>","isLatest":false},{"i":1,"version":"Node 22","env":"Node 22.12.0 及以上（默认开启，无需 flag）","iso":"2026-11-07","file":"node22.md","html":"\u003ch2 id=\"一句话结论\">一句话结论\u003c/h2>\n\u003cp>Node 22.12.0 起，\u003ccode>require(ESM)\u003c/code> \u003cstrong>默认开启\u003c/strong>，不用加任何命令行开关。这是和 Node 20 版唯一的操作差异——但两个限制一模一样。\u003c/p>\n\u003ch2 id=\"1-确认版本\">1. 确认版本\u003c/h2>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">node\u003c/span> -v\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\"># 需要 v22.12.0 或更高\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>22.0 ~ 22.11 之间仍需要 \u003ccode>--experimental-require-module\u003c/code>，请照 \u003cstrong>Node 20\u003c/strong> 那篇做。\u003c/p>\n\u003ch2 id=\"2-准备两个文件\">2. 准备两个文件\u003c/h2>\n\u003cp>\u003ccode>esm.mjs\u003c/code>：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">export\u003c/span> \u003cspan class=\"tok-k\">const\u003c/span> name = \u003cspan class=\"tok-s\">'openref'\u003c/span>;\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">export\u003c/span> \u003cspan class=\"tok-k\">function\u003c/span> \u003cspan class=\"tok-f\">twice\u003c/span>(n) {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">return\u003c/span> n * \u003cspan class=\"tok-n\">2\u003c/span>;\u003c/span>\u003cspan class=\"code-line\">}\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>\u003ccode>main.cjs\u003c/code>：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">const\u003c/span> \u003cspan class=\"tok-k\">mod\u003c/span> = \u003cspan class=\"tok-f\">require\u003c/span>(\u003cspan class=\"tok-s\">'./esm.mjs'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-k\">mod\u003c/span>.name, \u003cspan class=\"tok-k\">mod\u003c/span>.\u003cspan class=\"tok-f\">twice\u003c/span>(\u003cspan class=\"tok-n\">21\u003c/span>));\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003ch2 id=\"3-直接跑\">3. 直接跑\u003c/h2>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">node\u003c/span> main.cjs\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\"># openref 42\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>没有 flag、没有 \u003ccode>NODE_OPTIONS\u003c/code>、没有警告。如果你在 22.12+ 上还看到 \u003ccode>ERR_REQUIRE_ESM\u003c/code>，先检查是不是 \u003ccode>nvm\u003c/code> 切到了别的版本：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">which \u003cspan class=\"tok-k\">node\u003c/span> &amp;&amp; \u003cspan class=\"tok-k\">node\u003c/span> -p \u003cspan class=\"tok-s\">&quot;process.version&quot;\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003ch2 id=\"4-两个限制仍然存在\">4. 两个限制仍然存在\u003c/h2>\n\u003cp>默认开启不等于放开限制：\u003c/p>\n\u003cul>\u003cli>\u003cstrong>顶层 \u003ccode>await\u003c/code> 仍不行\u003c/strong> → \u003ccode>ERR_REQUIRE_ASYNC_MODULE\u003c/code>。\u003ccode>require()\u003c/code> 是同步调用，等不了异步初始化。\u003c/li>\u003cli>\u003cstrong>\u003ccode>import.meta\u003c/code> 仍不可靠\u003c/strong> → 走同步求值路径时别用它拼路径。\u003c/li>\u003c/ul>\n\u003cp>要加载带顶层 \u003ccode>await\u003c/code> 的模块，还是得异步：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">(\u003cspan class=\"tok-k\">async\u003c/span> () =&gt; {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">const\u003c/span> \u003cspan class=\"tok-k\">mod\u003c/span> = \u003cspan class=\"tok-k\">await\u003c/span> \u003cspan class=\"tok-k\">import\u003c/span>(\u003cspan class=\"tok-s\">'./esm.mjs'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">  console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-k\">mod\u003c/span>.name);\u003c/span>\u003cspan class=\"code-line\">})();\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003ch2 id=\"5-降级到-node-20-怎么办\">5. 降级到 Node 20 怎么办\u003c/h2>\n\u003cp>同一组里的 \u003cstrong>Node 20\u003c/strong> 版本不会删。把命令换成：\u003c/p>\n\u003cdiv class=\"code-block\" data-lang=\"bash\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">bash\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">node\u003c/span> \u003cspan class=\"tok-c\">--experimental-require-module main.cjs\u003c/span>\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cp>其余代码一行不用改。这也是为什么旧教程要留着：还在用 20.19 LTS 的机器不能突然按新写法跑。\u003c/p>\n\u003ch2 id=\"6-怎么判断自己走的是哪条路\">6. 怎么判断自己走的是哪条路\u003c/h2>\n\u003cdiv class=\"code-block\" data-lang=\"js\">\n  \u003cdiv class=\"code-head\">\u003cspan class=\"code-lang\">js\u003c/span>\n  \u003cbutton class=\"code-copy\" type=\"button\" aria-label=\"复制代码\">复制\u003c/button>\u003c/div>\n  \u003cpre class=\"code\" data-colored>\u003ccode>\u003cspan class=\"code-line\">\u003cspan class=\"tok-c\">// main.cjs\u003c/span>\u003c/span>\u003cspan class=\"code-line\">\u003cspan class=\"tok-k\">try\u003c/span> {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">const\u003c/span> \u003cspan class=\"tok-k\">mod\u003c/span> = \u003cspan class=\"tok-f\">require\u003c/span>(\u003cspan class=\"tok-s\">'./esm.mjs'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">  console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-s\">'同步加载成功'\u003c/span>, \u003cspan class=\"tok-k\">mod\u003c/span>.name);\u003c/span>\u003cspan class=\"code-line\">} \u003cspan class=\"tok-k\">catch\u003c/span> (err) {\u003c/span>\u003cspan class=\"code-line\">  \u003cspan class=\"tok-k\">if\u003c/span> (err.code === \u003cspan class=\"tok-s\">'ERR_REQUIRE_ASYNC_MODULE'\u003c/span>) {\u003c/span>\u003cspan class=\"code-line\">    console.\u003cspan class=\"tok-f\">log\u003c/span>(\u003cspan class=\"tok-s\">'模块有顶层 await，改用 import()'\u003c/span>);\u003c/span>\u003cspan class=\"code-line\">  } \u003cspan class=\"tok-k\">else\u003c/span> {\u003c/span>\u003cspan class=\"code-line\">    \u003cspan class=\"tok-k\">throw\u003c/span> err;\u003c/span>\u003cspan class=\"code-line\">  }\u003c/span>\u003cspan class=\"code-line\">}\u003c/span>\u003c/code>\u003c/pre>\n  \n\u003c/div>\n\u003cblockquote>本文是这一组的当前最新版。以后 Node 再有变化，会新增 \u003ccode>node24.md\u003c/code> 并登记进 \u003ccode>meta.json\u003c/code>，时间线自动多一格，订阅本组的人也会收到新条目；这三篇会一直同时存在。\u003c/blockquote>","isLatest":true}]</script>
+    <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
+  <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span>本页目录</span>
+    <span class="toc-mobile-count">7 节</span>
+    <span class="toc-mobile-pct"></span>
+    <svg class="chev" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul id="toc-mobile-list"><li class=""><a href="#一句话结论">一句话结论</a></li><li class=""><a href="#1-确认版本">1. 确认版本</a></li><li class=""><a href="#2-准备两个文件">2. 准备两个文件</a></li><li class=""><a href="#3-直接跑">3. 直接跑</a></li><li class=""><a href="#4-两个限制仍然存在">4. 两个限制仍然存在</a></li><li class=""><a href="#5-降级到-node-20-怎么办">5. 降级到 Node 20 怎么办</a></li><li class=""><a href="#6-怎么判断自己走的是哪条路">6. 怎么判断自己走的是哪条路</a></li></ul>
+</nav>
+    <div class="with-toc">
+      <div class="prose"><h2 id="一句话结论">一句话结论</h2>
+<p>Node 22.12.0 起，<code>require(ESM)</code> <strong>默认开启</strong>，不用加任何命令行开关。这是和 Node 20 版唯一的操作差异——但两个限制一模一样。</p>
+<h2 id="1-确认版本">1. 确认版本</h2>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">node</span> -v</span><span class="code-line"><span class="tok-c"># 需要 v22.12.0 或更高</span></span></code></pre>
+  
+</div>
+<p>22.0 ~ 22.11 之间仍需要 <code>--experimental-require-module</code>，请照 <strong>Node 20</strong> 那篇做。</p>
+<h2 id="2-准备两个文件">2. 准备两个文件</h2>
+<p><code>esm.mjs</code>：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">export</span> <span class="tok-k">const</span> name = <span class="tok-s">'openref'</span>;</span><span class="code-line"><span class="tok-k">export</span> <span class="tok-k">function</span> <span class="tok-f">twice</span>(n) {</span><span class="code-line">  <span class="tok-k">return</span> n * <span class="tok-n">2</span>;</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<p><code>main.cjs</code>：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">const</span> <span class="tok-k">mod</span> = <span class="tok-f">require</span>(<span class="tok-s">'./esm.mjs'</span>);</span><span class="code-line">console.<span class="tok-f">log</span>(<span class="tok-k">mod</span>.name, <span class="tok-k">mod</span>.<span class="tok-f">twice</span>(<span class="tok-n">21</span>));</span></code></pre>
+  
+</div>
+<h2 id="3-直接跑">3. 直接跑</h2>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">node</span> main.cjs</span><span class="code-line"><span class="tok-c"># openref 42</span></span></code></pre>
+  
+</div>
+<p>没有 flag、没有 <code>NODE_OPTIONS</code>、没有警告。如果你在 22.12+ 上还看到 <code>ERR_REQUIRE_ESM</code>，先检查是不是 <code>nvm</code> 切到了别的版本：</p>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">which <span class="tok-k">node</span> &amp;&amp; <span class="tok-k">node</span> -p <span class="tok-s">&quot;process.version&quot;</span></span></code></pre>
+  
+</div>
+<h2 id="4-两个限制仍然存在">4. 两个限制仍然存在</h2>
+<p>默认开启不等于放开限制：</p>
+<ul><li><strong>顶层 <code>await</code> 仍不行</strong> → <code>ERR_REQUIRE_ASYNC_MODULE</code>。<code>require()</code> 是同步调用，等不了异步初始化。</li><li><strong><code>import.meta</code> 仍不可靠</strong> → 走同步求值路径时别用它拼路径。</li></ul>
+<p>要加载带顶层 <code>await</code> 的模块，还是得异步：</p>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line">(<span class="tok-k">async</span> () =&gt; {</span><span class="code-line">  <span class="tok-k">const</span> <span class="tok-k">mod</span> = <span class="tok-k">await</span> <span class="tok-k">import</span>(<span class="tok-s">'./esm.mjs'</span>);</span><span class="code-line">  console.<span class="tok-f">log</span>(<span class="tok-k">mod</span>.name);</span><span class="code-line">})();</span></code></pre>
+  
+</div>
+<h2 id="5-降级到-node-20-怎么办">5. 降级到 Node 20 怎么办</h2>
+<p>同一组里的 <strong>Node 20</strong> 版本不会删。把命令换成：</p>
+<div class="code-block" data-lang="bash">
+  <div class="code-head"><span class="code-lang">bash</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-k">node</span> <span class="tok-c">--experimental-require-module main.cjs</span></span></code></pre>
+  
+</div>
+<p>其余代码一行不用改。这也是为什么旧教程要留着：还在用 20.19 LTS 的机器不能突然按新写法跑。</p>
+<h2 id="6-怎么判断自己走的是哪条路">6. 怎么判断自己走的是哪条路</h2>
+<div class="code-block" data-lang="js">
+  <div class="code-head"><span class="code-lang">js</span>
+  <button class="code-copy" type="button" aria-label="复制代码">复制</button></div>
+  <pre class="code" data-colored><code><span class="code-line"><span class="tok-c">// main.cjs</span></span><span class="code-line"><span class="tok-k">try</span> {</span><span class="code-line">  <span class="tok-k">const</span> <span class="tok-k">mod</span> = <span class="tok-f">require</span>(<span class="tok-s">'./esm.mjs'</span>);</span><span class="code-line">  console.<span class="tok-f">log</span>(<span class="tok-s">'同步加载成功'</span>, <span class="tok-k">mod</span>.name);</span><span class="code-line">} <span class="tok-k">catch</span> (err) {</span><span class="code-line">  <span class="tok-k">if</span> (err.code === <span class="tok-s">'ERR_REQUIRE_ASYNC_MODULE'</span>) {</span><span class="code-line">    console.<span class="tok-f">log</span>(<span class="tok-s">'模块有顶层 await，改用 import()'</span>);</span><span class="code-line">  } <span class="tok-k">else</span> {</span><span class="code-line">    <span class="tok-k">throw</span> err;</span><span class="code-line">  }</span><span class="code-line">}</span></code></pre>
+  
+</div>
+<blockquote>本文是这一组的当前最新版。以后 Node 再有变化，会新增 <code>node24.md</code> 并登记进 <code>meta.json</code>，时间线自动多一格，订阅本组的人也会收到新条目；这三篇会一直同时存在。</blockquote></div>
+      <aside class="toc" id="toc"><div class="toc-title">本页内容<span class="toc-pct" id="read-pct">0%</span></div><ul><li class=""><a href="#一句话结论">一句话结论</a></li><li class=""><a href="#1-确认版本">1. 确认版本</a></li><li class=""><a href="#2-准备两个文件">2. 准备两个文件</a></li><li class=""><a href="#3-直接跑">3. 直接跑</a></li><li class=""><a href="#4-两个限制仍然存在">4. 两个限制仍然存在</a></li><li class=""><a href="#5-降级到-node-20-怎么办">5. 降级到 Node 20 怎么办</a></li><li class=""><a href="#6-怎么判断自己走的是哪条路">6. 怎么判断自己走的是哪条路</a></li></ul></aside>
+    </div>
+    
+    <div class="article-subs">
+      <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
+      <a href="/docs/dev/node/node-require-esm/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+      <a href="/rss/series/node-require-esm/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本组全部版本</a>
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本文" data-label="缓存本文">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本文</span>
+        </button>
+    </div>
+    <div class="useful-wrap">
+      <button class="useful-btn" id="useful-btn" type="button" data-id="dev/node/node-require-esm">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zM8 21h9.6a2 2 0 0 0 2-1.7l1.4-8A1.5 1.5 0 0 0 19.6 9.6H14l1-4.6A1.6 1.6 0 0 0 13.4 3L8 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="useful-label">有用</span>
+        <span class="useful-count" id="useful-count">0</span>
+      </button>
+      <span class="useful-hint">觉得这篇帮到你了？点一下。</span>
+    </div>
+    
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <strong>OpenRef 技术参考</strong>
+      <div class="mt">条目式技术参考 · 内容可自由引用</div>
+    </div>
+    <div class="right">
+      <div class="footer-sub">
+        <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
+        <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
+        <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本页" data-label="缓存本页">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本页</span>
+        </button>
+      </div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a> · <a href="https://status.openref.de5.net">服务状态</a></div>
+      <div class="mt"><span class="stats-total">本站已被阅读 … 次</span> · <button type="button" class="linklike" id="weekly-btn" hidden>本周焦点</button> · <span class="cache-count">尚未缓存文章</span></div>
+      <div class="mt">© 2026 OpenRef</div>
+    </div>
+  </div>
+  <div class="wrap footer-policy">
+    <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
+    <span class="sep">·</span>
+    <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+    <span class="sep">·</span>
+    <button type="button" id="consent-gear" class="consent-gear">⚙ Cookie 设置</button>
+  </div>
+  <div class="weekly-pop" id="weekly-pop" hidden>
+    <div class="wk-card">
+      <div class="wk-head"><strong>本周焦点</strong><button type="button" id="weekly-close">关闭</button></div>
+      <ol id="weekly-list"></ol>
+    </div>
+  </div>
+  </div>
+</footer>
+
+<!-- Cookie 同意：首次进站从底部弹出；清掉 cookie 会重新弹 -->
+<div class="consent" id="consent-banner" hidden>
+  <div class="consent-wrap">
+    <div class="consent-main">
+      <p class="consent-text"><strong>关于本站的存储</strong>　我们用少量本地存储记住主题与目录偏好，并可选统计阅读量。你不点同意，缓存和统计都不会启动。</p>
+      <div class="consent-btns">
+        <button type="button" class="btn-primary" data-consent="accept">全部接受</button>
+        <button type="button" data-consent="reject">全部拒绝</button>
+        <button type="button" data-consent="manage">偏好管理</button>
+      </div>
+    </div>
+    <div class="consent-panel" id="consent-panel" hidden>
+      <div class="cp-row"><div><strong>必要</strong><span>站点运行必需，无法关闭</span></div><input type="checkbox" checked disabled /></div>
+      <div class="cp-row"><div><strong>偏好</strong><span>记住主题、目录折叠</span></div><input type="checkbox" id="cp-prefs" /></div>
+      <div class="cp-row"><div><strong>统计</strong><span>阅读量、来源与地区（最多到城市，不含街道）</span></div><input type="checkbox" id="cp-stats" /></div>
+      <div class="cp-actions"><button type="button" id="cp-save">保存偏好</button></div>
+    </div>
+  </div>
+</div>
+
+<script defer src="/assets/app.js"></script>
+<script defer src="/assets/consent.js"></script>
+<script defer src="/assets/cache.js"></script>
+<script defer src="/assets/stats.js"></script>
+<script defer src="/assets/version.js"></script>
+</body>
+</html>

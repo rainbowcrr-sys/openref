@@ -52,6 +52,14 @@
         { "id": "concurrency", "name": "并发与并行", "desc": "锁、同步、调度。" },
         { "id": "storage", "name": "存储", "desc": "文件系统、对象存储、缓存层。" }
       ]
+    },
+    {
+      "id": "dev",
+      "name": "开发工具与运行时",
+      "desc": "Node.js、包管理器、CLI 与本地开发环境的版本差异。",
+      "children": [
+        { "id": "node", "name": "Node.js", "desc": "运行时版本变化、模块加载与命令行行为。" }
+      ]
     }
   ]
 }

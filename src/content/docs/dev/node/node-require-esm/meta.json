@@ -1,0 +1,4 @@
+{
+  "group": "用 require() 加载 ESM",
+  "files": ["node20.md", "node22.md"]
+}

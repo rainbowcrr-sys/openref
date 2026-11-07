@@ -87,6 +87,7 @@
         <span class="pill">#Cloudflare</span><span class="pill">#D1</span><span class="pill">#SQLite</span><span class="pill">#数据库</span>
       </div>
     </header>
+    
     <nav class="toc-mobile" id="toc-mobile" aria-label="本页目录">
   <button class="toc-mobile-btn" type="button" id="toc-mobile-btn" aria-expanded="false" aria-controls="toc-mobile">
     <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
@@ -136,6 +137,12 @@
     <div class="article-subs">
       <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本站更新</a>
       <a href="/docs/cloud/cloudflare/d1-index/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />订阅本文更新</a>
+      
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本文" data-label="缓存本文">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本文</span>
+        </button>
     </div>
     <div class="useful-wrap">
       <button class="useful-btn" id="useful-btn" type="button" data-id="cloud/cloudflare/d1-index">
@@ -169,8 +176,14 @@
         <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
         <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
         <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本页" data-label="缓存本页">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本页</span>
+        </button>
       </div>
-      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a> · <a href="https://status.openref.de5.net">服务状态</a></div>
+      <div class="mt"><span class="stats-total">本站已被阅读 … 次</span> · <button type="button" class="linklike" id="weekly-btn" hidden>本周焦点</button> · <span class="cache-count">尚未缓存文章</span></div>
       <div class="mt">© 2026 OpenRef</div>
     </div>
   </div>
@@ -178,10 +191,42 @@
     <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
     <span class="sep">·</span>
     <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+    <span class="sep">·</span>
+    <button type="button" id="consent-gear" class="consent-gear">⚙ Cookie 设置</button>
+  </div>
+  <div class="weekly-pop" id="weekly-pop" hidden>
+    <div class="wk-card">
+      <div class="wk-head"><strong>本周焦点</strong><button type="button" id="weekly-close">关闭</button></div>
+      <ol id="weekly-list"></ol>
+    </div>
   </div>
   </div>
 </footer>
+
+<!-- Cookie 同意：首次进站从底部弹出；清掉 cookie 会重新弹 -->
+<div class="consent" id="consent-banner" hidden>
+  <div class="consent-wrap">
+    <div class="consent-main">
+      <p class="consent-text"><strong>关于本站的存储</strong>　我们用少量本地存储记住主题与目录偏好，并可选统计阅读量。你不点同意，缓存和统计都不会启动。</p>
+      <div class="consent-btns">
+        <button type="button" class="btn-primary" data-consent="accept">全部接受</button>
+        <button type="button" data-consent="reject">全部拒绝</button>
+        <button type="button" data-consent="manage">偏好管理</button>
+      </div>
+    </div>
+    <div class="consent-panel" id="consent-panel" hidden>
+      <div class="cp-row"><div><strong>必要</strong><span>站点运行必需，无法关闭</span></div><input type="checkbox" checked disabled /></div>
+      <div class="cp-row"><div><strong>偏好</strong><span>记住主题、目录折叠</span></div><input type="checkbox" id="cp-prefs" /></div>
+      <div class="cp-row"><div><strong>统计</strong><span>阅读量、来源与地区（最多到城市，不含街道）</span></div><input type="checkbox" id="cp-stats" /></div>
+      <div class="cp-actions"><button type="button" id="cp-save">保存偏好</button></div>
+    </div>
+  </div>
+</div>
+
 <script defer src="/assets/app.js"></script>
-<script defer src="/assets/guard.js"></script>
+<script defer src="/assets/consent.js"></script>
+<script defer src="/assets/cache.js"></script>
+<script defer src="/assets/stats.js"></script>
+<script defer src="/assets/version.js"></script>
 </body>
 </html>

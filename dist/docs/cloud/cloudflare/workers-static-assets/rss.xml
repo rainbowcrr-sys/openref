@@ -9,7 +9,7 @@
     <link>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</link>
     <description>不需要 Pages，也不用对象存储：把构建产物目录交给 Workers 的 assets 配置，一条命令发布成静态站点，并拿到 &lt;name&gt;.&lt;subdomain&gt;.workers.dev 地址。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 06 Nov 2026 12:51:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 02:09:34 GMT</lastBuildDate>
     <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
     <managingEditor>rainbowcrr-sys</managingEditor>
     <webMaster></webMaster>

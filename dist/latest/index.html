@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>全部文章 · OpenRef 技术参考</title>
-<meta name="description" content="全部技术条目，共 7 篇。" />
+<meta name="description" content="全部技术条目，共 8 篇。" />
 <link rel="canonical" href="https://openref.de5.net/latest/" />
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml" />
@@ -17,13 +17,13 @@
 <meta property="og:site_name" content="OpenRef 技术参考" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="全部文章" />
-<meta property="og:description" content="全部技术条目，共 7 篇。" />
+<meta property="og:description" content="全部技术条目，共 8 篇。" />
 <meta property="og:url" content="https://openref.de5.net/latest/" />
 <meta property="og:image" content="https://openref.de5.net/assets/icons/og-image.png" />
 <meta property="og:locale" content="zh_CN" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="全部文章" />
-<meta name="twitter:description" content="全部技术条目，共 7 篇。" />
+<meta name="twitter:description" content="全部技术条目，共 8 篇。" />
 <meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
 <link rel="stylesheet" href="/assets/global.css" />
 <script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
@@ -60,8 +60,15 @@
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head"><h1>全部文章</h1><p>按发布时间倒序排列，共 7 篇。</p></div>
-    <ul class="post-list"><li><a class="post-row" href="/docs/official/guide/rss-subscribe/">
+    <div class="section-head"><h1>全部文章</h1><p>按发布时间倒序排列，共 8 篇。</p></div>
+    <ul class="post-list"><li><a class="post-row" href="/docs/dev/node/node-require-esm/">
+  <div>
+    <h3>用 require() 加载 ESM（Node 22）<span class="badge badge-official">OpenRef OFFICIAL</span></h3>
+    <p>Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。</p>
+    <div class="meta mt"><span class="pill">开发工具与运行时</span><span class="pill">Node.js</span></div>
+  </div>
+  <time datetime="2026-11-07">2026-11-07</time>
+</a></li><li><a class="post-row" href="/docs/official/guide/rss-subscribe/">
   <div>
     <h3>使用 RSS 来订阅 OpenRef<span class="badge badge-official">OpenRef OFFICIAL</span></h3>
     <p>OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。</p>
@@ -125,8 +132,14 @@
         <a href="/rss/rss.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全站 RSS</a>
         <a href="/rss/opml.xml"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />OPML 一键导入全部</a>
         <a href="/rss/"><img class="rss-icon" src="/assets/icons/rss-icon.png" width="13" height="13" alt="" aria-hidden="true" />全部订阅地址</a>
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本页" data-label="缓存本页">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本页</span>
+        </button>
       </div>
-      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a></div>
+      <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a> · <a href="https://status.openref.de5.net">服务状态</a></div>
+      <div class="mt"><span class="stats-total">本站已被阅读 … 次</span> · <button type="button" class="linklike" id="weekly-btn" hidden>本周焦点</button> · <span class="cache-count">尚未缓存文章</span></div>
       <div class="mt">© 2026 OpenRef</div>
     </div>
   </div>
@@ -134,10 +147,42 @@
     <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
     <span class="sep">·</span>
     <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
+    <span class="sep">·</span>
+    <button type="button" id="consent-gear" class="consent-gear">⚙ Cookie 设置</button>
+  </div>
+  <div class="weekly-pop" id="weekly-pop" hidden>
+    <div class="wk-card">
+      <div class="wk-head"><strong>本周焦点</strong><button type="button" id="weekly-close">关闭</button></div>
+      <ol id="weekly-list"></ol>
+    </div>
   </div>
   </div>
 </footer>
+
+<!-- Cookie 同意：首次进站从底部弹出；清掉 cookie 会重新弹 -->
+<div class="consent" id="consent-banner" hidden>
+  <div class="consent-wrap">
+    <div class="consent-main">
+      <p class="consent-text"><strong>关于本站的存储</strong>　我们用少量本地存储记住主题与目录偏好，并可选统计阅读量。你不点同意，缓存和统计都不会启动。</p>
+      <div class="consent-btns">
+        <button type="button" class="btn-primary" data-consent="accept">全部接受</button>
+        <button type="button" data-consent="reject">全部拒绝</button>
+        <button type="button" data-consent="manage">偏好管理</button>
+      </div>
+    </div>
+    <div class="consent-panel" id="consent-panel" hidden>
+      <div class="cp-row"><div><strong>必要</strong><span>站点运行必需，无法关闭</span></div><input type="checkbox" checked disabled /></div>
+      <div class="cp-row"><div><strong>偏好</strong><span>记住主题、目录折叠</span></div><input type="checkbox" id="cp-prefs" /></div>
+      <div class="cp-row"><div><strong>统计</strong><span>阅读量、来源与地区（最多到城市，不含街道）</span></div><input type="checkbox" id="cp-stats" /></div>
+      <div class="cp-actions"><button type="button" id="cp-save">保存偏好</button></div>
+    </div>
+  </div>
+</div>
+
 <script defer src="/assets/app.js"></script>
-<script defer src="/assets/guard.js"></script>
+<script defer src="/assets/consent.js"></script>
+<script defer src="/assets/cache.js"></script>
+<script defer src="/assets/stats.js"></script>
+<script defer src="/assets/version.js"></script>
 </body>
 </html>

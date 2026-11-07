@@ -7,6 +7,10 @@ specific thing with runnable code and explicit limits. Written in Chinese, plain
 
 ## Sections
 
+## 开发工具与运行时 / Node.js
+
+- [用 require() 加载 ESM（Node 22）](https://openref.de5.net/docs/dev/node/node-require-esm/): Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。
+
 ## 官方 / 指南
 
 - [使用 RSS 来订阅 OpenRef](https://openref.de5.net/docs/official/guide/rss-subscribe/): OpenRef 提供全站、大类、子类、标签、单篇五层 RSS 订阅地址。本文按网页、手机、桌面、自建四种阅读器分别讲清订阅步骤，并给出完整地址清单。

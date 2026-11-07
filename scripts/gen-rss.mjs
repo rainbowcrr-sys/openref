@@ -105,6 +105,7 @@ function cdata(html) {
 
 function itemXml(p, SITE) {
   const link = new URL(p.url, SITE).href;
+  const guid = p.guid ? new URL(p.guid, SITE).href : link;
   const dateStr = p.updatedIso ?? p.iso ?? p.date;
   const tocHtml = (p.headings || []).length
     ? `<nav class="feed-toc"><strong>本页内容</strong><ul>${p.headings
@@ -121,7 +122,7 @@ function itemXml(p, SITE) {
   return `    <item>
       <title>${escapeHtml(p.title)}</title>
       <link>${link}</link>
-      <guid isPermaLink="true">${link}</guid>
+      <guid isPermaLink="${p.guid ? 'false' : 'true'}">${guid}</guid>
       <pubDate>${rfc822(dateStr)}</pubDate>
       <description>${escapeHtml(p.description)}</description>
       ${cats.join('\n      ')}
@@ -166,7 +167,7 @@ ${list.map((p) => itemXml(p, SITE)).join('\n')}
 /* ============================================================
  * 5. OPML（五层分组，单篇一个不漏）
  * ========================================================== */
-function opmlXml({ groups, tags, posts, tagSlugFn, SITE }) {
+function opmlXml({ groups, tags, posts, tagSlugFn, SITE, series = [] }) {
   const abs = (p) => new URL(p, SITE).href;
   const outline = (text, xmlUrl, htmlUrl) =>
     `      <outline type="rss" text="${escapeHtml(text)}" title="${escapeHtml(text)}" xmlUrl="${escapeHtml(abs(xmlUrl))}" htmlUrl="${escapeHtml(abs(htmlUrl))}" />`;
@@ -202,6 +203,15 @@ function opmlXml({ groups, tags, posts, tagSlugFn, SITE }) {
       )
     )
   );
+
+  if (series.length) {
+    all.push(
+      group(
+        '版本组',
+        series.map((s) => outline(s.name, `/rss/series/${s.series}/rss.xml`, `/docs/${s.id}/`))
+      )
+    );
+  }
 
   all.push(
     group(
@@ -314,13 +324,29 @@ function xslXml(SITE) {
  * ========================================================== */
 function scanDocs(DOCS) {
   const out = [];
+  const series = [];
   const walk = (dir, base = '') => {
     if (!fs.existsSync(dir)) return;
+    /* 目录里有 meta.json = 版本组：组内 md 不单独成篇，只登记组页 */
+    const hasMeta = fs.existsSync(path.join(dir, 'meta.json'));
     for (const name of fs.readdirSync(dir)) {
       const p = path.join(dir, name);
       const rel = base ? `${base}/${name}` : name;
       if (fs.statSync(p).isDirectory()) walk(p, rel);
-      else if (name.endsWith('.md')) {
+      else if (name === 'meta.json') {
+        let meta = {};
+        try { meta = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) {}
+        const parts = base.split('/');
+        const label = String(meta.group || parts[parts.length - 1]);
+        series.push({ id: base, name: label, series: parts[parts.length - 1] });
+        out.push({
+          id: base,
+          title: label,
+          categoryId: parts[0],
+          subId: parts.length >= 3 ? parts[1] : undefined,
+          tags: [],
+        });
+      } else if (name.endsWith('.md') && !hasMeta) {
         const { data } = parseFrontmatter(fs.readFileSync(p, 'utf8'));
         if (data.draft === true) continue;
         const parts = rel.replace(/\.md$/, '').split('/');
@@ -335,11 +361,11 @@ function scanDocs(DOCS) {
     }
   };
   walk(DOCS);
-  return out;
+  return { docs: out, series };
 }
 
 export function feedListMarkdown({ DOCS, SITE, taxonomy, tagSlugFn }) {
-  const docs = scanDocs(DOCS);
+  const { docs, series } = scanDocs(DOCS);
   const abs = (p) => new URL(p, SITE).href;
   const line = (label, url) => `- **${label}**　\`${abs(url)}\``;
   const rows = [];
@@ -369,6 +395,12 @@ export function feedListMarkdown({ DOCS, SITE, taxonomy, tagSlugFn }) {
     rows.push(line(`#${t}`, `/rss/tags/${tagSlugFn(t)}/rss.xml`));
   }
 
+  if (series.length) {
+    rows.push('\n### 按版本组（同一篇文档的新旧环境版本）\n');
+    for (const s of series) rows.push(line(s.name, `/rss/series/${s.series}/rss.xml`));
+    rows.push('\n> 订阅版本组后，这个文档新增版本（例如以后出 Node 24）会推送新条目；旧版文章始终保留，不删。\n');
+  }
+
   rows.push('\n### 按单篇（每篇一个，一篇不漏）\n');
   for (const d of docs) {
     rows.push(line(d.title, `/docs/${d.id}/rss.xml`));
@@ -380,7 +412,7 @@ export function feedListMarkdown({ DOCS, SITE, taxonomy, tagSlugFn }) {
 /* ============================================================
  * 8. /rss/ 落地页（跟站点同款，五组带标题，单篇折叠）
  * ========================================================== */
-function landingHtml({ posts, groups, tags, taxonomy, SITE, tagSlugFn }) {
+function landingHtml({ posts, groups, tags, taxonomy, SITE, tagSlugFn, series = [] }) {
   const abs = (p) => new URL(p, SITE).href;
   const li = (label, url, extra = '') =>
     `<li><a href="${escapeHtml(url)}">${escapeHtml(label)}</a><code>${escapeHtml(url)}</code>${extra}</li>`;
@@ -411,7 +443,12 @@ function landingHtml({ posts, groups, tags, taxonomy, SITE, tagSlugFn }) {
       <img src="/assets/icons/rss-icon.png" width="44" height="44" alt="RSS" />
       <div>
         <h1>订阅 OpenRef</h1>
-        <p>复制任意一条地址，粘贴到 RSS 阅读器即可。五层粒度：全站、大类、子类、标签、单篇。</p>
+        <p>复制任意一条地址，粘贴到 RSS 阅读器即可。粒度：全站、大类、子类、标签、单篇，以及同一文档的版本组。</p>
+        <button type="button" class="cache-btn" data-cache-btn data-done="已缓存本页" data-label="缓存本页">
+          <svg class="ci-download" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 18v2h16v-2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="ci-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cache-label">缓存本页</span>
+        </button>
       </div>
     </div>
   </div>
@@ -424,6 +461,8 @@ ${section('all', '全站', '最常用的一份。备用地址内容完全相同�
 ${section('categories', '按大类', '只想看某个主题时用。', catItems)}
 ${section('subs', '按子类', '更细一层，例如 Cloudflare、SEO。', subItems)}
 ${section('tags', '按标签', '按关键词跨分类聚合。', tagItems)}
+${series.length ? section('series', '按版本组', '同一篇文档的新旧环境版本都收；出新版本会推送，旧版不删。',
+    series.map((s) => li(s.name, abs(`/rss/series/${s.series}/rss.xml`)))) : ''}
 <section class="section rss-section" id="articles">
   <div class="wrap">
     <div class="section-head"><h2>按单篇</h2><p>订阅后只收这一篇的更新；点开查看全部地址。</p></div>
@@ -448,8 +487,9 @@ ${section('tags', '按标签', '按关键词跨分类聚合。', tagItems)}
 /* ============================================================
  * 9. 主入口
  * ========================================================== */
-export function generateRss({ posts, groups, tags, taxonomy, DIST, SITE, SITE_FULLNAME, SITE_DESC, DOCS }) {
+export function generateRss({ posts, groups, tags, taxonomy, DIST, SITE, SITE_FULLNAME, SITE_DESC, DOCS, versionGroups = [] }) {
   const tagSlugFn = tagSlug;
+  const { series } = scanDocs(DOCS);
   const write = (rel, content) => {
     const target = path.join(DIST, rel);
     fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -521,10 +561,38 @@ export function generateRss({ posts, groups, tags, taxonomy, DIST, SITE, SITE_FU
     );
   }
 
-  /* 9.5 OPML / XSL / 落地页 / 橙标 PNG */
-  write('rss/opml.xml', opmlXml({ groups, tags, posts, tagSlugFn, SITE }));
+  /* 9.5 版本组：一份 feed 收齐同一文档的所有环境版本，新增版本会推新条目 */
+  for (const g of versionGroups) {
+    const sid = g.id.split('/').pop();
+    const list = g.items.map((it) => ({
+      url: g.post.url,
+      guid: `${g.post.url}#${it.file}`,
+      title: `${g.name} · ${it.version}`,
+      description: `${it.env} · 发布于 ${it.iso}`,
+      iso: it.iso,
+      date: it.iso,
+      updatedIso: null,
+      headings: it.headings,
+      html: it.html,
+      tags: it.tags,
+      isOfficial: it.isOfficial,
+    }));
+    write(
+      `rss/series/${sid}/rss.xml`,
+      mk(
+        `OpenRef · ${g.name}（全部版本）`,
+        `同一文档的 ${g.items.length} 个环境版本，旧版始终保留。`,
+        `/docs/${g.id}/`,
+        `/rss/series/${sid}/rss.xml`,
+        list
+      )
+    );
+  }
+
+  /* 9.6 OPML / XSL / 落地页 / 橙标 PNG */
+  write('rss/opml.xml', opmlXml({ groups, tags, posts, tagSlugFn, SITE, series }));
   write('rss/rss.xsl', xslXml(SITE));
-  write('rss/index.html', landingHtml({ posts, groups, tags, taxonomy, SITE, tagSlugFn }));
+  write('rss/index.html', landingHtml({ posts, groups, tags, taxonomy, SITE, tagSlugFn, series }));
 
   const iconSrc = path.join(path.dirname(DIST), 'public', 'assets', 'icons', 'rss-icon.png');
   if (fs.existsSync(iconSrc)) {
@@ -534,6 +602,6 @@ export function generateRss({ posts, groups, tags, taxonomy, DIST, SITE, SITE_FU
 
   const n = 1 + 1 + 1 + groups.filter((g) => g.total > 0).length +
     groups.filter((g) => g.total > 0).reduce((a, g) => a + g.subs.length, 0) +
-    tags.length + posts.length + 3;
+    tags.length + posts.length + 3 + versionGroups.length;
   console.log(`RSS：已生成 ${n} 个文件（全站 / 大类 / 子类 / 标签 / 单篇 / OPML / XSL / 落地页）。`);
 }

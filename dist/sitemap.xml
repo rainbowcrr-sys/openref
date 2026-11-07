@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://openref.de5.net/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://openref.de5.net/latest/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://openref.de5.net/topics/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://openref.de5.net/tags/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://openref.de5.net/rss/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://openref.de5.net/rss/rss.xml</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/latest/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/tags/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/rss/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/rss/rss.xml</loc><lastmod>2026-11-07</lastmod></url>
   <url><loc>https://openref.de5.net/topics/programming/</loc><lastmod>2026-10-17</lastmod></url>
   <url><loc>https://openref.de5.net/topics/programming/javascript/</loc><lastmod>2026-10-17</lastmod></url>
   <url><loc>https://openref.de5.net/topics/cloud/</loc><lastmod>2026-10-26</lastmod></url>
@@ -15,6 +15,9 @@
   <url><loc>https://openref.de5.net/topics/frontend/seo/</loc><lastmod>2026-10-21</lastmod></url>
   <url><loc>https://openref.de5.net/topics/official/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://openref.de5.net/topics/official/guide/</loc><lastmod>2026-11-06</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/dev/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/topics/dev/node/</loc><lastmod>2026-11-07</lastmod></url>
+  <url><loc>https://openref.de5.net/docs/dev/node/node-require-esm/</loc><lastmod>2026-11-07</lastmod></url>
   <url><loc>https://openref.de5.net/docs/official/guide/rss-subscribe/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://openref.de5.net/docs/cloud/cloudflare/workers-static-assets/</loc><lastmod>2026-10-26</lastmod></url>
   <url><loc>https://openref.de5.net/docs/cloud/cloudflare/d1-index/</loc><lastmod>2026-10-24</lastmod></url>
