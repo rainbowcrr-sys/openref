@@ -1,7 +1,7 @@
 /* OpenRef 离线口袋：默认不预缓存，点哪个「缓存」按钮才存哪个。
    HTML 页面走 network-first，站点一更新立刻生效；断网时用已缓存页面兜底。
    其它同源静态资源走 cache-first。 */
-var CACHE = 'openref-articles-v2';
+var CACHE = 'openref-articles-v3';
 
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) {
@@ -72,12 +72,15 @@ self.addEventListener('fetch', function (e) {
       }
     }
 
-    var hit = await c.match(req);
-    if (hit) return hit;
+    /* 静态资源同样网络优先：站点一更新，CSS/JS 立刻换新版；
+       断网时才回退到缓存，保证离线能读已缓存的文章。 */
     try {
-      return await fetch(req);
+      var fresh = await fetch(req);
+      if (fresh && fresh.ok) c.put(req, fresh.clone());
+      return fresh;
     } catch (err) {
-      return offlinePage();
+      var hit = await c.match(req);
+      return hit || offlinePage();
     }
   })());
 });

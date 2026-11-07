@@ -9,7 +9,7 @@
     <link>https://openref.de5.net/docs/programming/javascript/abort-controller/</link>
     <description>fetch 一旦发出无法撤回，但可以通过 signal 提前中止。本文给出超时、组件卸载取消、以及一次取消多个请求的写法，并说明中止后错误的处理方式。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 07 Nov 2026 03:17:54 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 03:50:11 GMT</lastBuildDate>
     <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
     <managingEditor>rainbowcrr-sys</managingEditor>
     <webMaster></webMaster>

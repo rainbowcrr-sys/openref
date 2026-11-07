@@ -12,7 +12,7 @@ import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatter, renderMarkdown, colorize, escapeHtml } from './src/lib/md.mjs';
-import { layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml, badgeHtml, rssIconHtml } from './src/lib/html.mjs';
+import { ASSET_V, layout, crumbsHtml, cardHtml, postRowHtml, prevNextHtml, badgeHtml, rssIconHtml } from './src/lib/html.mjs';
 import { SITE, SITE_NAME, SITE_FULLNAME, SITE_TAGLINE, SITE_DESC, ORG_NAME, LANG, REPO, REPO_BRANCH, CONTENT_DIR } from './src/config/site.mjs';
 import { taxonomy, getCategory, getSub } from './src/data/taxonomy.mjs';
 import { feedListMarkdown, tagSlug, generateRss } from './scripts/gen-rss.mjs';
@@ -582,7 +582,7 @@ for (const p of posts) {
       canonical: '/search/',
       bodyHtml: body,
       activePath: '/search/',
-      extraHead: '<script defer src="/assets/search.js"></script>',
+      extraHead: '<script defer src="/assets/search.js?v=' + ASSET_V + '"></script>',
     })
   );
 }

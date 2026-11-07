@@ -9,7 +9,7 @@
     <link>https://openref.de5.net/docs/dev/node/node-require-esm/</link>
     <description>Node 22.12+ 默认支持用 require() 同步加载 ESM，无需任何实验开关；含顶层 await 的模块仍需改用动态 import()。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 07 Nov 2026 03:17:53 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 03:50:10 GMT</lastBuildDate>
     <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
     <managingEditor>rainbowcrr-sys</managingEditor>
     <webMaster></webMaster>

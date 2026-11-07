@@ -1,6 +1,9 @@
 import { SITE, SITE_NAME, SITE_FULLNAME, LANG, ORG_NAME, fullTitle } from '../config/site.mjs';
 import { escapeHtml } from './md.mjs';
 
+/** 静态资源版本：改动 CSS/JS 时递增，强制绕过浏览器与 SW 旧缓存 */
+export const ASSET_V = '3';
+
 export const NAV = [
   { label: '分类', href: '/topics/' },
   { label: '文章', href: '/latest/' },
@@ -93,15 +96,12 @@ ${noindex ? '<meta name="robots" content="noindex,nofollow" />' : ''}
 <meta name="twitter:title" content="${escapeHtml(title ?? SITE_FULLNAME)}" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 <meta name="twitter:image" content="${image}" />
-<link rel="stylesheet" href="/assets/global.css" />
+<link rel="stylesheet" href="/assets/global.css?v=${ASSET_V}" />
 <script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
 ${ldList.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`).join('\n')}
 ${extraHead}
 </head>
 <body>
-<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
-     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
-<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="site-header">
   <div class="wrap">
@@ -190,11 +190,18 @@ ${bodyHtml}
   </div>
 </div>
 
-<script defer src="/assets/app.js"></script>
-<script defer src="/assets/consent.js"></script>
-<script defer src="/assets/cache.js"></script>
-<script defer src="/assets/stats.js"></script>
-<script defer src="/assets/version.js"></script>
+<script defer src="/assets/app.js?v=${ASSET_V}"></script>
+<script defer src="/assets/consent.js?v=${ASSET_V}"></script>
+<script defer src="/assets/cache.js?v=${ASSET_V}"></script>
+<script defer src="/assets/stats.js?v=${ASSET_V}"></script>
+<script defer src="/assets/version.js?v=${ASSET_V}"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function (rs) {
+    rs.forEach(function (r) { r.update().catch(function () {}); });
+  }).catch(function () {});
+}
+</script>
 </body>
 </html>
 `;

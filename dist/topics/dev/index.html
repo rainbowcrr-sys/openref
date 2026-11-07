@@ -25,15 +25,12 @@
 <meta name="twitter:title" content="开发工具与运行时" />
 <meta name="twitter:description" content="Node.js、包管理器、CLI 与本地开发环境的版本差异。 共 1 篇。" />
 <meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
-<link rel="stylesheet" href="/assets/global.css" />
+<link rel="stylesheet" href="/assets/global.css?v=3" />
 <script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 
 </head>
 <body>
-<!-- 纯 CSS 兜底：global.css 里有 .css-lost-warn{display:none}。
-     样式表没加载出来时隐藏规则失效，这条大号警告就会露出来。 -->
-<div class="css-lost-warn" style="font-size:26px;font-weight:800;padding:14px 16px;background:#ff9500;color:#ffffff;text-align:center">CSS 样式丢失，请刷新页面</div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="site-header">
   <div class="wrap">
@@ -132,10 +129,17 @@
   </div>
 </div>
 
-<script defer src="/assets/app.js"></script>
-<script defer src="/assets/consent.js"></script>
-<script defer src="/assets/cache.js"></script>
-<script defer src="/assets/stats.js"></script>
-<script defer src="/assets/version.js"></script>
+<script defer src="/assets/app.js?v=3"></script>
+<script defer src="/assets/consent.js?v=3"></script>
+<script defer src="/assets/cache.js?v=3"></script>
+<script defer src="/assets/stats.js?v=3"></script>
+<script defer src="/assets/version.js?v=3"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function (rs) {
+    rs.forEach(function (r) { r.update().catch(function () {}); });
+  }).catch(function () {});
+}
+</script>
 </body>
 </html>
