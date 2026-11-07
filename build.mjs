@@ -714,8 +714,9 @@ if (fs.existsSync(path.join(ROOT, 'public'))) {
 }
 
 /* ---- GitHub Pages 官方要求的文件 ---- */
-// 注意：CNAME 由 GitHub 在 Settings → Pages 里自行生成并管理，构建器不再写入，
-// 否则每次部署都会覆盖掉你在后台填的自定义域。
+// CNAME：从仓库根目录同步，Pages 从 /dist 发布时也必须带着它，自定义域才不会丢
+const cnameSrc = path.join(ROOT, 'CNAME');
+if (fs.existsSync(cnameSrc)) write('CNAME', fs.readFileSync(cnameSrc, 'utf8'));
 // .nojekyll：跳过 Jekyll，避免 _ 开头文件被吞、Markdown 被二次渲染
 write('.nojekyll', '');
 

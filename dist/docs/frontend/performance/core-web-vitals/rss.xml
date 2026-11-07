@@ -9,7 +9,7 @@
     <link>https://openref.de5.net/docs/frontend/performance/core-web-vitals/</link>
     <description>LCP、INP、CLS 三个指标分别衡量加载、交互与视觉稳定。本文给出各自的阈值、最常见成因，以及按投入产出排序的优化动作。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 07 Nov 2026 03:04:01 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 03:17:54 GMT</lastBuildDate>
     <copyright>© 2026 rainbowcrr-sys / OpenRef</copyright>
     <managingEditor>rainbowcrr-sys</managingEditor>
     <webMaster></webMaster>
