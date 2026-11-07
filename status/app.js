@@ -1,5 +1,4 @@
 (function () {
-  var WORKER = 'https://stats.openref.de5.net/health';
   var SITE = 'https://openref.de5.net/';
 
   function set(id, state, text) {
@@ -18,7 +17,7 @@
     if (dot) dot.className = 'dot ' + worst;
     if (worst === 'ok') {
       if (title) title.textContent = '全部服务正常';
-      if (sub) sub.textContent = '站点、订阅与统计均在正常运行';
+      if (sub) sub.textContent = '站点与订阅均在正常运行';
     } else if (worst === 'warn') {
       if (title) title.textContent = '部分服务降级';
       if (sub) sub.textContent = '有服务正在维护或响应异常，站点仍可访问';
@@ -42,17 +41,6 @@
       .catch(function () { set('github', 'warn', '状态接口暂时不可达'); return 'warn'; });
   }
 
-  function checkWorker() {
-    return fetch(WORKER, { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var ok = d && d.ok && d.worker;
-        set('worker', ok ? (d.github ? 'ok' : 'warn') : 'bad', ok ? (d.github ? '正常' : '统计仓库不可写') : '上报服务异常');
-        return ok && d.github ? 'ok' : 'warn';
-      })
-      .catch(function () { set('worker', 'bad', '上报服务未响应'); return 'bad'; });
-  }
-
   function checkSite() {
     return fetch(SITE, { mode: 'no-cors', cache: 'no-store' })
       .then(function () { set('site', 'ok', '可访问'); return 'ok'; })
@@ -62,7 +50,7 @@
   function run() {
     set('status', 'ok', '运行中');
     overall(['warn']);
-    Promise.all([checkGithub(), checkWorker(), checkSite()]).then(function (r) {
+    Promise.all([checkGithub(), checkSite()]).then(function (r) {
       overall(r);
     });
   }

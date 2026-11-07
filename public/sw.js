@@ -1,7 +1,7 @@
 /* OpenRef 离线口袋：默认不预缓存，点哪个「缓存」按钮才存哪个。
    HTML 页面走 network-first，站点一更新立刻生效；断网时用已缓存页面兜底。
    其它同源静态资源走 cache-first。 */
-var CACHE = 'openref-articles-v3';
+var CACHE = 'openref-articles-v4';
 
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) {

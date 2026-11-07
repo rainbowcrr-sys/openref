@@ -2,7 +2,7 @@ import { SITE, SITE_NAME, SITE_FULLNAME, LANG, ORG_NAME, fullTitle } from '../co
 import { escapeHtml } from './md.mjs';
 
 /** 静态资源版本：改动 CSS/JS 时递增，强制绕过浏览器与 SW 旧缓存 */
-export const ASSET_V = '3';
+export const ASSET_V = '4';
 
 export const NAV = [
   { label: '分类', href: '/topics/' },
@@ -150,7 +150,7 @@ ${bodyHtml}
         </button>
       </div>
       <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a> · <a href="https://status.openref.de5.net">服务状态</a></div>
-      <div class="mt"><span class="stats-total">本站已被阅读 … 次</span> · <button type="button" class="linklike" id="weekly-btn" hidden>本周焦点</button> · <span class="cache-count">尚未缓存文章</span></div>
+      <div class="mt"><span class="cache-count">尚未缓存文章</span></div>
       <div class="mt">© ${new Date().getFullYear()} ${escapeHtml(ORG_NAME)}</div>
     </div>
   </div>
@@ -158,42 +158,11 @@ ${bodyHtml}
     ${POLICY_LINKS.map((l) => `<a href="${l.href}">${l.label}</a>`).join('<span class="sep">·</span>')}
     <span class="sep">·</span>
     <a href="${GITHUB_REPO}" target="_blank" rel="noopener">站点开源</a>
-    <span class="sep">·</span>
-    <button type="button" id="consent-gear" class="consent-gear">⚙ Cookie 设置</button>
-  </div>
-  <div class="weekly-pop" id="weekly-pop" hidden>
-    <div class="wk-card">
-      <div class="wk-head"><strong>本周焦点</strong><button type="button" id="weekly-close">关闭</button></div>
-      <ol id="weekly-list"></ol>
-    </div>
-  </div>
   </div>
 </footer>
 
-<!-- Cookie 同意：首次进站从底部弹出；清掉 cookie 会重新弹 -->
-<div class="consent" id="consent-banner" hidden>
-  <div class="consent-wrap">
-    <div class="consent-main">
-      <p class="consent-text"><strong>关于本站的存储</strong>　我们用少量本地存储记住主题与目录偏好，并可选统计阅读量。你不点同意，缓存和统计都不会启动。</p>
-      <div class="consent-btns">
-        <button type="button" class="btn-primary" data-consent="accept">全部接受</button>
-        <button type="button" data-consent="reject">全部拒绝</button>
-        <button type="button" data-consent="manage">偏好管理</button>
-      </div>
-    </div>
-    <div class="consent-panel" id="consent-panel" hidden>
-      <div class="cp-row"><div><strong>必要</strong><span>站点运行必需，无法关闭</span></div><input type="checkbox" checked disabled /></div>
-      <div class="cp-row"><div><strong>偏好</strong><span>记住主题、目录折叠</span></div><input type="checkbox" id="cp-prefs" /></div>
-      <div class="cp-row"><div><strong>统计</strong><span>阅读量、来源与地区（最多到城市，不含街道）</span></div><input type="checkbox" id="cp-stats" /></div>
-      <div class="cp-actions"><button type="button" id="cp-save">保存偏好</button></div>
-    </div>
-  </div>
-</div>
-
 <script defer src="/assets/app.js?v=${ASSET_V}"></script>
-<script defer src="/assets/consent.js?v=${ASSET_V}"></script>
 <script defer src="/assets/cache.js?v=${ASSET_V}"></script>
-<script defer src="/assets/stats.js?v=${ASSET_V}"></script>
 <script defer src="/assets/version.js?v=${ASSET_V}"></script>
 <script>
 if ('serviceWorker' in navigator) {

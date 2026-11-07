@@ -31,7 +31,7 @@
 <body>
 <div class="wrap">
   <h1>OpenRef 服务状态</h1>
-  <p class="sub">站点、订阅、统计与基础设施的实时状态。GitHub 维护时这里也会亮黄灯。</p>
+  <p class="sub">站点、订阅与基础设施的实时状态。GitHub 维护时这里也会亮黄灯。</p>
 
   <div class="overall">
     <span class="dot" id="overall-dot"></span>
@@ -40,13 +40,12 @@
 
   <div class="grid">
     <div class="card"><span class="dot" id="d-github"></span><div class="name">GitHub</div><div class="state" id="s-github">检查中</div></div>
-    <div class="card"><span class="dot" id="d-worker"></span><div class="name">统计上报</div><div class="state" id="s-worker">检查中</div></div>
     <div class="card"><span class="dot" id="d-site"></span><div class="name">主站 openref.de5.net</div><div class="state" id="s-site">检查中</div></div>
     <div class="card"><span class="dot" id="d-status"></span><div class="name">状态页自身（Pages）</div><div class="state" id="s-status">运行中</div></div>
   </div>
 
   <p class="foot">
-    数据源：GitHub Status 公开接口 + 统计 Worker 的 <code>/health</code>。<br />
+    数据源：GitHub Status 公开接口 + 主站连通性探测。<br />
     返回 <a href="https://openref.de5.net">openref.de5.net</a> ·
     <button class="refresh" type="button" id="refresh">重新检查</button>
   </p>

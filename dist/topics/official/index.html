@@ -25,7 +25,7 @@
 <meta name="twitter:title" content="官方" />
 <meta name="twitter:description" content="关于 OpenRef 站点本身的使用说明、功能更新与公告。 共 1 篇。" />
 <meta name="twitter:image" content="https://openref.de5.net/assets/icons/og-image.png" />
-<link rel="stylesheet" href="/assets/global.css?v=3" />
+<link rel="stylesheet" href="/assets/global.css?v=4" />
 <script is:inline>try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"OpenRef 技术参考","url":"https://openref.de5.net","inLanguage":"zh-CN","potentialAction":{"@type":"SearchAction","target":"https://openref.de5.net/search/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 
@@ -89,7 +89,7 @@
         </button>
       </div>
       <div class="mt"><a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">LLMs</a> · <a href="https://status.openref.de5.net">服务状态</a></div>
-      <div class="mt"><span class="stats-total">本站已被阅读 … 次</span> · <button type="button" class="linklike" id="weekly-btn" hidden>本周焦点</button> · <span class="cache-count">尚未缓存文章</span></div>
+      <div class="mt"><span class="cache-count">尚未缓存文章</span></div>
       <div class="mt">© 2026 OpenRef</div>
     </div>
   </div>
@@ -97,43 +97,12 @@
     <a href="/contribute/">投稿</a><span class="sep">·</span><a href="/contribute/agreement/">投稿协议</a><span class="sep">·</span><a href="/privacy/">隐私政策</a><span class="sep">·</span><a href="/legal/copyright/">版权与免责</a>
     <span class="sep">·</span>
     <a href="https://github.com/rainbowcrr-sys/openref" target="_blank" rel="noopener">站点开源</a>
-    <span class="sep">·</span>
-    <button type="button" id="consent-gear" class="consent-gear">⚙ Cookie 设置</button>
-  </div>
-  <div class="weekly-pop" id="weekly-pop" hidden>
-    <div class="wk-card">
-      <div class="wk-head"><strong>本周焦点</strong><button type="button" id="weekly-close">关闭</button></div>
-      <ol id="weekly-list"></ol>
-    </div>
-  </div>
   </div>
 </footer>
 
-<!-- Cookie 同意：首次进站从底部弹出；清掉 cookie 会重新弹 -->
-<div class="consent" id="consent-banner" hidden>
-  <div class="consent-wrap">
-    <div class="consent-main">
-      <p class="consent-text"><strong>关于本站的存储</strong>　我们用少量本地存储记住主题与目录偏好，并可选统计阅读量。你不点同意，缓存和统计都不会启动。</p>
-      <div class="consent-btns">
-        <button type="button" class="btn-primary" data-consent="accept">全部接受</button>
-        <button type="button" data-consent="reject">全部拒绝</button>
-        <button type="button" data-consent="manage">偏好管理</button>
-      </div>
-    </div>
-    <div class="consent-panel" id="consent-panel" hidden>
-      <div class="cp-row"><div><strong>必要</strong><span>站点运行必需，无法关闭</span></div><input type="checkbox" checked disabled /></div>
-      <div class="cp-row"><div><strong>偏好</strong><span>记住主题、目录折叠</span></div><input type="checkbox" id="cp-prefs" /></div>
-      <div class="cp-row"><div><strong>统计</strong><span>阅读量、来源与地区（最多到城市，不含街道）</span></div><input type="checkbox" id="cp-stats" /></div>
-      <div class="cp-actions"><button type="button" id="cp-save">保存偏好</button></div>
-    </div>
-  </div>
-</div>
-
-<script defer src="/assets/app.js?v=3"></script>
-<script defer src="/assets/consent.js?v=3"></script>
-<script defer src="/assets/cache.js?v=3"></script>
-<script defer src="/assets/stats.js?v=3"></script>
-<script defer src="/assets/version.js?v=3"></script>
+<script defer src="/assets/app.js?v=4"></script>
+<script defer src="/assets/cache.js?v=4"></script>
+<script defer src="/assets/version.js?v=4"></script>
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(function (rs) {

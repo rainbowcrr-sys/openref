@@ -706,7 +706,7 @@ for (const pg of standalone) {
  * ========================================================== */
 fs.mkdirSync(path.join(DIST, 'assets'), { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'src/styles/global.css'), path.join(DIST, 'assets/global.css'));
-for (const js of ['app.js', 'search.js', 'consent.js', 'cache.js', 'stats.js', 'version.js']) {
+for (const js of ['app.js', 'search.js', 'cache.js', 'version.js']) {
   fs.copyFileSync(path.join(ROOT, 'src/assets', js), path.join(DIST, 'assets', js));
 }
 if (fs.existsSync(path.join(ROOT, 'public'))) {
